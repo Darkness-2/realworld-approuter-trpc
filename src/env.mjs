@@ -3,10 +3,12 @@ import { z } from "zod";
 
 export const env = createEnv({
 	server: {
-		DATABASE_URL: z.string()
+		DATABASE_URL: z.string().url(),
+		TABLE_PREFIX: z.string()
 	},
 	client: {},
 	runtimeEnv: {
-		DATABASE_URL: process.env.DRIZZLE_DATABASE_URL
+		DATABASE_URL: process.env.DATABASE_URL,
+		TABLE_PREFIX: process.env.TABLE_PREFIX
 	}
 });
