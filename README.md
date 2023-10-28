@@ -13,6 +13,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 6. neverthrow
 7. Chakra-ui
 8. Cypress
+9. t3-env
 
 ## To-do
 
@@ -20,6 +21,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 2. Add neverthrow
 3. Add Drizzle
 4. Add Lucia auth
+5. Figure out state management
 
 ## Requirements
 
