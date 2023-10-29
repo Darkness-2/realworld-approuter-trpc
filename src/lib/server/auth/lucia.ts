@@ -28,6 +28,9 @@ export const auth = lucia({
 		return {
 			username: data.username
 		};
+	},
+	experimental: {
+		debugMode: env.NODE_ENV === "development"
 	}
 });
 
