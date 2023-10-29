@@ -1,4 +1,5 @@
 import { getServerClient } from "$/lib/trpc/serverClient";
+import Link from "next/link";
 
 export default async function Home() {
 	const hello = await getServerClient().hello();
@@ -6,8 +7,24 @@ export default async function Home() {
 	return (
 		<main>
 			<div>Greeting: {hello}</div>
+			<ul>
+				<li>
+					<Link href="/auth/login">Login</Link>
+				</li>
+				<li>
+					<Link href="/auth/signup">Sign up</Link>
+				</li>
+				<li>
+					<Link href="/profile">Profile</Link>
+				</li>
+				<li>
+					<form action="/api/auth/logout" method="POST">
+						<button type="submit">Logout</button>
+					</form>
+				</li>
+			</ul>
 		</main>
 	);
 }
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";

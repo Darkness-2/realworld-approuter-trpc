@@ -12,7 +12,7 @@ export default async function LoginPage() {
 
 	return (
 		<>
-			<h1>Sign up</h1>
+			<h1>Login</h1>
 			<AuthForm action="/api/auth/login">
 				<label htmlFor="username">Username:</label>
 				<input type="text" name="username" id="username" />
