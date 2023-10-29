@@ -1,10 +1,9 @@
+import { getPageSession } from "$/lib/server/auth/lucia";
 import { db } from "$/lib/server/db";
-import { initTRPC } from "@trpc/server";
-import { type cookies } from "next/headers";
+import { TRPCError, initTRPC } from "@trpc/server";
+import { cookies, headers } from "next/headers";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
-type NextCookies = ReturnType<typeof cookies>;
 
 /**
  * 1. CONTEXT
@@ -14,8 +13,7 @@ type NextCookies = ReturnType<typeof cookies>;
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 interface CreateContextOptions {
-	headers: Headers;
-	cookies: NextCookies;
+	// Can add things here that should be in the generic context
 }
 
 /**
@@ -30,7 +28,7 @@ interface CreateContextOptions {
  */
 export const createInnerTRPCContext = (opts: CreateContextOptions) => {
 	return {
-		headers: opts.headers,
+		...opts,
 		db
 	};
 };
@@ -41,11 +39,8 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (headers: Headers, cookies: NextCookies) => {
-	return createInnerTRPCContext({
-		headers,
-		cookies
-	});
+export const createTRPCContext = () => {
+	return createInnerTRPCContext({});
 };
 
 /**
@@ -88,3 +83,59 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+
+/**
+ * Reusable middleware that populates per request data (headers, cookies, and user session).
+ */
+export const useRequestData = t.middleware(async ({ next }) => {
+	// Grab Next.js headers and cookies
+	const nextHeaders = headers();
+	const nextCookies = cookies();
+
+	// Grab auth info from Lucia
+	const session = await getPageSession();
+
+	return next({
+		ctx: {
+			cookies: nextCookies,
+			headers: nextHeaders,
+			session,
+			user: session?.user ?? null
+		}
+	});
+});
+
+/**
+ * Reusable middleware that enforces users are logged in before running the procedure.
+ * Note: In the future would be better to use tRPC's pipe feature (currently unstable)
+ * @see https://trpc.io/docs/server/middlewares#extending-middlewares
+ */
+const enforceUserIsAuthed = t.middleware(async ({ next }) => {
+	// Grab Next.js headers and cookies
+	const nextHeaders = headers();
+	const nextCookies = cookies();
+
+	// Grab auth info from Lucia
+	const session = await getPageSession();
+
+	if (!session) {
+		throw new TRPCError({ code: "UNAUTHORIZED" });
+	}
+
+	return next({
+		ctx: {
+			cookies: nextCookies,
+			headers: nextHeaders,
+			session,
+			user: session.user
+		}
+	});
+});
+
+/**
+ * Protected (authenticated) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
+ * the session is valid and guarantees `ctx.session and ctx.user` is not null.
+ */
+export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);

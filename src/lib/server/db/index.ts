@@ -5,6 +5,7 @@ import * as schema from "./schema";
 
 // Todo: Determine if this needs to be cached per request as recommended in the Neon docs
 // See: https://neon.tech/docs/serverless/serverless-driver#how-to-use-the-driver-over-http
+// OR convert back to Neon http
 export const pool = new Pool({
 	connectionString: env.DATABASE_URL
 });

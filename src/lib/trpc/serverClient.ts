@@ -1,6 +1,5 @@
 import { appRouter } from "$/lib/server/trpc/root";
 import { createTRPCContext } from "$/lib/server/trpc/trpc";
-import { cookies, headers } from "next/headers";
 import { cache } from "react";
 
 /**
@@ -10,7 +9,8 @@ import { cache } from "react";
  */
 export const createServerClient = () => {
 	console.log(`Created a caller at time: ${new Date().getTime()}`);
-	const context = createTRPCContext(headers(), cookies());
+	// Todo: Move this to middleware so that these are not being called if tRPC is being used for a public procedure
+	const context = createTRPCContext();
 	return appRouter.createCaller(context);
 };
 
