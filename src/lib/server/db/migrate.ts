@@ -1,8 +1,12 @@
-import { db } from "$/lib/server/db";
-import { migrate } from "drizzle-orm/neon-http/migrator";
+import { env } from "$/env.mjs";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
+import { Pool } from "pg";
 
-const runMigrations = async () => {
-	await migrate(db, { migrationsFolder: "drizzle" });
-};
+const pool = new Pool({
+	connectionString: env.DATABASE_URL,
+	max: 1
+});
+const db = drizzle(pool);
 
-runMigrations();
+migrate(db, { migrationsFolder: "drizzle" });
