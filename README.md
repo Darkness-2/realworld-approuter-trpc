@@ -14,6 +14,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 7. Chakra-ui
 8. Cypress
 9. t3-env
+10. ts-reset
 
 ## To-do
 
