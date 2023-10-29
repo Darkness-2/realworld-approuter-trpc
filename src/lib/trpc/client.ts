@@ -1,12 +1,25 @@
+import { env } from "$/env.mjs";
 import type { AppRouter } from "$/lib/server/trpc/root";
-import { createTRPCReact, httpBatchLink } from "@trpc/react-query";
+import { getTRPCUrl } from "$/lib/trpc/shared";
+import { httpBatchLink, loggerLink } from "@trpc/client";
+import { createTRPCReact } from "@trpc/react-query";
+import superjson from "superjson";
 
 export const trpc = createTRPCReact<AppRouter>({});
+
 export const createTRPCClient = () =>
 	trpc.createClient({
+		transformer: superjson,
 		links: [
+			loggerLink({
+				// Enables logging in the console when in development or when there are errors
+				enabled: (opts) => env.NODE_ENV === "development" || (opts.direction === "down" && opts.result instanceof Error)
+			}),
 			httpBatchLink({
-				url: "http://localhost:3000/api/trpc"
+				url: getTRPCUrl(),
+				headers: () => ({
+					"x-trpc-source": typeof window !== "undefined" ? "client" : "server-through-client"
+				})
 			})
 		]
 	});
