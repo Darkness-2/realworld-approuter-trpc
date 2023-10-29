@@ -1,8 +1,12 @@
-import { env } from "$/env.mjs";
 import { bigint, pgTableCreator, varchar } from "drizzle-orm/pg-core";
+import { env } from "../../../env.mjs";
 
 const pgTable = pgTableCreator((name) => `${env.TABLE_PREFIX}_${name}`);
 
+/**
+ * Tables for Lucia auth.
+ * @see https://lucia-auth.com/getting-started/nextjs-app/
+ */
 export const user = pgTable("auth_user", {
 	id: varchar("id", {
 		length: 15 // Can be changed for custom user ids
