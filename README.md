@@ -18,11 +18,9 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## To-do
 
-1. Add tRPC and figure out how to call client-side and server-side
-2. Add neverthrow
-3. Add Drizzle
-4. Add Lucia auth
-5. Figure out state management
+1. Add Chakra
+2. Figure out state management / storing user on the client
+3. Add neverthrow
 
 ## Requirements
 

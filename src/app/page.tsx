@@ -9,6 +9,7 @@ export default async function Home() {
 			<div>Greeting: {hello}</div>
 			<ul>
 				<li>
+					{/* Todo - convert these to Chakra links */}
 					<Link href="/auth/login">Login</Link>
 				</li>
 				<li>
