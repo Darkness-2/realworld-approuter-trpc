@@ -1,6 +1,8 @@
 import { env } from "$/env.mjs";
 import { appRouter } from "$/lib/server/trpc/root";
+import { createTRPCContext } from "$/lib/server/trpc/trpc";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import { cookies, headers } from "next/headers";
 import type { NextRequest } from "next/server";
 
 const handler = (req: NextRequest) =>
@@ -8,7 +10,7 @@ const handler = (req: NextRequest) =>
 		endpoint: "/api/trpc",
 		req,
 		router: appRouter,
-		createContext: () => ({}),
+		createContext: () => createTRPCContext(headers(), cookies()),
 		onError:
 			env.NODE_ENV === "development"
 				? ({ path, error }) => {
