@@ -19,7 +19,7 @@ export const POST = async (req: NextRequest) => {
 	return new Response(null, {
 		status: 302,
 		headers: {
-			Location: "/login"
+			Location: "/"
 		}
 	});
 };
