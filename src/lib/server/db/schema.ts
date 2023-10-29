@@ -12,6 +12,8 @@ const pgTable = pgTableCreator((name) => `${env.TABLE_PREFIX}_${name}`);
 /**
  * Tables for Lucia auth.
  * @see https://lucia-auth.com/getting-started/nextjs-app/
+ *
+ * Todo: Determine what needs to be indexed
  */
 export const user = pgTable("auth_user", {
 	id: varchar("id", {

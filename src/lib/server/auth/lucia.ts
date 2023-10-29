@@ -7,6 +7,10 @@ import "lucia/polyfill/node";
 import * as context from "next/headers";
 import { cache } from "react";
 
+/**
+ * Lucia auth setup
+ * @see https://lucia-auth.com/guidebook/sign-in-with-username-and-password/nextjs-app/#additional-notes
+ */
 export const auth = lucia({
 	env: env.NODE_ENV == "production" ? "PROD" : "DEV",
 	middleware: nextjs_future(),
@@ -16,6 +20,8 @@ export const auth = lucia({
 		user: `${env.TABLE_PREFIX}_auth_user`
 	}),
 	sessionCookie: {
+		// Todo: look into why this is recommended
+		// See: https://lucia-auth.com/guidebook/sign-in-with-username-and-password/nextjs-app/
 		expires: false
 	},
 	getUserAttributes: (data) => {
@@ -27,6 +33,10 @@ export const auth = lucia({
 
 export type Auth = typeof auth;
 
+/**
+ * Recommended helper from Lucia that ensures we only validate the user's session once per request
+ * @see https://lucia-auth.com/guidebook/sign-in-with-username-and-password/nextjs-app/#additional-notes
+ */
 export const getPageSession = cache(() => {
 	const authRequest = auth.handleRequest("GET", context);
 	return authRequest.validate();
