@@ -9,10 +9,10 @@ import { cache } from "react";
 
 /**
  * Lucia auth setup
- * @see https://lucia-auth.com/guidebook/sign-in-with-username-and-password/nextjs-app/#additional-notes
+ * @see https://lucia-auth.com/guidebook/sign-in-with-username-and-password/nextjs-app/
  */
 export const auth = lucia({
-	env: env.NODE_ENV == "production" ? "PROD" : "DEV",
+	env: env.NODE_ENV === "production" ? "PROD" : "DEV",
 	middleware: nextjs_future(),
 	adapter: pg(pool, {
 		key: `${env.TABLE_PREFIX}_user_key`,
