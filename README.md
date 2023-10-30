@@ -32,3 +32,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - GET and display paginated lists of articles
 - Favorite articles
 - Follow other users
+
+## Added requirements
+
+- Rate limiting

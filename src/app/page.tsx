@@ -6,7 +6,7 @@ export default async function Home() {
 	const hello = await getServerClient().hello();
 
 	return (
-		<main>
+		<>
 			<div>Greeting: {hello}</div>
 			<ul>
 				<li>
@@ -23,6 +23,6 @@ export default async function Home() {
 					<LogoutButton />
 				</li>
 			</ul>
-		</main>
+		</>
 	);
 }
