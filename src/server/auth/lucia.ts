@@ -41,6 +41,7 @@ export type Auth = typeof auth;
  * @see https://lucia-auth.com/guidebook/sign-in-with-username-and-password/nextjs-app/#additional-notes
  */
 export const getPageSession = cache(() => {
+	// Todo: Should this always be GET?
 	const authRequest = auth.handleRequest("GET", context);
 	return authRequest.validate();
 });
