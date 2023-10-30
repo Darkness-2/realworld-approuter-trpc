@@ -1,4 +1,3 @@
-import { env } from "$/env.mjs";
 import type { AppRouter } from "$/lib/server/trpc/root";
 import { getTRPCUrl } from "$/lib/trpc/shared";
 import { httpBatchLink, loggerLink } from "@trpc/client";
@@ -13,7 +12,8 @@ export const createTRPCClient = () =>
 		links: [
 			loggerLink({
 				// Enables logging in the console when in development or when there are errors
-				enabled: (opts) => env.NODE_ENV === "development" || (opts.direction === "down" && opts.result instanceof Error)
+				enabled: (opts) =>
+					process.env.NODE_ENV === "development" || (opts.direction === "down" && opts.result instanceof Error)
 			}),
 			httpBatchLink({
 				url: getTRPCUrl(),
