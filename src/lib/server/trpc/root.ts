@@ -1,3 +1,4 @@
+import { authRouter } from "$/lib/server/trpc/routers/auth";
 import { cache } from "react";
 import { createTRPCRouter, publicProcedure } from "./trpc";
 
@@ -7,7 +8,8 @@ const generateString = cache(() => {
 });
 
 export const appRouter = createTRPCRouter({
-	hello: publicProcedure.query(() => generateString())
+	hello: publicProcedure.query(() => generateString()),
+	auth: authRouter
 });
 
 export type AppRouter = typeof appRouter;
