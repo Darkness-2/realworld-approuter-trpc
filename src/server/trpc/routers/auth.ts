@@ -1,6 +1,7 @@
-import { loginUserSchema } from "$/lib/schemas/auth";
+import { createUserSchema, loginUserSchema } from "$/lib/schemas/auth";
 import { auth } from "$/server/auth/lucia";
 import { createTRPCRouter, publicProcedure } from "$/server/trpc/trpc";
+import { TRPCError } from "@trpc/server";
 import * as context from "next/headers";
 
 export const authRouter = createTRPCRouter({
@@ -21,10 +22,42 @@ export const authRouter = createTRPCRouter({
 			const authRequest = auth.handleRequest("POST", context);
 			authRequest.setSession(session);
 
-			return { success: true as const, redirectTo: "/" };
+			return { redirectTo: "/" };
 		} catch (e) {
 			// Todo: Handle errors better
-			return { success: false as const };
+			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
+		}
+	}),
+	signup: publicProcedure.input(createUserSchema).mutation(async ({ input }) => {
+		const { username, password } = input;
+
+		try {
+			// Try to create the user
+			const user = await auth.createUser({
+				key: {
+					providerId: "username",
+					providerUserId: username.toLowerCase(),
+					password
+				},
+				attributes: {
+					username
+				}
+			});
+
+			// Create a session for the new user
+			const session = await auth.createSession({
+				userId: user.userId,
+				attributes: {}
+			});
+
+			// Handle the request and set the new session
+			const authRequest = auth.handleRequest("POST", context);
+			authRequest.setSession(session);
+
+			return { redirectTo: "/" };
+		} catch (e) {
+			// Todo: Handle errors better
+			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
 		}
 	})
 });

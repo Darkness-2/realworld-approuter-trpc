@@ -4,7 +4,7 @@ import { trpc } from "$/lib/trpc/client";
 import { useRouter } from "next/navigation";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 
-export default function LoginForm() {
+export default function SignupForm() {
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		username: "",
@@ -12,7 +12,7 @@ export default function LoginForm() {
 	});
 
 	// Todo: Handle validation errors
-	const login = trpc.auth.login.useMutation({
+	const signup = trpc.auth.signup.useMutation({
 		onSuccess: (data) => {
 			router.push(data.redirectTo);
 			router.refresh();
@@ -28,7 +28,7 @@ export default function LoginForm() {
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		login.mutate(formData);
+		signup.mutate(formData);
 	};
 
 	return (
