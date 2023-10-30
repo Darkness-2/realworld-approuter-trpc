@@ -85,9 +85,10 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 /**
- * Reusable middleware that populates per request data (headers, cookies, and user session).
+ * Helper function to grab data related to an individual request.
+ * @returns headers, cookies, session, and user for the request
  */
-export const useRequestData = t.middleware(async ({ next }) => {
+const getRequestData = async () => {
 	// Grab Next.js headers and cookies
 	const nextHeaders = headers();
 	const nextCookies = cookies();
@@ -95,12 +96,23 @@ export const useRequestData = t.middleware(async ({ next }) => {
 	// Grab auth info from Lucia
 	const session = await getPageSession();
 
+	return {
+		cookies: nextCookies,
+		headers: nextHeaders,
+		session,
+		user: session?.user ?? null
+	};
+};
+
+/**
+ * Reusable middleware that populates per request data (headers, cookies, and user session).
+ */
+export const requireRequestData = t.middleware(async ({ next }) => {
+	const requestData = await getRequestData();
+
 	return next({
 		ctx: {
-			cookies: nextCookies,
-			headers: nextHeaders,
-			session,
-			user: session?.user ?? null
+			...requestData
 		}
 	});
 });
@@ -111,23 +123,17 @@ export const useRequestData = t.middleware(async ({ next }) => {
  * @see https://trpc.io/docs/server/middlewares#extending-middlewares
  */
 const enforceUserIsAuthed = t.middleware(async ({ next }) => {
-	// Grab Next.js headers and cookies
-	const nextHeaders = headers();
-	const nextCookies = cookies();
+	const requestData = await getRequestData();
 
-	// Grab auth info from Lucia
-	const session = await getPageSession();
-
-	if (!session) {
+	if (!requestData.session) {
 		throw new TRPCError({ code: "UNAUTHORIZED" });
 	}
 
 	return next({
 		ctx: {
-			cookies: nextCookies,
-			headers: nextHeaders,
-			session,
-			user: session.user
+			...requestData,
+			session: requestData.session,
+			user: requestData.session.user
 		}
 	});
 });
