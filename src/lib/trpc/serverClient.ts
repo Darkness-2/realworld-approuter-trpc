@@ -9,7 +9,6 @@ import { cache } from "react";
  */
 export const createServerClient = () => {
 	console.log(`Created a caller at time: ${new Date().getTime()}`);
-	// Todo: Move this to middleware so that these are not being called if tRPC is being used for a public procedure
 	const context = createTRPCContext();
 	return appRouter.createCaller(context);
 };
@@ -19,5 +18,7 @@ export const createServerClient = () => {
  * it is used in multiple places in a single request (for example in two separate server components).
  *
  * Should avoid the context being created multiple times.
+ *
+ * Todo: Consider if this needs to be wrapped in cache given I moved most context stuff into middleware.
  */
 export const getServerClient = cache(createServerClient);
