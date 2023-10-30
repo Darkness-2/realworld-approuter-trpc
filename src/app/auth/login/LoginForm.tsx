@@ -14,6 +14,7 @@ export default function LoginForm() {
 		onSuccess: (data) => {
 			if (data.success) {
 				router.push(data.redirectTo);
+				router.refresh();
 			} else {
 				// Todo: Handle errors better
 			}
