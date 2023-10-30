@@ -26,7 +26,7 @@ export default function SignupForm() {
 		}));
 	};
 
-	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		signup.mutate(formData);
 	};

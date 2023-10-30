@@ -26,7 +26,7 @@ export default function LoginForm() {
 		}));
 	};
 
-	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		login.mutate(formData);
 	};

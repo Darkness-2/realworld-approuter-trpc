@@ -1,3 +1,4 @@
+import LogoutButton from "$/components/LogoutButton";
 import { getServerClient } from "$/lib/trpc/serverClient";
 import Link from "next/link";
 
@@ -19,9 +20,7 @@ export default async function Home() {
 					<Link href="/profile">Profile</Link>
 				</li>
 				<li>
-					<form action="/api/auth/logout" method="POST">
-						<button type="submit">Logout</button>
-					</form>
+					<LogoutButton />
 				</li>
 			</ul>
 		</main>

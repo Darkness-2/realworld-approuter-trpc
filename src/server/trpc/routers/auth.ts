@@ -28,6 +28,7 @@ export const authRouter = createTRPCRouter({
 			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
 		}
 	}),
+
 	signup: publicProcedure.input(createUserSchema).mutation(async ({ input }) => {
 		const { username, password } = input;
 
@@ -59,5 +60,22 @@ export const authRouter = createTRPCRouter({
 			// Todo: Handle errors better
 			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
 		}
+	}),
+
+	logout: publicProcedure.mutation(async () => {
+		const authRequest = auth.handleRequest("POST", context);
+		const session = await authRequest.validate();
+
+		// User's not logged in, so just return null
+		if (!session) {
+			return null;
+		}
+
+		// Invalidate the current session
+		await auth.invalidateSession(session.sessionId);
+
+		// Delete session cookie
+		authRequest.setSession(null);
+		return { redirectTo: "/" };
 	})
 });
