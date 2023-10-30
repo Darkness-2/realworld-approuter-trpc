@@ -2,12 +2,14 @@
 
 import { trpc } from "$/lib/trpc/client";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 
 export default function LoginForm() {
 	const router = useRouter();
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
+	const [formData, setFormData] = useState({
+		username: "",
+		password: ""
+	});
 
 	// Todo: Handle validation error
 	const login = trpc.auth.login.useMutation({
@@ -21,18 +23,27 @@ export default function LoginForm() {
 		}
 	});
 
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+		setFormData((prev) => ({
+			...prev,
+			[e.target.name]: e.target.value
+		}));
+	};
+
 	const handleRequest = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		login.mutate({ password, username });
+		login.mutate(formData);
 	};
+
+	console.log(formData);
 
 	return (
 		<form onSubmit={handleRequest}>
 			<label htmlFor="username">Username:</label>
-			<input type="text" name="username" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+			<input type="text" name="username" id="username" value={formData.username} onChange={handleChange} />
 			<br />
 			<label htmlFor="password">Password:</label>
-			<input type="text" name="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+			<input type="text" name="password" id="password" value={formData.password} onChange={handleChange} />
 			<br />
 			<input type="submit" />
 		</form>
