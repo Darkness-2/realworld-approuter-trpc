@@ -1,5 +1,5 @@
-import type { AppRouter } from "$/lib/server/trpc/root";
 import { getTRPCUrl } from "$/lib/trpc/shared";
+import { type AppRouter } from "$/server/trpc/root";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import superjson from "superjson";

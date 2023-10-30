@@ -1,4 +1,4 @@
-import { getPageSession } from "$/lib/server/auth/lucia";
+import { getPageSession } from "$/server/auth/lucia";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 

@@ -1,6 +1,6 @@
 import { loginUserSchema } from "$/lib/schemas/auth";
-import { auth } from "$/lib/server/auth/lucia";
-import { createTRPCRouter, publicProcedure } from "$/lib/server/trpc/trpc";
+import { auth } from "$/server/auth/lucia";
+import { createTRPCRouter, publicProcedure } from "$/server/trpc/trpc";
 import * as context from "next/headers";
 
 export const authRouter = createTRPCRouter({

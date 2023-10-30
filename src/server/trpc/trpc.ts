@@ -1,5 +1,5 @@
-import { getPageSession } from "$/lib/server/auth/lucia";
-import { db } from "$/lib/server/db";
+import { getPageSession } from "$/server/auth/lucia";
+import { db } from "$/server/db";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { cookies, headers } from "next/headers";
 import superjson from "superjson";

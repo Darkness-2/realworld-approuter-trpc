@@ -1,5 +1,5 @@
-import { appRouter } from "$/lib/server/trpc/root";
-import { createTRPCContext } from "$/lib/server/trpc/trpc";
+import { appRouter } from "$/server/trpc/root";
+import { createTRPCContext } from "$/server/trpc/trpc";
 import { cache } from "react";
 
 /**

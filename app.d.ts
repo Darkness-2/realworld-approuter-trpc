@@ -2,7 +2,7 @@
 
 /// <reference types="lucia" />
 declare namespace Lucia {
-	export type Auth = import("$/lib/server/auth/lucia").Auth;
+	export type Auth = import("$/server/auth/lucia").Auth;
 	export type DatabaseUserAttributes = {
 		username: string;
 	};

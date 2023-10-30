@@ -1,5 +1,5 @@
 import AuthForm from "$/components/AuthForm";
-import { auth } from "$/lib/server/auth/lucia";
+import { auth } from "$/server/auth/lucia";
 import * as context from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";

@@ -1,4 +1,4 @@
-import { authRouter } from "$/lib/server/trpc/routers/auth";
+import { authRouter } from "$/server/trpc/routers/auth";
 import { cache } from "react";
 import { createTRPCRouter, publicProcedure } from "./trpc";
 

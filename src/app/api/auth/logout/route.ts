@@ -1,4 +1,4 @@
-import { auth } from "$/lib/server/auth/lucia";
+import { auth } from "$/server/auth/lucia";
 import * as context from "next/headers";
 import type { NextRequest } from "next/server";
 

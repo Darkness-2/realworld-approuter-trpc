@@ -1,6 +1,6 @@
 import { env } from "$/env.mjs";
-import { appRouter } from "$/lib/server/trpc/root";
-import { createTRPCContext } from "$/lib/server/trpc/trpc";
+import { appRouter } from "$/server/trpc/root";
+import { createTRPCContext } from "$/server/trpc/trpc";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import type { NextRequest } from "next/server";
 

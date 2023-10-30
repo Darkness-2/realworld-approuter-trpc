@@ -35,8 +35,6 @@ export default function LoginForm() {
 		login.mutate(formData);
 	};
 
-	console.log(formData);
-
 	return (
 		<form onSubmit={handleRequest}>
 			<label htmlFor="username">Username:</label>

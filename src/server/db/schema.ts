@@ -1,5 +1,5 @@
 import { bigint, pgTableCreator, varchar } from "drizzle-orm/pg-core";
-import { env } from "../../../env.mjs";
+import { env } from "../../env.mjs";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM.
