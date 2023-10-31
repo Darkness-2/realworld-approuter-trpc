@@ -18,7 +18,7 @@ export const createTRPCClient = () =>
 			httpBatchLink({
 				url: getTRPCUrl(),
 				headers: () => ({
-					"x-trpc-source": typeof window !== "undefined" ? "client" : "react-server-component"
+					"x-trpc-source": typeof window !== "undefined" ? "client" : "server-component"
 				})
 			})
 		]

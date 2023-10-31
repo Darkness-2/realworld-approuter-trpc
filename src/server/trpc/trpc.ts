@@ -1,3 +1,4 @@
+import { env } from "$/env.mjs";
 import { getPageSession } from "$/server/auth/lucia";
 import { db } from "$/server/db";
 import { TRPCError, initTRPC } from "@trpc/server";
@@ -13,7 +14,7 @@ import { ZodError } from "zod";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 interface CreateContextOptions {
-	// Can add things here that should be in the generic context
+	source: string;
 }
 
 /**
@@ -39,8 +40,8 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = () => {
-	return createInnerTRPCContext({});
+export const createTRPCContext = (opts: { source: CreateContextOptions["source"] }) => {
+	return createInnerTRPCContext({ ...opts });
 };
 
 /**
@@ -76,13 +77,25 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 export const createTRPCRouter = t.router;
 
 /**
+ * Middleware to console.log where the tRPC request is coming from, enabled only in dev.
+ *
+ * client = coming from the browser
+ * server-component = coming from the tRPC client, but from the server through HTTP request
+ * server = coming from the tRPC serverClient, without a HTTP request
+ */
+const logTRPCSource = t.middleware(({ ctx, path, next }) => {
+	if (env.NODE_ENV === "development") console.log(`Processing tRPC request for ${path} from ${ctx.source}`);
+	return next();
+});
+
+/**
  * Public (unauthenticated) procedure
  *
  * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
+export const publicProcedure = t.procedure.use(logTRPCSource);
 
 /**
  * Helper function to grab data related to an individual request.
@@ -147,4 +160,4 @@ const enforceUserIsAuthed = t.middleware(async ({ next, type }) => {
  * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
  * the session is valid and guarantees `ctx.session and ctx.user` is not null.
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const protectedProcedure = t.procedure.use(logTRPCSource).use(enforceUserIsAuthed);

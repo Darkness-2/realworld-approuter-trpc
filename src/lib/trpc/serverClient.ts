@@ -3,13 +3,17 @@ import { createTRPCContext } from "$/server/trpc/trpc";
 import { cache } from "react";
 
 /**
- * Factory to create server-side callers for tRPC
- * Needed as this ensures every request will get a new caller
+ * Factory to create server-side callers for tRPC.
+ * Needed as this ensures every request will get a new caller.
+ *
+ * NOTE: intentionally not passing in things like headers and cookies,
+ * those are better referenced in the server-side code.
+ *
  * @returns a server-side caller for tRPC
  */
 export const createServerClient = () => {
 	console.log(`Created a caller at time: ${new Date().getTime()}`);
-	const context = createTRPCContext();
+	const context = createTRPCContext({ source: "server" });
 	return appRouter.createCaller(context);
 };
 
