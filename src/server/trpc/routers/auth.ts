@@ -69,19 +69,14 @@ export const authRouter = createTRPCRouter({
 		const authRequest = auth.handleRequest("POST", context);
 		const session = await authRequest.validate();
 
-		// User's not logged in, so just return null
-		if (!session) {
-			return null;
+		// If session exists, invalidate the current session and clean up any dead user sessions
+		if (session) {
+			await auth.invalidateSession(session.sessionId);
+			await auth.deleteDeadUserSessions(session.user.userId);
 		}
 
-		// Invalidate the current session
-		await auth.invalidateSession(session.sessionId);
-
-		// Delete session cookie
+		// Delete session cookie regardless
 		authRequest.setSession(null);
-
-		// Clean up any dead user sessions
-		await auth.deleteDeadUserSessions(session.user.userId);
 
 		return { redirectTo: "/" };
 	}),
