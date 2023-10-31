@@ -11,7 +11,6 @@ const handler = (req: NextRequest) =>
 		req,
 		router: appRouter,
 		createContext: () => {
-			// Note: Calling headers here makes this API route uncacheable
 			const source = headers().get("x-trpc-source") ?? "unknown";
 			return createTRPCContext({ source });
 		},
@@ -21,6 +20,8 @@ const handler = (req: NextRequest) =>
 						console.error(`❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`);
 				  }
 				: undefined
+		// Todo: explore creating cachable tRPC procedures
+		// See: https://trpc.io/docs/server/caching
 	});
 
 export { handler as GET, handler as POST };
