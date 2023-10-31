@@ -9,8 +9,13 @@ export default function Navbar() {
 
 	return (
 		<Box as="nav" shadow="md" py={4}>
-			<Container maxW="4xl">
-				<Flex justifyContent="space-between" alignItems="center">
+			<Container maxW="6xl">
+				<Flex
+					justifyContent="space-between"
+					alignItems={{ sm: "center" }}
+					flexDirection={{ base: "column", sm: "row" }}
+					gap={2}
+				>
 					<Link href="/" _hover={{ textDecoration: "none" }}>
 						<Text fontSize="2xl" color="green.500" fontWeight="semibold">
 							conduit
