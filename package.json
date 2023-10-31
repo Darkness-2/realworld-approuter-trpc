@@ -26,6 +26,7 @@
 		"@trpc/server": "^10.43.0",
 		"drizzle-orm": "^0.28.6",
 		"framer-motion": "^10.16.4",
+		"js-cookie": "^3.0.5",
 		"lucia": "^2.7.2",
 		"next": "14.0.0",
 		"pg": "^8.11.3",
@@ -36,6 +37,7 @@
 	},
 	"devDependencies": {
 		"@types/eslint": "^8.44.6",
+		"@types/js-cookie": "^3.0.5",
 		"@types/node": "^20",
 		"@types/pg": "^8.10.7",
 		"@types/react": "^18",

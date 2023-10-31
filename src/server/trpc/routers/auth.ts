@@ -1,5 +1,5 @@
 import { createUserSchema, loginUserSchema } from "$/lib/schemas/auth";
-import { auth } from "$/server/auth/lucia";
+import { auth, setUserCookie } from "$/server/auth/lucia";
 import { createTRPCRouter, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import * as context from "next/headers";
@@ -18,9 +18,10 @@ export const authRouter = createTRPCRouter({
 				attributes: {}
 			});
 
-			// Handle the request and set the new session
+			// Handle the request and set the new session and user cookie
 			const authRequest = auth.handleRequest("POST", context);
 			authRequest.setSession(session);
+			setUserCookie(session);
 
 			return { redirectTo: "/" };
 		} catch (e) {
@@ -54,6 +55,7 @@ export const authRouter = createTRPCRouter({
 			// Handle the request and set the new session
 			const authRequest = auth.handleRequest("POST", context);
 			authRequest.setSession(session);
+			setUserCookie(session);
 
 			return { redirectTo: "/" };
 		} catch (e) {
@@ -68,14 +70,17 @@ export const authRouter = createTRPCRouter({
 
 		// User's not logged in, so just return null
 		if (!session) {
+			setUserCookie(null);
 			return null;
 		}
 
 		// Invalidate the current session
 		await auth.invalidateSession(session.sessionId);
 
-		// Delete session cookie
+		// Delete session and user cookies
 		authRequest.setSession(null);
+		setUserCookie(null);
+
 		return { redirectTo: "/" };
 	})
 });

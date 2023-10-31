@@ -1,7 +1,7 @@
 import { env } from "$/env.mjs";
 import { pool } from "$/server/db";
 import { pg } from "@lucia-auth/adapter-postgresql";
-import { lucia } from "lucia";
+import { lucia, type Session } from "lucia";
 import { nextjs_future } from "lucia/middleware";
 import "lucia/polyfill/node";
 import * as context from "next/headers";
@@ -36,6 +36,37 @@ export const auth = lucia({
 });
 
 export type Auth = typeof auth;
+
+/**
+ * Helper function to set the user cookie given a specific session.
+ * Should be called anytime we are changing the user's auth state.
+ *
+ * NOTE: Big limitation here is that even though a user cookie might be set,
+ * it doesn't guarantee the user is actually logged in - the session might be expired.
+ */
+export const setUserCookie = (session: Session | null) => {
+	// Remove user cookie if no session
+	if (!session) {
+		context.cookies().delete("user");
+		return;
+	}
+
+	// Only include allowed fields
+	const filteredUser = {
+		userId: session.user.userId,
+		username: session.user.username
+	};
+
+	// Stringify and set as a cookie
+	// Todo: Consider JWT?
+	const userJson = JSON.stringify(filteredUser);
+	context.cookies().set("user", userJson, {
+		path: "/",
+		expires: session.idlePeriodExpiresAt,
+		httpOnly: false,
+		sameSite: "lax"
+	});
+};
 
 /**
  * Recommended helper from Lucia that ensures we only validate the user's session once per request
