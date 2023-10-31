@@ -10,9 +10,7 @@ export default function LogoutButton() {
 
 	const logout = trpc.auth.logout.useMutation({
 		onSuccess: (data) => {
-			if (data) {
-				router.push(data.redirectTo);
-			}
+			router.push(data.redirectTo);
 			router.refresh();
 		},
 		onSettled: () => {

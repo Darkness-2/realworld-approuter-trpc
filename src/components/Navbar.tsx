@@ -26,7 +26,7 @@ export default function Navbar() {
 								<Link href="/auth/signup">Sign up</Link>
 							</>
 						) : (
-							<p>{user.username}</p>
+							<Link href="/auth/logout">Log out</Link>
 						)}
 					</Flex>
 				</Flex>
