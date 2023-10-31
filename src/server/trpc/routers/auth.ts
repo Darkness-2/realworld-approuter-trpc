@@ -1,6 +1,6 @@
 import { createUserSchema, loginUserSchema } from "$/lib/schemas/auth";
 import { auth } from "$/server/auth/lucia";
-import { createTRPCRouter, publicProcedure } from "$/server/trpc/trpc";
+import { createTRPCRouter, publicProcedure, requireRequestData } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import * as context from "next/headers";
 
@@ -77,5 +77,15 @@ export const authRouter = createTRPCRouter({
 		// Delete session cookie
 		authRequest.setSession(null);
 		return { redirectTo: "/" };
+	}),
+
+	getCurrentUser: publicProcedure.use(requireRequestData).query(({ ctx: { user } }) => {
+		if (!user) return null;
+
+		// Filter user for only fields we want to expose
+		return {
+			username: user.username,
+			userId: user.userId
+		};
 	})
 });
