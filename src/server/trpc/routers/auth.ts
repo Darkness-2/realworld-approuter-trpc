@@ -22,6 +22,9 @@ export const authRouter = createTRPCRouter({
 			const authRequest = auth.handleRequest("POST", context);
 			authRequest.setSession(session);
 
+			// Clean up any dead user sessions
+			await auth.deleteDeadUserSessions(session.user.userId);
+
 			return { redirectTo: "/" };
 		} catch (e) {
 			// Todo: Handle errors better
@@ -76,6 +79,10 @@ export const authRouter = createTRPCRouter({
 
 		// Delete session cookie
 		authRequest.setSession(null);
+
+		// Clean up any dead user sessions
+		await auth.deleteDeadUserSessions(session.user.userId);
+
 		return { redirectTo: "/" };
 	}),
 
