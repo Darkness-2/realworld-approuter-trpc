@@ -6,6 +6,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 
 export default function LoginForm() {
 	const router = useRouter();
+	const utils = trpc.useUtils();
 	const [formData, setFormData] = useState({
 		username: "",
 		password: ""
@@ -16,6 +17,10 @@ export default function LoginForm() {
 		onSuccess: (data) => {
 			router.push(data.redirectTo);
 			router.refresh();
+		},
+		onSettled: () => {
+			// Refetch current user
+			utils.auth.getCurrentUser.invalidate();
 		}
 	});
 

@@ -6,6 +6,7 @@ import { type FormEvent } from "react";
 
 export default function LogoutButton() {
 	const router = useRouter();
+	const utils = trpc.useUtils();
 
 	const logout = trpc.auth.logout.useMutation({
 		onSuccess: (data) => {
@@ -13,6 +14,10 @@ export default function LogoutButton() {
 				router.push(data.redirectTo);
 			}
 			router.refresh();
+		},
+		onSettled: () => {
+			// Refetch current user
+			utils.auth.getCurrentUser.invalidate();
 		}
 	});
 
