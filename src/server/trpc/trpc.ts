@@ -88,13 +88,16 @@ export const publicProcedure = t.procedure;
  * Helper function to grab data related to an individual request.
  * @returns headers, cookies, session, and user for the request
  */
-const getRequestData = async () => {
+const getRequestData = async (type: "query" | "mutation" | "subscription") => {
 	// Grab Next.js headers and cookies
 	const nextHeaders = headers();
 	const nextCookies = cookies();
 
+	// Use POST for mutations and GET for other types of requests
+	const method = type === "mutation" ? "POST" : "GET";
+
 	// Grab auth info from Lucia
-	const session = await getPageSession();
+	const session = await getPageSession(method);
 
 	return {
 		cookies: nextCookies,
@@ -107,8 +110,8 @@ const getRequestData = async () => {
 /**
  * Reusable middleware that populates per request data (headers, cookies, and user session).
  */
-export const requireRequestData = t.middleware(async ({ next }) => {
-	const requestData = await getRequestData();
+export const requireRequestData = t.middleware(async ({ next, type }) => {
+	const requestData = await getRequestData(type);
 
 	return next({
 		ctx: {
@@ -122,8 +125,8 @@ export const requireRequestData = t.middleware(async ({ next }) => {
  * Note: In the future would be better to use tRPC's pipe feature (currently unstable)
  * @see https://trpc.io/docs/server/middlewares#extending-middlewares
  */
-const enforceUserIsAuthed = t.middleware(async ({ next }) => {
-	const requestData = await getRequestData();
+const enforceUserIsAuthed = t.middleware(async ({ next, type }) => {
+	const requestData = await getRequestData(type);
 
 	if (!requestData.session) {
 		throw new TRPCError({ code: "UNAUTHORIZED" });

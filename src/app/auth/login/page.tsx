@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
 	// Redirect if user is logged in
-	const session = await getPageSession();
+	const session = await getPageSession("GET");
 	if (session) redirect("/");
 
 	return (

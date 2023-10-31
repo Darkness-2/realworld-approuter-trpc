@@ -25,6 +25,7 @@ export const auth = lucia({
 		expires: false
 	},
 	getUserAttributes: (data) => {
+		// Todo: Add createdAt and updatedAt attribute to users
 		return {
 			username: data.username
 		};
@@ -40,8 +41,8 @@ export type Auth = typeof auth;
  * Recommended helper from Lucia that ensures we only validate the user's session once per request
  * @see https://lucia-auth.com/guidebook/sign-in-with-username-and-password/nextjs-app/#additional-notes
  */
-export const getPageSession = cache(() => {
+export const getPageSession = cache((method: "GET" | "POST") => {
 	// Todo: Should this always be GET?
-	const authRequest = auth.handleRequest("GET", context);
+	const authRequest = auth.handleRequest(method, context);
 	return authRequest.validate();
 });

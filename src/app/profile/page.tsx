@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function ProfilePage() {
-	const session = await getPageSession();
+	const session = await getPageSession("GET");
 	if (!session) redirect("/");
 
 	return (
