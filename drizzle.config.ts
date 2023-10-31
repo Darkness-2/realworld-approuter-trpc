@@ -2,7 +2,7 @@ import type { Config } from "drizzle-kit";
 import { env } from "./src/env.mjs";
 
 export default {
-	schema: "./src/lib/server/db/schema.ts",
+	schema: "./src/server/db/schema.ts",
 	out: "./drizzle",
 	driver: "pg",
 	dbCredentials: {
