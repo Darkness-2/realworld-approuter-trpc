@@ -1,11 +1,14 @@
-import { getServerClient } from "$/lib/trpc/serverClient";
+import HomePageHero from "$/components/HomePageHero";
+import HomePageTabs from "$/components/HomePageTabs";
+import { Container } from "@chakra-ui/react";
 
-export default async function Home() {
-	const hello = await getServerClient().hello();
-
+export default function Home() {
 	return (
 		<>
-			<div>Greeting: {hello}</div>
+			<HomePageHero />
+			<Container maxW="6xl" mt={8}>
+				<HomePageTabs />
+			</Container>
 		</>
 	);
 }
