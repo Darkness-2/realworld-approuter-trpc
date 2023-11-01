@@ -17,9 +17,9 @@ const passwordErrorMessages = {
 	required_error: "Password is required",
 	invalid_type_error: "Password must be a string"
 };
-const passwordCreateTooShortMessage = "Username must be 6 characters or more";
-const passwordLoginTooShortMessage = "Username must be 1 characters or more";
-const passwordTooLongMessage = "Username must be 255 characters or less";
+const passwordCreateTooShortMessage = "Password must be 6 characters or more";
+const passwordLoginTooShortMessage = "Password must be 1 characters or more";
+const passwordTooLongMessage = "Password must be 255 characters or less";
 
 /**
  * Field schemas
