@@ -2,6 +2,7 @@ import { createUserSchema, loginUserSchema } from "$/lib/schemas/auth";
 import { auth } from "$/server/auth/lucia";
 import { createTRPCRouter, publicProcedure, requireRequestData } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
+import { LuciaError } from "lucia";
 import * as context from "next/headers";
 
 export const authRouter = createTRPCRouter({
@@ -27,7 +28,14 @@ export const authRouter = createTRPCRouter({
 
 			return { redirectTo: "/" };
 		} catch (e) {
-			// Todo: Handle errors better
+			// Handle expected Lucia errors that can happen above
+			if (e instanceof LuciaError) {
+				if (e.message === "AUTH_INVALID_PASSWORD" || e.message === "AUTH_INVALID_KEY_ID") {
+					throw new TRPCError({ code: "UNAUTHORIZED", message: "Your username or password are incorrect" });
+				}
+			}
+
+			// Unexpected error occurred
 			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
 		}
 	}),

@@ -3,7 +3,17 @@
 import { loginUserSchema } from "$/lib/schemas/auth";
 import { trpc } from "$/lib/trpc/client";
 import { type RouterInputs } from "$/lib/trpc/shared";
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Stack } from "@chakra-ui/react";
+import {
+	Alert,
+	AlertIcon,
+	Box,
+	Button,
+	FormControl,
+	FormErrorMessage,
+	FormLabel,
+	Input,
+	Stack
+} from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -18,31 +28,42 @@ export default function LoginForm() {
 		register,
 		handleSubmit,
 		formState: { errors },
-		reset
+		setError,
+		setValue,
+		clearErrors
 	} = useForm<LoginForm>({
 		resolver: zodResolver(loginUserSchema)
 	});
 
-	// Todo: Handle validation errors
 	const login = trpc.auth.login.useMutation({
 		onSuccess: (data) => {
 			router.push(data.redirectTo);
 			router.refresh();
 		},
 		onError: (e) => {
-			// Todo: Add generic form alert + handle different types of errors
+			if (e.data?.code === "UNAUTHORIZED") {
+				setError("root", { message: e.message });
+				setValue("password", "");
+			}
+
+			setError("root", { message: e.message });
 			console.error(e);
 		},
 		onSettled: () => {
-			// Refetch current user
+			// Refetch current user and reset password field
 			utils.auth.getCurrentUser.invalidate();
-			reset();
 		}
 	});
 
 	return (
-		<Box as="form" onSubmit={handleSubmit((v) => login.mutate(v))} w="full">
+		<Box as="form" onSubmit={handleSubmit((v) => login.mutate(v))} onChange={() => clearErrors("root")} w="full" mt={2}>
 			<Stack gap={4}>
+				{errors.root && (
+					<Alert status="error">
+						<AlertIcon />
+						{errors.root.message}
+					</Alert>
+				)}
 				<FormControl isInvalid={!!errors.username}>
 					<FormLabel htmlFor="username">Username:</FormLabel>
 					<Input id="username" type="text" {...register("username")} />
