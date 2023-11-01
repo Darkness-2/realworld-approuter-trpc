@@ -8,7 +8,7 @@ export default function Navbar() {
 	const { user, isLoading } = useUser();
 
 	return (
-		<Box as="nav" shadow="md" py={4}>
+		<Box as="nav" py={4}>
 			<Container maxW="6xl">
 				<Flex
 					justifyContent="space-between"
