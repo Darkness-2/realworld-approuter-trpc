@@ -24,14 +24,24 @@ export default function Navbar() {
 					<Flex gap={2}>
 						<Link href="/">Home</Link>
 						{isLoading ? (
-							<Skeleton h="24px" w="100px" />
+							<>
+								{/* Loading state */}
+								<Skeleton h="24px" w="100px" />
+							</>
 						) : !user ? (
 							<>
+								{/* Logged-out state */}
 								<Link href="/auth/login">Sign in</Link>
 								<Link href="/auth/signup">Sign up</Link>
 							</>
 						) : (
-							<Link href="/auth/logout">Log out</Link>
+							<>
+								{/* Logged-in state */}
+								<Link href="/editor">New article</Link>
+								<Link href="/settings">Settings</Link>
+								<Link href={`@${user.username}`}>{user.username}</Link>
+								<Link href="/auth/logout">Log out</Link>
+							</>
 						)}
 					</Flex>
 				</Flex>
