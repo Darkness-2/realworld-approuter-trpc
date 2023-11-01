@@ -66,7 +66,7 @@ export default function LoginForm() {
 				)}
 				<FormControl isInvalid={!!errors.username}>
 					<FormLabel htmlFor="username">Username:</FormLabel>
-					<Input id="username" type="text" {...register("username")} />
+					<Input id="username" autoCapitalize="none" type="text" {...register("username")} />
 					<FormErrorMessage>{errors.username?.message}</FormErrorMessage>
 				</FormControl>
 				<FormControl isInvalid={!!errors.password}>
