@@ -1,16 +1,26 @@
 "use client";
 
+import { loginUserSchema } from "$/lib/schemas/auth";
 import { trpc } from "$/lib/trpc/client";
+import { type RouterInputs } from "$/lib/trpc/shared";
 import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Stack } from "@chakra-ui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useForm } from "react-hook-form";
+
+type LoginForm = RouterInputs["auth"]["login"];
 
 export default function LoginForm() {
 	const router = useRouter();
 	const utils = trpc.useUtils();
-	const [formData, setFormData] = useState({
-		username: "",
-		password: ""
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		reset
+	} = useForm<LoginForm>({
+		resolver: zodResolver(loginUserSchema)
 	});
 
 	// Todo: Handle validation errors
@@ -19,39 +29,32 @@ export default function LoginForm() {
 			router.push(data.redirectTo);
 			router.refresh();
 		},
+		onError: (e) => {
+			// Todo: Add generic form alert + handle different types of errors
+			console.error(e);
+		},
 		onSettled: () => {
 			// Refetch current user
 			utils.auth.getCurrentUser.invalidate();
+			reset();
 		}
 	});
 
-	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setFormData((prev) => ({
-			...prev,
-			[e.target.name]: e.target.value
-		}));
-	};
-
-	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		login.mutate(formData);
-	};
-
 	return (
-		<Box as="form" onSubmit={handleSubmit} w="full">
+		<Box as="form" onSubmit={handleSubmit((v) => login.mutate(v))} w="full">
 			<Stack gap={4}>
-				<FormControl>
+				<FormControl isInvalid={!!errors.username}>
 					<FormLabel htmlFor="username">Username:</FormLabel>
-					<Input id="username" name="username" value={formData.username} onChange={handleChange} />
-					<FormErrorMessage>Test</FormErrorMessage>
+					<Input id="username" type="text" {...register("username")} />
+					<FormErrorMessage>{errors.username?.message}</FormErrorMessage>
 				</FormControl>
-				<FormControl>
+				<FormControl isInvalid={!!errors.password}>
 					<FormLabel htmlFor="password">Password:</FormLabel>
-					<Input id="password" name="password" value={formData.password} onChange={handleChange} />
-					<FormErrorMessage>Test</FormErrorMessage>
+					<Input id="password" type="password" {...register("password")} />
+					<FormErrorMessage>{errors.password?.message}</FormErrorMessage>
 				</FormControl>
-				<Button type="submit" colorScheme="green" px={8} alignSelf="center">
-					Submit
+				<Button type="submit" colorScheme="green" px={8} alignSelf="center" disabled={login.isLoading}>
+					{login.isLoading ? "Loading..." : "Login"}
 				</Button>
 			</Stack>
 		</Box>

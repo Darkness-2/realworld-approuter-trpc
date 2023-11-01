@@ -15,6 +15,9 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 8. Cypress
 9. t3-env
 10. ts-reset
+11. react-hook-form
+    - With @hookform/resolvers
+    - See https://tkdodo.eu/blog/react-query-and-forms
 
 ## To-do
 

@@ -1,11 +1,50 @@
 import { z } from "zod";
 
-const usernameCreateSchema = z.string().min(4).max(31);
-const usernameLoginSchema = z.string().min(1).max(31);
+/**
+ * Error messages
+ *
+ * Todo: Consider translation file for this?
+ */
+const usernameErrorMessages = {
+	required_error: "Username is required",
+	invalid_type_error: "Username must be a string"
+};
+const usernameCreateTooShortMessage = "Username must be 4 characters or more";
+const usernameLoginTooShortMessage = "Username must be 1 characters or more";
+const usernameTooLongMessage = "Username must be 31 characters or less";
 
-const passwordCreateSchema = z.string().min(6).max(255);
-const passwordLoginSchema = z.string().min(1).max(255);
+const passwordErrorMessages = {
+	required_error: "Password is required",
+	invalid_type_error: "Password must be a string"
+};
+const passwordCreateTooShortMessage = "Username must be 6 characters or more";
+const passwordLoginTooShortMessage = "Username must be 1 characters or more";
+const passwordTooLongMessage = "Username must be 255 characters or less";
 
+/**
+ * Field schemas
+ */
+const usernameCreateSchema = z
+	.string(usernameErrorMessages)
+	.min(4, usernameCreateTooShortMessage)
+	.max(31, usernameTooLongMessage);
+const usernameLoginSchema = z
+	.string(usernameErrorMessages)
+	.min(1, usernameLoginTooShortMessage)
+	.max(31, usernameTooLongMessage);
+
+const passwordCreateSchema = z
+	.string(passwordErrorMessages)
+	.min(6, passwordCreateTooShortMessage)
+	.max(255, passwordTooLongMessage);
+const passwordLoginSchema = z
+	.string(passwordErrorMessages)
+	.min(1, passwordLoginTooShortMessage)
+	.max(255, passwordTooLongMessage);
+
+/**
+ * Full schemas
+ */
 export const createUserSchema = z.object({
 	username: usernameCreateSchema,
 	password: passwordCreateSchema
