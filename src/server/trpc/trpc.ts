@@ -55,6 +55,7 @@ export const createTRPCContext = (opts: { source: CreateContextOptions["source"]
 const t = initTRPC.context<typeof createTRPCContext>().create({
 	transformer: superjson,
 	errorFormatter: ({ shape, error }) => ({
+		// Todo: Check if this exposes anything sensitive to client
 		...shape,
 		data: {
 			...shape.data,
@@ -86,7 +87,8 @@ export const createTRPCRouter = t.router;
  * server = coming from the tRPC serverClient, without a HTTP request
  */
 const logTRPCSource = t.middleware(({ ctx, path, next }) => {
-	if (env.NODE_ENV === "development") console.log(`Processing tRPC request for ${path} from ${ctx.source}`);
+	if (env.NODE_ENV === "development")
+		console.log(`\n${new Date().toLocaleTimeString()}  Processing tRPC request for ${path} from ${ctx.source}`);
 	return next();
 });
 
