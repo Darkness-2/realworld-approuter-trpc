@@ -1,7 +1,6 @@
 import LoginForm from "$/app/auth/login/LoginForm";
-import Link from "$/components/ui/Link";
+import AuthPage from "$/components/auth/AuthPage";
 import { getPageSession } from "$/server/auth/lucia";
-import { Container, Stack, Text } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
@@ -10,16 +9,8 @@ export default async function LoginPage() {
 	if (session) redirect("/");
 
 	return (
-		<Container maxW="xl" mt={8}>
-			<Stack gap={2} alignItems="center">
-				<Text as="h1" fontSize="4xl" align="center">
-					Login
-				</Text>
-				<Link href="/auth/signup" color="green.500" _hover={{ color: "green.400", textDecoration: "underline" }}>
-					Need an account?
-				</Link>
-				<LoginForm />
-			</Stack>
-		</Container>
+		<AuthPage title="Login" linkHref="/auth/signup" linkText="Need an account?">
+			<LoginForm />
+		</AuthPage>
 	);
 }

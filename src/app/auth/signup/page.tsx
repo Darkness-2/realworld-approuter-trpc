@@ -1,6 +1,6 @@
 import SignupForm from "$/app/auth/signup/SignupForm";
+import AuthPage from "$/components/auth/AuthPage";
 import { getPageSession } from "$/server/auth/lucia";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function SignupPage() {
@@ -9,10 +9,8 @@ export default async function SignupPage() {
 	if (session) redirect("/");
 
 	return (
-		<>
-			<h1>Sign up</h1>
+		<AuthPage title="Sign up" linkHref="/auth/login" linkText="Already have an account?">
 			<SignupForm />
-			<Link href="/login">Sign in</Link>
-		</>
+		</AuthPage>
 	);
 }

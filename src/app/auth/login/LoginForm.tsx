@@ -42,7 +42,6 @@ export default function LoginForm() {
 		},
 		onError: (e) => {
 			if (e.data?.code === "UNAUTHORIZED") {
-				setError("root", { message: e.message });
 				setValue("password", "");
 			}
 
@@ -56,7 +55,7 @@ export default function LoginForm() {
 	});
 
 	return (
-		<Box as="form" onSubmit={handleSubmit((v) => login.mutate(v))} onChange={() => clearErrors("root")} w="full" mt={2}>
+		<Box as="form" w="full" mt={2} onSubmit={handleSubmit((v) => login.mutate(v))} onChange={() => clearErrors("root")}>
 			<Stack gap={4}>
 				{errors.root && (
 					<Alert status="error">
