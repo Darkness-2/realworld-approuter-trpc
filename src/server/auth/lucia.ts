@@ -38,11 +38,12 @@ export const auth = lucia({
 export type Auth = typeof auth;
 
 /**
- * Recommended helper from Lucia that ensures we only validate the user's session once per request
+ * Recommended helper from Lucia that ensures we only validate the user's session once per request.
+ * CSRF protection is only applied for POST requests; it should be used for all mutations.
+ *
  * @see https://lucia-auth.com/guidebook/sign-in-with-username-and-password/nextjs-app/#additional-notes
  */
 export const getPageSession = cache((method: "GET" | "POST") => {
-	// Todo: Should this always be GET?
 	const authRequest = auth.handleRequest(method, context);
 	return authRequest.validate();
 });
