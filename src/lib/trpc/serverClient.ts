@@ -12,7 +12,6 @@ import { cache } from "react";
  * @returns a server-side caller for tRPC
  */
 export const createServerClient = () => {
-	console.log(`Created a caller at time: ${new Date().getTime()}`);
 	const context = createTRPCContext({ source: "server" });
 	return appRouter.createCaller(context);
 };
