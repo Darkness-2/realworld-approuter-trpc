@@ -68,7 +68,20 @@ export const authRouter = createTRPCRouter({
 
 			return { redirectTo: "/" };
 		} catch (e) {
-			// Todo: Handle errors better
+			// Handle expected Lucia errors that can happen above
+			if (e instanceof LuciaError) {
+				if (e.message === "AUTH_DUPLICATE_KEY_ID") {
+					throw new TRPCError({ code: "BAD_REQUEST", message: "This username already exists" });
+				}
+			}
+
+			// Handle possible database errors
+			// See https://www.postgresql.org/docs/current/errcodes-appendix.html
+			if (typeof e === "object" && e && "code" in e && e.code === "23505") {
+				throw new TRPCError({ code: "BAD_REQUEST", message: "This username already exists" });
+			}
+
+			// Unexpected error occurred
 			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
 		}
 	}),
