@@ -24,5 +24,6 @@ export default function LogoutPage() {
 		mutate();
 	}, [mutate]);
 
+	// Todo: Format this page properly
 	return <Spinner />;
 }

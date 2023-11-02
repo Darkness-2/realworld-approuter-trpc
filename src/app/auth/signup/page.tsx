@@ -1,5 +1,5 @@
+import AuthPage from "$/app/auth/AuthPage";
 import SignupForm from "$/app/auth/signup/SignupForm";
-import AuthPage from "$/components/auth/AuthPage";
 import { getPageSession } from "$/server/auth/lucia";
 import { redirect } from "next/navigation";
 
