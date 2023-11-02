@@ -31,7 +31,7 @@ export default function Navbar() {
 						) : !user ? (
 							<>
 								{/* Logged-out state */}
-								<Link href="/auth/login">Sign in</Link>
+								<Link href="/auth/login">Login</Link>
 								<Link href="/auth/signup">Sign up</Link>
 							</>
 						) : (
