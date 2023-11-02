@@ -75,9 +75,13 @@ export default function SignupForm() {
 					<Input id="password" type="password" {...register("password")} />
 					<FormErrorMessage>{errors.password?.message}</FormErrorMessage>
 				</FormControl>
-				{/* Todo: add confirm password field */}
+				<FormControl isInvalid={!!errors.confirmPassword}>
+					<FormLabel htmlFor="confirmPassword">Confirm password:</FormLabel>
+					<Input id="confirmPassword" type="password" {...register("confirmPassword")} />
+					<FormErrorMessage>{errors.confirmPassword?.message}</FormErrorMessage>
+				</FormControl>
 				<Button type="submit" colorScheme="green" px={8} alignSelf="center" disabled={signup.isLoading}>
-					{signup.isLoading ? "Loading..." : "Login"}
+					{signup.isLoading ? "Loading..." : "Sign up"}
 				</Button>
 			</Stack>
 		</Box>

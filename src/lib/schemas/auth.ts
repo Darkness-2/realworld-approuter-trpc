@@ -45,10 +45,13 @@ const passwordLoginSchema = z
 /**
  * Full schemas
  */
-export const createUserSchema = z.object({
-	username: usernameCreateSchema,
-	password: passwordCreateSchema
-});
+export const createUserSchema = z
+	.object({
+		username: usernameCreateSchema,
+		password: passwordCreateSchema,
+		confirmPassword: passwordCreateSchema
+	})
+	.refine((v) => v.password === v.confirmPassword, { message: "Passwords must match", path: ["confirmPassword"] });
 
 export const loginUserSchema = z.object({
 	username: usernameLoginSchema,

@@ -71,14 +71,14 @@ export const authRouter = createTRPCRouter({
 			// Handle expected Lucia errors that can happen above
 			if (e instanceof LuciaError) {
 				if (e.message === "AUTH_DUPLICATE_KEY_ID") {
-					throw new TRPCError({ code: "BAD_REQUEST", message: "This username already exists" });
+					throw new TRPCError({ code: "BAD_REQUEST", message: "That username already exists" });
 				}
 			}
 
 			// Handle possible database errors
 			// See https://www.postgresql.org/docs/current/errcodes-appendix.html
 			if (typeof e === "object" && e && "code" in e && e.code === "23505") {
-				throw new TRPCError({ code: "BAD_REQUEST", message: "This username already exists" });
+				throw new TRPCError({ code: "BAD_REQUEST", message: "That username already exists" });
 			}
 
 			// Unexpected error occurred
