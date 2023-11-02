@@ -1,4 +1,3 @@
-import { env } from "$/env.mjs";
 import { appRouter } from "$/server/trpc/root";
 import { createTRPCContext } from "$/server/trpc/trpc";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
@@ -13,13 +12,7 @@ const handler = (req: NextRequest) =>
 		createContext: () => {
 			const source = headers().get("x-trpc-source") ?? "unknown";
 			return createTRPCContext({ source });
-		},
-		onError:
-			env.NODE_ENV === "development"
-				? ({ path, error }) => {
-						console.error(`❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`);
-				  }
-				: undefined
+		}
 		// Todo: explore creating cachable tRPC procedures
 		// See: https://trpc.io/docs/server/caching
 	});

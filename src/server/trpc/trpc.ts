@@ -86,10 +86,18 @@ export const createTRPCRouter = t.router;
  * server-component = coming from the tRPC client, but from the server through HTTP request
  * server = coming from the tRPC serverClient, without a HTTP request
  */
-const logTRPCSource = t.middleware(({ ctx, path, next }) => {
-	if (env.NODE_ENV === "development")
-		console.log(`\n${new Date().toLocaleTimeString()}  Processing tRPC request for ${path} from ${ctx.source}`);
-	return next();
+const logTRPCSource = t.middleware(async ({ ctx, path, next }) => {
+	if (env.NODE_ENV === "development") {
+		console.log(`\n${new Date().toLocaleTimeString()}  ▶️  Processing tRPC request for ${path} from ${ctx.source}`);
+	}
+
+	const res = await next();
+
+	if (env.NODE_ENV === "development" && !res.ok) {
+		console.log(`${new Date().toLocaleTimeString()}  ❌ tRPC failed on ${path ?? "<no-path>"}: ${res.error.message}`);
+	}
+
+	return res;
 });
 
 /**
