@@ -41,12 +41,15 @@ export default function LoginForm() {
 			router.refresh();
 		},
 		onError: (e) => {
-			if (e.data?.code === "UNAUTHORIZED") {
+			// Deal with expected errors
+			if (e.data?.authError && e.data.authError === "INVALID_USERNAME_OR_PASSWORD") {
 				setValue("password", "");
+				return setError("root", { message: "Invalid username or password" });
 			}
 
-			setError("root", { message: e.message });
+			// Something unexpected happened
 			console.error(e);
+			setError("root", { message: e.message });
 		},
 		onSettled: () => {
 			// Refetch current user and reset password field

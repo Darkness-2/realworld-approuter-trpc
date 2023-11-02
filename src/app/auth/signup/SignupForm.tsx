@@ -40,8 +40,14 @@ export default function SignupForm() {
 			router.refresh();
 		},
 		onError: (e) => {
-			setError("root", { message: e.message });
+			// Deal with expected errors
+			if (e.data?.authError && e.data.authError === "USERNAME_TAKEN") {
+				return setError("username", { message: "That username is already taken" });
+			}
+
+			// Something unexpected happened
 			console.error(e);
+			setError("root", { message: "Something went wrong" });
 		},
 		onSettled: () => {
 			// Refetch current user

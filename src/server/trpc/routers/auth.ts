@@ -1,4 +1,5 @@
 import { createUserSchema, loginUserSchema } from "$/lib/schemas/auth";
+import { AuthError } from "$/lib/utils/errors";
 import { auth } from "$/server/auth/lucia";
 import { createTRPCRouter, publicProcedure, requireRequestData } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
@@ -31,7 +32,7 @@ export const authRouter = createTRPCRouter({
 			// Handle expected Lucia errors that can happen above
 			if (e instanceof LuciaError) {
 				if (e.message === "AUTH_INVALID_PASSWORD" || e.message === "AUTH_INVALID_KEY_ID") {
-					throw new TRPCError({ code: "UNAUTHORIZED", message: "Your username or password are incorrect" });
+					throw new TRPCError({ code: "UNAUTHORIZED", cause: new AuthError("INVALID_USERNAME_OR_PASSWORD") });
 				}
 			}
 
@@ -71,14 +72,14 @@ export const authRouter = createTRPCRouter({
 			// Handle expected Lucia errors that can happen above
 			if (e instanceof LuciaError) {
 				if (e.message === "AUTH_DUPLICATE_KEY_ID") {
-					throw new TRPCError({ code: "BAD_REQUEST", message: "That username already exists" });
+					throw new TRPCError({ code: "BAD_REQUEST", cause: new AuthError("USERNAME_TAKEN") });
 				}
 			}
 
 			// Handle possible database errors
 			// See https://www.postgresql.org/docs/current/errcodes-appendix.html
 			if (typeof e === "object" && e && "code" in e && e.code === "23505") {
-				throw new TRPCError({ code: "BAD_REQUEST", message: "That username already exists" });
+				throw new TRPCError({ code: "BAD_REQUEST", cause: new AuthError("USERNAME_TAKEN") });
 			}
 
 			// Unexpected error occurred

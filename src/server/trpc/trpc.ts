@@ -1,4 +1,5 @@
 import { env } from "$/env.mjs";
+import { AuthError } from "$/lib/utils/errors";
 import { getPageSession } from "$/server/auth/lucia";
 import { db } from "$/server/db";
 import { TRPCError, initTRPC } from "@trpc/server";
@@ -57,7 +58,8 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 		...shape,
 		data: {
 			...shape.data,
-			zodError: error.cause instanceof ZodError ? error.cause.flatten() : null
+			zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+			authError: error.cause instanceof AuthError ? error.cause.code : null
 		}
 	})
 });
@@ -142,7 +144,7 @@ const enforceUserIsAuthed = t.middleware(async ({ next, type }) => {
 	const requestData = await getRequestData(type);
 
 	if (!requestData.session) {
-		throw new TRPCError({ code: "UNAUTHORIZED" });
+		throw new TRPCError({ code: "UNAUTHORIZED", cause: new AuthError("USER_IS_UNAUTHORIZED") });
 	}
 
 	return next({
