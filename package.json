@@ -7,6 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "tsc --noEmit && next lint && prettier --check .",
+		"lint:duplicates": "npx jscpd src/",
 		"format": "prettier --write .",
 		"db:generate": "dotenv drizzle-kit generate:pg",
 		"db:migrate": "dotenv tsx ./src/server/db/migrate",
