@@ -21,10 +21,9 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## To-do
 
-1. Add Chakra
-2. Figure out state management / storing user on the client
-3. Add neverthrow
-4. Explore https://nextjs.org/docs/app/api-reference/next-config-js/incrementalCacheHandlerPath
+1. Figure out state management / storing user on the client
+2. Add neverthrow
+3. Explore https://nextjs.org/docs/app/api-reference/next-config-js/incrementalCacheHandlerPath
 
 ## Requirements
 
