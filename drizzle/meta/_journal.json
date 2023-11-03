@@ -8,6 +8,20 @@
       "when": 1698597110435,
       "tag": "0000_uneven_greymalkin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1698982152645,
+      "tag": "0001_light_mojo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1698982638265,
+      "tag": "0002_woozy_chronomancer",
+      "breakpoints": true
     }
   ]
 }
