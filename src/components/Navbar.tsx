@@ -37,7 +37,7 @@ export default function Navbar() {
 						) : (
 							<>
 								{/* Logged-in state */}
-								<Link href="/editor">New article</Link>
+								<Link href="/new">New article</Link>
 								<Link href="/settings">Settings</Link>
 								<Link href={`@${user.username}`}>{user.username}</Link>
 								<Link href="/auth/logout">Log out</Link>
