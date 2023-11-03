@@ -27,27 +27,25 @@ export const articleRouter = createTRPCRouter({
 		// Run queries
 		const [newArticles] = await Promise.all([newArticleQuery, newTagsQuery]);
 
-		// Return if no tags needed
-		if (!input.tags || input.tags.length === 0) {
-			return { success: true };
-		}
-
-		// Find all needed tags
-		const tags = await ctx.db.query.tag.findMany({
-			where: ({ text }) => inArray(text, input.tags ?? [])
-		});
-
-		// Attach tags and article together
+		// Throw error if it didn't return the new article for some reason
 		const articleId = newArticles[0]?.id;
 
 		if (!articleId) {
 			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", cause: new ArticleError("ARTICLE_FAILED_TO_CREATE") });
 		}
 
-		// Generate connections needed and add to DB
-		const articleTagConnections = tags.map((tag) => ({ tagId: tag.id, articleId }));
-		await ctx.db.insert(articlesToTags).values(articleTagConnections);
+		// Connect tags to article if needed
+		if (input.tags && input.tags.length === 0) {
+			// Find all needed tags
+			const tags = await ctx.db.query.tag.findMany({
+				where: ({ text }) => inArray(text, input.tags ?? [])
+			});
 
-		return { success: true };
+			// Generate connections needed and add to DB
+			const articleTagConnections = tags.map((tag) => ({ tagId: tag.id, articleId }));
+			await ctx.db.insert(articlesToTags).values(articleTagConnections);
+		}
+
+		return { success: true, articleId };
 	})
 });
