@@ -22,7 +22,8 @@ export const articleRouter = createTRPCRouter({
 
 		// Convert tags to format DB expects and create if needed
 		const tagsToInsert = input.tags?.map((tag) => ({ text: tag }));
-		const newTagsQuery = tagsToInsert ? ctx.db.insert(tag).values(tagsToInsert).onConflictDoNothing() : null;
+		const newTagsQuery =
+			tagsToInsert && tagsToInsert.length > 0 ? ctx.db.insert(tag).values(tagsToInsert).onConflictDoNothing() : null;
 
 		// Run queries
 		const [newArticles] = await Promise.all([newArticleQuery, newTagsQuery]);
@@ -35,11 +36,12 @@ export const articleRouter = createTRPCRouter({
 		}
 
 		// Connect tags to article if needed
-		if (input.tags && input.tags.length === 0) {
+		if (input.tags && input.tags.length !== 0) {
 			// Find all needed tags
 			const tags = await ctx.db.query.tag.findMany({
 				where: ({ text }) => inArray(text, input.tags ?? [])
 			});
+			console.log(tags);
 
 			// Generate connections needed and add to DB
 			const articleTagConnections = tags.map((tag) => ({ tagId: tag.id, articleId }));
