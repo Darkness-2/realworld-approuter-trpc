@@ -14,3 +14,20 @@ export class AuthError extends Error {
 		this.code = code;
 	}
 }
+
+export const articleErrorCodes = ["ARTICLE_FAILED_TO_CREATE"] as const;
+
+export type ArticleErrorCodes = (typeof articleErrorCodes)[number];
+
+/**
+ * Custom error class for article-related errors.
+ * Should be added as the cause of tRPC errors.
+ */
+export class ArticleError extends Error {
+	code: ArticleErrorCodes;
+
+	constructor(code: ArticleErrorCodes) {
+		super(code);
+		this.code = code;
+	}
+}
