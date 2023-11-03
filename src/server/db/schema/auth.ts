@@ -7,6 +7,7 @@ import { pgTable } from "../root";
  *
  * Todo: Determine what needs to be indexed
  * Todo: Consider what to do on delete and on update
+ * Todo: Add drizzle relations
  */
 export const user = pgTable("auth_user", {
 	id: varchar("id", {
