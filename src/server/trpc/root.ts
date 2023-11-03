@@ -1,3 +1,4 @@
+import { articleRouter } from "$/server/trpc/routers/article";
 import { authRouter } from "$/server/trpc/routers/auth";
 import { cache } from "react";
 import { createTRPCRouter, publicProcedure } from "./trpc";
@@ -9,7 +10,8 @@ const generateString = cache(() => {
 
 export const appRouter = createTRPCRouter({
 	hello: publicProcedure.query(() => generateString()),
-	auth: authRouter
+	auth: authRouter,
+	article: articleRouter
 });
 
 export type AppRouter = typeof appRouter;
