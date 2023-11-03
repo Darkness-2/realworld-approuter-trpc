@@ -22,6 +22,13 @@
       "when": 1698982638265,
       "tag": "0002_woozy_chronomancer",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1699026318053,
+      "tag": "0003_loose_wind_dancer",
+      "breakpoints": true
     }
   ]
 }

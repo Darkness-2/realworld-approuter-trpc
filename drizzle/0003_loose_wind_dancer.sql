@@ -1,0 +1,1 @@
+ALTER TABLE "realworld_approuter_trpc_tag" ADD CONSTRAINT "realworld_approuter_trpc_tag_text_unique" UNIQUE("text");

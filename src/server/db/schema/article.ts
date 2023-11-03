@@ -41,7 +41,9 @@ export const tag = pgTable("tag", {
 		.primaryKey(),
 	text: varchar("text", {
 		length: 32
-	}).notNull()
+	})
+		.notNull()
+		.unique()
 });
 
 export const tagRelation = relations(tag, ({ many }) => ({
