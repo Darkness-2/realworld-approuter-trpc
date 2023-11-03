@@ -11,7 +11,7 @@
 		"db:generate": "dotenv drizzle-kit generate:pg",
 		"db:migrate": "dotenv tsx ./src/lib/server/db/migrate",
 		"db:push": "dotenv drizzle-kit push:pg",
-		"db:studio": "dotenv drizzle-kit studio"
+		"db:studio": "dotenv -- drizzle-kit studio --port 4000 --verbose"
 	},
 	"dependencies": {
 		"@chakra-ui/next-js": "^2.1.5",
