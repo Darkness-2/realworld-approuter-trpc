@@ -7,6 +7,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
    - superjson as transformer
    - zod as validator
 3. Drizzle
+   - cuid2 for ids
 4. Neon Postgres
    - Neon serverless driver
 5. Lucia auth
