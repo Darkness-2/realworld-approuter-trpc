@@ -3,6 +3,7 @@
 import { createArticleSchema } from "$/lib/schemas/article";
 import { trpc } from "$/lib/trpc/client";
 import { type RouterInputs } from "$/lib/trpc/shared";
+import { AddIcon } from "@chakra-ui/icons";
 import {
 	Alert,
 	AlertIcon,
@@ -12,7 +13,10 @@ import {
 	FormControl,
 	FormErrorMessage,
 	FormLabel,
+	IconButton,
 	Input,
+	InputGroup,
+	InputRightElement,
 	Stack,
 	Tag,
 	TagCloseButton,
@@ -67,13 +71,18 @@ export default function CreateArticleForm() {
 		}
 	});
 
-	const handleAddTag = (e: KeyboardEvent<HTMLInputElement>) => {
-		// If key was enter, add to the list and reset input
+	const handleTagEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+		// If key was enter, add to the list
 		if (e.key === "Enter") {
 			e.preventDefault();
-			setValue("tags", [...(getValues("tags") ?? []), tag]);
-			setTag("");
+			handleAddTag();
 		}
+	};
+
+	const handleAddTag = () => {
+		if (tag.length === 0) return;
+		setValue("tags", [...(getValues("tags") ?? []), tag]);
+		setTag("");
 	};
 
 	const handleRemoveTag = (text: string) => {
@@ -125,8 +134,26 @@ export default function CreateArticleForm() {
 							</Tag>
 						))}
 					</Flex>
-					<Input id="tags" type="text" value={tag} onChange={(e) => setTag(e.target.value)} onKeyDown={handleAddTag} />
-					{/* Todo: Add right-side button */}
+					<InputGroup>
+						<Input
+							id="tags"
+							type="text"
+							value={tag}
+							onChange={(e) => setTag(e.target.value)}
+							onKeyDown={handleTagEnter}
+						/>
+						<InputRightElement>
+							<IconButton
+								icon={<AddIcon />}
+								isRound={true}
+								size="xs"
+								variant="solid"
+								colorScheme="gray"
+								aria-label="Add tag"
+								onClick={handleAddTag}
+							/>
+						</InputRightElement>
+					</InputGroup>
 					<FormErrorMessage>{errors.tags?.message}</FormErrorMessage>
 				</FormControl>
 
