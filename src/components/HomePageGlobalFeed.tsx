@@ -1,6 +1,8 @@
 import { getServerClient } from "$/lib/trpc/serverClient";
 
-export default async function HomeGlobalFeed() {
+// Todo: Explore wrapping this in suspense boundary or loading.js?
+
+export default async function HomePageGlobalFeed() {
 	const articles = await getServerClient().article.getGlobalFeed({});
 
 	return <div>HomeGlobalFeed</div>;
