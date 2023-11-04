@@ -1,5 +1,6 @@
 import FollowButton from "$/app/article/[articleId]/FollowButton";
 import LikeButton from "$/app/article/[articleId]/LikeButton";
+import ArticleTags from "$/components/ArticleTags";
 import AuthorAndDate from "$/components/AuthorAndDate";
 import Section from "$/components/ui/Section";
 import { getServerClient } from "$/lib/trpc/serverClient";
@@ -20,6 +21,8 @@ type ArticlePageProps = {
 export default async function ArticlePage({ params }: ArticlePageProps) {
 	const article = await getServerClient().article.getArticleById(params.articleId);
 	if (!article) notFound();
+
+	const articleTags = article.articlesToTags.map(({ tag }) => tag);
 
 	return (
 		<>
@@ -42,6 +45,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 			<Section>
 				<Stack divider={<StackDivider />} gap={4}>
 					<Text>{article.body}</Text>
+					<ArticleTags tags={articleTags} />
 					<Text>Todo: Add comments</Text>
 				</Stack>
 			</Section>
