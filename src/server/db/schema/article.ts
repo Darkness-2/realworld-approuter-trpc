@@ -50,6 +50,8 @@ export const tagRelations = relations(tag, ({ many }) => ({
 	articlesToTags: many(articlesToTags)
 }));
 
+export type Tag = typeof tag.$inferSelect;
+
 /**
  * Article-to-Tag many-to-many relationship table.
  */
