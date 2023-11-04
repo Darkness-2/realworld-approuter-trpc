@@ -1,6 +1,4 @@
 import { type DB } from "$/server/db";
-import { article } from "$/server/db/schema/article";
-import { desc } from "drizzle-orm";
 import { cache } from "react";
 
 /**
@@ -18,7 +16,7 @@ export const globalFeedQuery = cache(
 	async (db: DB, limit: number, offset: number) =>
 		await db.query.article.findMany({
 			columns: { body: false },
-			orderBy: desc(article.createdAt),
+			orderBy: ({ createdAt }, { desc }) => desc(createdAt),
 			limit: limit,
 			offset: offset,
 			with: {
