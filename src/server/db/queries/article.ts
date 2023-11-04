@@ -17,6 +17,7 @@ import { cache } from "react";
 export const globalFeedQuery = cache(
 	async (db: DB, limit: number, offset: number) =>
 		await db.query.article.findMany({
+			columns: { body: false },
 			orderBy: desc(article.createdAt),
 			limit: limit,
 			offset: offset,
