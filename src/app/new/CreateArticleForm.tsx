@@ -61,7 +61,7 @@ export default function CreateArticleForm() {
 			utils.article.invalidate();
 
 			// Redirect to the created article
-			router.push(`/articles/${data.articleId}`);
+			router.push(`/article/${data.articleId}`);
 			router.refresh();
 		},
 		onError: (e) => {
