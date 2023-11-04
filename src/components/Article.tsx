@@ -1,6 +1,6 @@
 import Link from "$/components/ui/Link";
 import { type RouterOutputs } from "$/lib/trpc/shared";
-import { Flex, Stack, Text } from "@chakra-ui/react";
+import { Flex, Stack, Tag, Text } from "@chakra-ui/react";
 
 type ArticleProps = {
 	article: RouterOutputs["article"]["getGlobalFeed"][number];
@@ -53,8 +53,10 @@ export default function Article({ article }: ArticleProps) {
 				</Link>
 				<Flex gap={2}>
 					{article.articlesToTags.map(({ tag }) => (
-						// Todo: Put into tag styling and make clickable
-						<Text key={tag.id}>{tag.text}</Text>
+						// Todo: Make these clickable; should open new tab for the tag
+						<Tag key={tag.id} size="sm" variant="solid" colorScheme="gray">
+							{tag.text}
+						</Tag>
 					))}
 				</Flex>
 			</Flex>
