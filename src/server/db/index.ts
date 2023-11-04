@@ -15,3 +15,5 @@ export const db = drizzle(pool, {
 	schema: { ...authSchema, ...articleSchema },
 	logger: env.NODE_ENV === "development"
 });
+
+export type DB = typeof db;

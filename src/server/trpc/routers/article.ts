@@ -1,7 +1,9 @@
 import { createArticleSchema } from "$/lib/schemas/article";
+import { offsetLimitSchema } from "$/lib/schemas/helpers";
 import { ArticleError } from "$/lib/utils/errors";
+import { globalFeedQuery } from "$/server/db/queries/article";
 import { article, articlesToTags, tag } from "$/server/db/schema/article";
-import { createTRPCRouter, privateProcedure } from "$/server/trpc/trpc";
+import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import { inArray } from "drizzle-orm";
 
@@ -49,5 +51,9 @@ export const articleRouter = createTRPCRouter({
 		}
 
 		return { success: true, articleId };
+	}),
+
+	getGlobalFeed: publicProcedure.input(offsetLimitSchema).query(async ({ ctx, input }) => {
+		return await globalFeedQuery(ctx.db, input.limit, input.offset);
 	})
 });
