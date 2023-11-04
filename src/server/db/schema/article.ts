@@ -46,7 +46,7 @@ export const tag = pgTable("tag", {
 		.unique()
 });
 
-export const tagRelation = relations(tag, ({ many }) => ({
+export const tagRelations = relations(tag, ({ many }) => ({
 	articlesToTags: many(articlesToTags)
 }));
 
