@@ -16,9 +16,9 @@ export default function Article({ article }: ArticleProps) {
 			{/* Top row */}
 			<Flex
 				gap={2}
-				flexDirection={{ base: "column", sm: "row" }}
+				// flexDirection={{ base: "column", sm: "row" }}
 				justifyContent="space-between"
-				alignItems={{ base: "normal", sm: "center" }}
+				alignItems="center"
 			>
 				<AuthorAndDate variant="dark" createdAt={article.createdAt} username={article.author.username} />
 				<LikesTag />
