@@ -34,3 +34,27 @@ export const globalFeedQuery = cache(
 			}
 		})
 );
+
+/**
+ * Cached database call to get a specific article by ID with author and tag info.
+ *
+ * @param db instance of the DB
+ * @param articleId id of the article to get
+ */
+export const articleByIdQuery = cache(
+	async (db: DB, articleId: string) =>
+		await db.query.article.findFirst({
+			where: ({ id }, { eq }) => eq(id, articleId),
+			with: {
+				articlesToTags: {
+					columns: {},
+					with: {
+						tag: true
+					}
+				},
+				author: {
+					columns: { username: true }
+				}
+			}
+		})
+);
