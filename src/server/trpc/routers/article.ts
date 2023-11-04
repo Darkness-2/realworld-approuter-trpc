@@ -50,6 +50,7 @@ export const articleRouter = createTRPCRouter({
 			await ctx.db.insert(articlesToTags).values(articleTagConnections);
 		}
 
+		// For now, revalidate the entire site
 		revalidatePath("/", "layout");
 
 		return { success: true, articleId };
