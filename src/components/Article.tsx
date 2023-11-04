@@ -19,7 +19,7 @@ export default function Article({ article }: ArticleProps) {
 				justifyContent="space-between"
 				alignItems={{ base: "normal", sm: "center" }}
 			>
-				<AuthorAndDate createdAt={article.createdAt} username={article.author.username} />
+				<AuthorAndDate variant="dark" createdAt={article.createdAt} username={article.author.username} />
 				<Text>100 Likes</Text>
 			</Flex>
 
