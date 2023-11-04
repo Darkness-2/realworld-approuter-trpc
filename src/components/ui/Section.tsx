@@ -1,6 +1,10 @@
-import { Box } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 import { type ReactNode } from "react";
 
 export default function Section({ children }: { children: ReactNode }) {
-	return <Box py={8}>{children}</Box>;
+	return (
+		<Container maxW="6xl" py={8}>
+			{children}
+		</Container>
+	);
 }
