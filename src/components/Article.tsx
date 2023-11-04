@@ -1,3 +1,4 @@
+import AuthorAndDate from "$/components/AuthorAndDate";
 import Link from "$/components/ui/Link";
 import { type RouterOutputs } from "$/lib/trpc/shared";
 import { Flex, Stack, Tag, Text } from "@chakra-ui/react";
@@ -18,16 +19,7 @@ export default function Article({ article }: ArticleProps) {
 				justifyContent="space-between"
 				alignItems={{ base: "normal", sm: "center" }}
 			>
-				<Stack gap={0}>
-					<Link href={`/@${article.author.username}`} textColor="green.500" fontWeight="medium">
-						@{article.author.username}
-					</Link>
-					<Text fontSize="xs" color="gray.500">
-						{article.createdAt.toLocaleDateString("en-CA", {
-							dateStyle: "long"
-						})}
-					</Text>
-				</Stack>
+				<AuthorAndDate createdAt={article.createdAt} username={article.author.username} />
 				<Text>100 Likes</Text>
 			</Flex>
 
