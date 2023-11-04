@@ -1,3 +1,4 @@
+import HomeGlobalFeed from "$/components/HomeGlobalFeed";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 export default function HomePageTabs() {
@@ -8,7 +9,9 @@ export default function HomePageTabs() {
 				<Tab>Your feed</Tab>
 			</TabList>
 			<TabPanels>
-				<TabPanel>Some content</TabPanel>
+				<TabPanel>
+					<HomeGlobalFeed />
+				</TabPanel>
 				<TabPanel>Some other content</TabPanel>
 			</TabPanels>
 		</Tabs>
