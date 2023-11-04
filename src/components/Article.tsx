@@ -7,7 +7,7 @@ type ArticleProps = {
 };
 
 export default function Article({ article }: ArticleProps) {
-	const articleHref = `/articles/${article.id}`;
+	const articleHref = `/article/${article.id}`;
 
 	return (
 		<Stack>
