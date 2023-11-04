@@ -1,5 +1,7 @@
+import { relations } from "drizzle-orm";
 import { bigint, varchar } from "drizzle-orm/pg-core";
 import { pgTable } from "../root";
+import { article } from "./article";
 
 /**
  * Tables for Lucia auth.
@@ -15,6 +17,12 @@ export const user = pgTable("auth_user", {
 	}).primaryKey(),
 	username: varchar("username", { length: 64 }).notNull().unique()
 });
+
+export const userRelations = relations(user, ({ many }) => ({
+	sessions: many(session),
+	keys: many(key),
+	articles: many(article)
+}));
 
 export const session = pgTable("user_session", {
 	id: varchar("id", {
@@ -33,6 +41,13 @@ export const session = pgTable("user_session", {
 	}).notNull()
 });
 
+export const sessionRelations = relations(session, ({ one }) => ({
+	user: one(user, {
+		fields: [session.userId],
+		references: [user.id]
+	})
+}));
+
 export const key = pgTable("user_key", {
 	id: varchar("id", {
 		length: 255
@@ -46,3 +61,10 @@ export const key = pgTable("user_key", {
 		length: 255
 	})
 });
+
+export const keyRelations = relations(key, ({ one }) => ({
+	user: one(user, {
+		fields: [key.userId],
+		references: [user.id]
+	})
+}));
