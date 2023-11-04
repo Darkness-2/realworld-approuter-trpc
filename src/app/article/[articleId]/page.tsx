@@ -53,4 +53,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 	);
 }
 
-// Todo: Add revalidate
+/**
+ * Regenerate every 5 minutes.
+ */
+export const revalidate = 300;
