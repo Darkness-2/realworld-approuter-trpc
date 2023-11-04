@@ -9,10 +9,10 @@ export default function HomePageTabs() {
 				<Tab>Your feed</Tab>
 			</TabList>
 			<TabPanels>
-				<TabPanel>
+				<TabPanel px={0}>
 					<HomeGlobalFeed />
 				</TabPanel>
-				<TabPanel>Some other content</TabPanel>
+				<TabPanel px={0}>Some other content</TabPanel>
 			</TabPanels>
 		</Tabs>
 	);
