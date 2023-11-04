@@ -1,4 +1,5 @@
 import AuthorAndDate from "$/components/AuthorAndDate";
+import LikesTag from "$/components/LikesTag";
 import Link from "$/components/ui/Link";
 import { type RouterOutputs } from "$/lib/trpc/shared";
 import { Flex, Stack, Tag, Text } from "@chakra-ui/react";
@@ -20,7 +21,7 @@ export default function Article({ article }: ArticleProps) {
 				alignItems={{ base: "normal", sm: "center" }}
 			>
 				<AuthorAndDate variant="dark" createdAt={article.createdAt} username={article.author.username} />
-				<Text>100 Likes</Text>
+				<LikesTag />
 			</Flex>
 
 			{/* Main text content */}
