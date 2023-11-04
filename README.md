@@ -25,9 +25,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 1. Figure out state management / storing user on the client
 2. Move all logging functions to separate env vars (tRPC, Drizzle, Lucia)
-3. Add neverthrow
-4. Add error / loading / not-found pages
-5. Self-host
+3. Consider CVA?
+4. Add neverthrow
+5. Add error / loading / not-found pages
+6. Self-host
    - Explore https://nextjs.org/docs/app/api-reference/next-config-js/incrementalCacheHandlerPath
    - Explore revalidating all paths on build
 
