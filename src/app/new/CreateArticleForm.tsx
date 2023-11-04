@@ -157,6 +157,7 @@ export default function CreateArticleForm() {
 					<FormErrorMessage>{errors.tags?.message}</FormErrorMessage>
 				</FormControl>
 
+				{/* Todo: Change buttons to use Chakra loading state */}
 				<Button type="submit" colorScheme="green" px={8} alignSelf="center" disabled={create.isLoading}>
 					{create.isLoading ? "Creating..." : "Create"}
 				</Button>
