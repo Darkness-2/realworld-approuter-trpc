@@ -6,6 +6,7 @@ import { article, articlesToTags, tag } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import { inArray } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export const articleRouter = createTRPCRouter({
 	create: privateProcedure.input(createArticleSchema).mutation(async ({ input, ctx }) => {
@@ -43,12 +44,13 @@ export const articleRouter = createTRPCRouter({
 			const tags = await ctx.db.query.tag.findMany({
 				where: ({ text }) => inArray(text, input.tags ?? [])
 			});
-			console.log(tags);
 
 			// Generate connections needed and add to DB
 			const articleTagConnections = tags.map((tag) => ({ tagId: tag.id, articleId }));
 			await ctx.db.insert(articlesToTags).values(articleTagConnections);
 		}
+
+		revalidatePath("/", "layout");
 
 		return { success: true, articleId };
 	}),

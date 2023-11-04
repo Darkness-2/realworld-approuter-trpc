@@ -12,3 +12,8 @@ export default function Home() {
 		</>
 	);
 }
+
+/**
+ * Regenerate only every 5 minutes.
+ */
+export const revalidate = 300;
