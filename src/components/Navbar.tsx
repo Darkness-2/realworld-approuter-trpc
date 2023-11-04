@@ -21,7 +21,7 @@ export default function Navbar() {
 							conduit
 						</Text>
 					</Link>
-					<Flex gap={2}>
+					<Flex gap={2} wrap="wrap">
 						<Link href="/">Home</Link>
 						{isLoading ? (
 							<>
