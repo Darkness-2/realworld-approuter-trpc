@@ -1,7 +1,7 @@
 "use client";
 
 import { trpc } from "$/lib/trpc/client";
-import { Spinner } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -24,6 +24,9 @@ export default function LogoutPage() {
 		mutate();
 	}, [mutate]);
 
-	// Todo: Format this page properly
-	return <Spinner />;
+	return (
+		<Flex flexGrow={1} justifyContent="center" alignItems="center">
+			<Spinner size="xl" />
+		</Flex>
+	);
 }
