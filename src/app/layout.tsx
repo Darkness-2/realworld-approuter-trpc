@@ -1,6 +1,6 @@
 import Navbar from "$/components/Navbar";
 import "$/styles/globals.css";
-import { Box, Flex } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import type { Metadata } from "next";
 import { type ReactNode } from "react";
 import Providers from "./Providers";
@@ -18,9 +18,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 				<Providers>
 					<Flex direction="column" minH="100vh">
 						<Navbar />
-						<Box as="main" flexGrow={1}>
+						<Flex as="main" flexDir="column" flexGrow={1}>
 							{children}
-						</Box>
+						</Flex>
 					</Flex>
 				</Providers>
 			</body>
