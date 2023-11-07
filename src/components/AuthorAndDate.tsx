@@ -13,7 +13,7 @@ export default function AuthorAndDate({ createdAt, username, variant }: AuthorAn
 
 	return (
 		<Box>
-			<Link href={`/@${username}`} textColor={linkTextColor} fontWeight="medium">
+			<Link href={`/user/${username}`} textColor={linkTextColor} fontWeight="medium">
 				@{username}
 			</Link>
 			<Text fontSize="xs" color={dateTextColor}>
