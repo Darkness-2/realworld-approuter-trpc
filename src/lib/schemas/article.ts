@@ -41,6 +41,13 @@ const tagsSchema = z
 	.array()
 	.optional();
 
+export const articleAuthorUsernameSchema = z
+	.string({
+		invalid_type_error: "Username must be a string",
+		required_error: "Username is required"
+	})
+	.min(1, "Username must be at least 1 character");
+
 /**
  * Full schemas
  */
