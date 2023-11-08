@@ -12,7 +12,7 @@ export default function HomePageTabs() {
 				<TabPanel px={0}>
 					<HomeGlobalFeed />
 				</TabPanel>
-				<TabPanel px={0}>Some other content</TabPanel>
+				<TabPanel px={0}>Todo: Put in user&apos;s feed</TabPanel>
 			</TabPanels>
 		</Tabs>
 	);
