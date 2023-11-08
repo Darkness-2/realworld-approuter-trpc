@@ -1,8 +1,8 @@
 "use client";
 
-import FollowButton from "$/app/article/[articleId]/FollowButton";
-import LikeButton from "$/app/article/[articleId]/LikeButton";
 import AuthorAndDate from "$/components/AuthorAndDate";
+import FollowButton from "$/components/FollowButton";
+import LikeButton from "$/components/LikeButton";
 import { useUser } from "$/lib/hooks/auth";
 import { type RouterOutputs } from "$/lib/trpc/shared";
 import { Box, Container, Flex, Skeleton, Stack, Text } from "@chakra-ui/react";
