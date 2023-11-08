@@ -1,5 +1,5 @@
-import AuthPage from "$/app/auth/AuthPage";
 import SignupForm from "$/app/auth/signup/SignupForm";
+import AuthPage from "$/components/AuthPage";
 import { withRequireNoSession } from "$/components/hocs/withSession";
 
 async function SignupPage() {

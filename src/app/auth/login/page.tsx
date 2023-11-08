@@ -1,5 +1,5 @@
-import AuthPage from "$/app/auth/AuthPage";
 import LoginForm from "$/app/auth/login/LoginForm";
+import AuthPage from "$/components/AuthPage";
 import { withRequireNoSession } from "$/components/hocs/withSession";
 
 // Todo: Add ?redirectTo= functionality
