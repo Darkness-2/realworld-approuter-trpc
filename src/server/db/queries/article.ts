@@ -57,35 +57,21 @@ export const articleByIdQuery = cache(
 		})
 );
 
-export const articleByAuthorUsername = cache(async (db: DB, authorUsername: string, limit: number, offset: number) => {
-	// Todo: Explore doing this in a single query or split into two
-
-	// Find author
-	const author = await db.query.user.findFirst({
-		where: ({ username }, { eq }) => eq(username, authorUsername),
-		columns: { id: true, username: true }
-	});
-
-	if (!author) {
-		return null;
-	}
-
-	// Find articles by the author
-	const articles = await db.query.article.findMany({
-		columns: { body: false },
-		where: ({ authorId }, { eq }) => eq(authorId, author.id),
-		orderBy: ({ createdAt }, { desc }) => desc(createdAt),
-		limit,
-		offset,
-		with: {
-			articlesToTags: {
-				columns: {},
-				with: {
-					tag: true
+export const articlesByAuthorId = cache(
+	async (db: DB, id: string, limit: number, offset: number) =>
+		await db.query.article.findMany({
+			columns: { body: false },
+			where: ({ authorId }, { eq }) => eq(authorId, id),
+			orderBy: ({ createdAt }, { desc }) => desc(createdAt),
+			limit,
+			offset,
+			with: {
+				articlesToTags: {
+					columns: {},
+					with: {
+						tag: true
+					}
 				}
 			}
-		}
-	});
-
-	return { articles, author };
-});
+		})
+);
