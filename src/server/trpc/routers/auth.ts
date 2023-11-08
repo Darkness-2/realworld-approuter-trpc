@@ -1,7 +1,7 @@
-import { createUserSchema, loginUserSchema } from "$/lib/schemas/auth";
+import { createUserSchema, loginUserSchema, updatePasswordSchema } from "$/lib/schemas/auth";
 import { AuthError } from "$/lib/utils/errors";
 import { auth } from "$/server/auth/lucia";
-import { createTRPCRouter, publicProcedure, requireRequestData } from "$/server/trpc/trpc";
+import { createTRPCRouter, privateProcedure, publicProcedure, requireRequestData } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import { LuciaError } from "lucia";
 import * as context from "next/headers";
@@ -111,5 +111,45 @@ export const authRouter = createTRPCRouter({
 			username: user.username,
 			userId: user.userId
 		};
+	}),
+
+	updatePassword: privateProcedure.input(updatePasswordSchema).mutation(async ({ ctx: { user }, input }) => {
+		const { currentPassword, newPassword } = input;
+
+		try {
+			// Find user by key and validate the current password
+			await auth.useKey("username", user.username.toLowerCase(), currentPassword);
+
+			// Set new password
+			const newKey = await auth.updateKeyPassword("username", user.username.toLowerCase(), newPassword);
+
+			// Invalidate all existing sessions
+			auth.invalidateAllUserSessions(newKey.userId);
+
+			// Create new session
+			const session = await auth.createSession({
+				userId: newKey.userId,
+				attributes: {}
+			});
+
+			// Handle the request and set the new session
+			const authRequest = auth.handleRequest("POST", context);
+			authRequest.setSession(session);
+
+			// Clean up any dead user sessions
+			await auth.deleteDeadUserSessions(session.user.userId);
+
+			return true;
+		} catch (e) {
+			// Handle expected Lucia errors that can happen above
+			if (e instanceof LuciaError) {
+				if (e.message === "AUTH_INVALID_PASSWORD" || e.message === "AUTH_OUTDATED_PASSWORD") {
+					throw new TRPCError({ code: "UNAUTHORIZED", cause: new AuthError("INVALID_USERNAME_OR_PASSWORD") });
+				}
+			}
+
+			// Unexpected error occurred
+			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
+		}
 	})
 });

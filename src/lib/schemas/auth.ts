@@ -51,9 +51,23 @@ export const createUserSchema = z
 		password: passwordCreateSchema,
 		confirmPassword: passwordCreateSchema
 	})
-	.refine((v) => v.password === v.confirmPassword, { message: "Passwords must match", path: ["confirmPassword"] });
+	.refine((v) => v.password === v.confirmPassword, {
+		message: "Passwords must match",
+		path: ["confirmPassword"]
+	});
 
 export const loginUserSchema = z.object({
 	username: usernameLoginSchema,
 	password: passwordLoginSchema
 });
+
+export const updatePasswordSchema = z
+	.object({
+		currentPassword: passwordLoginSchema,
+		newPassword: passwordCreateSchema,
+		confirmNewPassword: passwordCreateSchema
+	})
+	.refine((v) => v.newPassword === v.confirmNewPassword, {
+		message: "Passwords must match",
+		path: ["confirmNewPassword"]
+	});
