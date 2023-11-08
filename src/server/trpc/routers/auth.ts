@@ -1,8 +1,10 @@
-import { createUserSchema, loginUserSchema, updatePasswordSchema } from "$/lib/schemas/auth";
+import { createUserSchema, loginUserSchema, updatePasswordSchema, usernameCreateSchema } from "$/lib/schemas/auth";
 import { AuthError } from "$/lib/utils/errors";
 import { auth } from "$/server/auth/lucia";
+import { key, user as userTable } from "$/server/db/schema/auth";
 import { createTRPCRouter, privateProcedure, publicProcedure, requireRequestData } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 import { LuciaError } from "lucia";
 import * as context from "next/headers";
 
@@ -111,6 +113,48 @@ export const authRouter = createTRPCRouter({
 			username: user.username,
 			userId: user.userId
 		};
+	}),
+
+	updateUsername: privateProcedure.input(usernameCreateSchema).mutation(async ({ ctx: { db, user }, input }) => {
+		const oldUsername = user.username;
+		const oldUsernameKey = `username:${oldUsername.toLowerCase()}`;
+		const newUsername = input;
+		const newUsernameKey = `username:${newUsername.toLowerCase()}`;
+
+		// Todo: This should really be done in a transaction if possible
+		try {
+			// Get the old key for the hashed password
+			const oldKey = await db.query.key.findFirst({
+				where: ({ userId, id }, { eq, and }) => and(eq(userId, user.userId), eq(id, oldUsernameKey))
+			});
+
+			// Shouldn't happen, but if old key wasn't found, throw error
+			if (!oldKey) {
+				throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
+			}
+
+			// Add the new key for the new username
+			await db.insert(key).values({
+				id: newUsernameKey,
+				userId: user.userId,
+				hashedPassword: oldKey.hashedPassword
+			});
+
+			// Delete the old key
+			await db.delete(key).where(eq(key.id, oldKey.id));
+
+			// Update the user with new username
+			await db.update(userTable).set({ username: newUsername }).where(eq(userTable.id, user.userId));
+		} catch (e) {
+			// Handle expected database errors
+			// See https://www.postgresql.org/docs/current/errcodes-appendix.html
+			if (typeof e === "object" && e && "code" in e && e.code === "23505") {
+				throw new TRPCError({ code: "BAD_REQUEST", cause: new AuthError("USERNAME_TAKEN") });
+			}
+
+			// Unexpected error occurred
+			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
+		}
 	}),
 
 	updatePassword: privateProcedure.input(updatePasswordSchema).mutation(async ({ ctx: { user }, input }) => {

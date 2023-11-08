@@ -24,7 +24,7 @@ const passwordTooLongMessage = "Password must be 255 characters or less";
 /**
  * Field schemas
  */
-const usernameCreateSchema = z
+export const usernameCreateSchema = z
 	.string(usernameErrorMessages)
 	.min(4, usernameCreateTooShortMessage)
 	.max(31, usernameTooLongMessage);
