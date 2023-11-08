@@ -1,12 +1,12 @@
 import SignupForm from "$/app/auth/signup/SignupForm";
-import AuthPage from "$/components/AuthPage";
+import FormPage from "$/components/FormPage";
 import { withRequireNoSession } from "$/components/hocs/withSession";
 
 async function SignupPage() {
 	return (
-		<AuthPage title="Sign up" linkHref="/auth/login" linkText="Already have an account?">
+		<FormPage title="Sign up" linkHref="/auth/login" linkText="Already have an account?">
 			<SignupForm />
-		</AuthPage>
+		</FormPage>
 	);
 }
 
