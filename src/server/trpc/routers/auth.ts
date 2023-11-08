@@ -121,30 +121,34 @@ export const authRouter = createTRPCRouter({
 		const newUsername = input;
 		const newUsernameKey = `username:${newUsername.toLowerCase()}`;
 
-		// Todo: This should really be done in a transaction if possible
+		// Get the old key for the hashed password
+		const oldKey = await db.query.key.findFirst({
+			where: ({ userId, id }, { eq, and }) => and(eq(userId, user.userId), eq(id, oldUsernameKey))
+		});
+
+		// Shouldn't happen, but if old key wasn't found, throw error
+		if (!oldKey) {
+			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
+		}
+
 		try {
-			// Get the old key for the hashed password
-			const oldKey = await db.query.key.findFirst({
-				where: ({ userId, id }, { eq, and }) => and(eq(userId, user.userId), eq(id, oldUsernameKey))
+			// Do in transaction to ensure user's account doesn't break
+			await db.transaction(async (tx) => {
+				// Add the new key for the new username
+				await tx.insert(key).values({
+					id: newUsernameKey,
+					userId: user.userId,
+					hashedPassword: oldKey.hashedPassword
+				});
+
+				// Delete the old key
+				await tx.delete(key).where(eq(key.id, oldKey.id));
+
+				// Update the user with new username
+				await tx.update(userTable).set({ username: newUsername }).where(eq(userTable.id, user.userId));
 			});
 
-			// Shouldn't happen, but if old key wasn't found, throw error
-			if (!oldKey) {
-				throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
-			}
-
-			// Add the new key for the new username
-			await db.insert(key).values({
-				id: newUsernameKey,
-				userId: user.userId,
-				hashedPassword: oldKey.hashedPassword
-			});
-
-			// Delete the old key
-			await db.delete(key).where(eq(key.id, oldKey.id));
-
-			// Update the user with new username
-			await db.update(userTable).set({ username: newUsername }).where(eq(userTable.id, user.userId));
+			return true;
 		} catch (e) {
 			// Handle expected database errors
 			// See https://www.postgresql.org/docs/current/errcodes-appendix.html
