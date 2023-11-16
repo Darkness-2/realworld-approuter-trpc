@@ -6,6 +6,7 @@ import { createTRPCRouter, privateProcedure, publicProcedure, requireRequestData
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { LuciaError } from "lucia";
+import { revalidatePath } from "next/cache";
 import * as context from "next/headers";
 
 export const authRouter = createTRPCRouter({
@@ -150,6 +151,9 @@ export const authRouter = createTRPCRouter({
 				// Update the user with new username
 				await tx.update(userTable).set({ username: newUsername }).where(eq(userTable.id, user.userId));
 			});
+
+			// For now, revalidate the entire site to reflect changes
+			revalidatePath("/", "layout");
 
 			return true;
 		} catch (e) {
