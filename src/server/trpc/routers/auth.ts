@@ -121,6 +121,9 @@ export const authRouter = createTRPCRouter({
 		const newUsername = input;
 		const newUsernameKey = `username:${newUsername.toLowerCase()}`;
 
+		// If old and new username are the same, return early
+		if (oldUsername === newUsername) return true;
+
 		// Get the old key for the hashed password
 		const oldKey = await db.query.key.findFirst({
 			where: ({ userId, id }, { eq, and }) => and(eq(userId, user.userId), eq(id, oldUsernameKey))
