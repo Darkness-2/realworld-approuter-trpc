@@ -1,4 +1,4 @@
-import HomeGlobalFeed from "$/components/HomePageGlobalFeed";
+import HomeGlobalFeed from "$/components/home/HomePageGlobalFeed";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 export default function HomePageTabs() {

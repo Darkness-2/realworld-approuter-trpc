@@ -1,5 +1,5 @@
-import HomePageHero from "$/components/HomePageHero";
-import HomePageTabs from "$/components/HomePageTabs";
+import HomePageHero from "$/components/home/HomePageHero";
+import HomePageTabs from "$/components/home/HomePageTabs";
 import Section from "$/components/ui/Section";
 
 export default function Home() {
