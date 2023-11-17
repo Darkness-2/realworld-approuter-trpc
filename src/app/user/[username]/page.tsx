@@ -2,7 +2,6 @@ import UserHero from "$/app/user/[username]/UserHero";
 import Article from "$/components/Article";
 import Section from "$/components/ui/Section";
 import { getServerClient } from "$/lib/trpc/serverClient";
-import { db } from "$/server/db";
 import { Stack, StackDivider, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { notFound } from "next/navigation";
 import { type ComponentProps } from "react";
@@ -55,24 +54,7 @@ export default async function UserPage({ params }: UserPageProps) {
 }
 
 /**
- * Regenerate every 5 minutes.
+ * Force page to be static and regenerated every 5 minutes.
  */
+export const dynamic = "error";
 export const revalidate = 300;
-
-/**
- * Will generate the page at build time for the authors of the 100 most recent articles.
- */
-export const generateStaticParams = async (): Promise<UserPageProps["params"][]> => {
-	const authorUsernames = await db.query.article.findMany({
-		columns: {},
-		limit: 100,
-		orderBy: ({ createdAt }, { desc }) => desc(createdAt),
-		with: {
-			author: {
-				columns: { username: true }
-			}
-		}
-	});
-
-	return authorUsernames.map(({ author: { username } }) => ({ username }));
-};
