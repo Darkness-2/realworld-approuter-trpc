@@ -12,7 +12,10 @@ type PaginationButtonsProps = {
 };
 
 export default function PaginationButtons({ currentPage, lastPage, firstPage = 1 }: PaginationButtonsProps) {
-	const pathname = usePathname();
+	// Remove the existing page number from the page
+	const fullPathname = usePathname().split("/");
+	fullPathname.pop();
+	const pathname = fullPathname.join("");
 
 	// Determine what page numbers to render
 	const pagesToRender: number[] = [];
@@ -25,13 +28,13 @@ export default function PaginationButtons({ currentPage, lastPage, firstPage = 1
 
 	return (
 		<ButtonGroup isAttached>
-			<PaginationButton href={`${pathname}?page=${firstPage}`}>{"<<"}</PaginationButton>
+			<PaginationButton href={`${pathname}/${firstPage}`}>{"<<"}</PaginationButton>
 			{pagesToRender.map((page) => (
-				<PaginationButton key={page} href={`${pathname}?page=${page}`} currentPage={currentPage === page}>
+				<PaginationButton key={page} href={`${pathname}/${page}`} currentPage={currentPage === page}>
 					{page}
 				</PaginationButton>
 			))}
-			<PaginationButton href={`${pathname}?page=${lastPage}`}>{">>"}</PaginationButton>
+			<PaginationButton href={`${pathname}/${lastPage}`}>{">>"}</PaginationButton>
 		</ButtonGroup>
 	);
 }
