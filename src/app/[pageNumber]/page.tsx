@@ -12,4 +12,8 @@ export default function HomePagePaginated({ params: { pageNumber } }: HomePagePa
 	return <HomePage page={page} />;
 }
 
+/**
+ * Force page to be static and regenerated every 5 minutes.
+ */
+export const dynamic = "error";
 export const revalidate = 300;
