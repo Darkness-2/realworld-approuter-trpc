@@ -6,7 +6,7 @@ import { userByUsername } from "$/server/db/queries/auth";
 import { article, articlesToTags, tag } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
-import { inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const articleRouter = createTRPCRouter({
@@ -90,5 +90,23 @@ export const articleRouter = createTRPCRouter({
 					username: author.username
 				}
 			};
-		})
+		}),
+
+	deleteArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
+		const deletedArticles = await ctx.db
+			.delete(article)
+			.where(and(eq(article.id, input), eq(article.authorId, ctx.user.userId)))
+			.returning();
+
+		// Throw error if no article was deleted
+		// Could be because user didn't have the right userId, or articleId wasn't found
+		if (deletedArticles.length === 0) {
+			throw new TRPCError({ code: "BAD_REQUEST", cause: new ArticleError("ARTICLE_FAILED_TO_DELETE") });
+		}
+
+		// For now, revalidate the entire site to reflect changes
+		revalidatePath("/", "layout");
+
+		return true;
+	})
 });
