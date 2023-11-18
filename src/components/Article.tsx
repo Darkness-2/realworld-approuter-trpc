@@ -6,7 +6,7 @@ import { type RouterOutputs } from "$/lib/trpc/shared";
 import { Flex, Stack, Text } from "@chakra-ui/react";
 
 type ArticleProps = {
-	article: RouterOutputs["article"]["getGlobalFeed"][number];
+	article: RouterOutputs["article"]["getGlobalFeed"]["articles"][number];
 };
 
 export default function Article({ article }: ArticleProps) {
