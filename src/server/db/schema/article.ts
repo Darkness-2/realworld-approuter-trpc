@@ -70,7 +70,7 @@ export const articlesToTags = pgTable(
 			.references(() => tag.id)
 	},
 	(t) => ({
-		pk: primaryKey(t.articleId, t.tagId)
+		pk: primaryKey({ columns: [t.articleId, t.tagId] })
 	})
 );
 
