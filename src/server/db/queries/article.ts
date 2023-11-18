@@ -1,4 +1,6 @@
 import { type DB } from "$/server/db";
+import { article } from "$/server/db/schema/article";
+import { sql } from "drizzle-orm";
 import { cache } from "react";
 
 /**
@@ -32,6 +34,20 @@ export const globalFeedQuery = cache(
 			}
 		})
 );
+
+/**
+ * Cached database call to get the total number of articles.
+ *
+ * @param db instance of the DB
+ */
+export const countTotalArticles = cache(async (db: DB) => {
+	const res = await db.select({ count: sql<number>`cast(count(*) as int)` }).from(article);
+
+	// Really should not happen
+	if (!res[0]) throw new Error("Something went wrong getting total article count");
+
+	return res[0].count;
+});
 
 /**
  * Cached database call to get a specific article by ID with author and tag info.
