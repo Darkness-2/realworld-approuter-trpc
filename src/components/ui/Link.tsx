@@ -1,7 +1,8 @@
 import { Link as ChakraLink, type LinkProps as ChakraLinkProps } from "@chakra-ui/react";
 import NextLink from "next/link";
+import { type ComponentProps } from "react";
 
-interface LinkProps extends ChakraLinkProps {
+interface LinkProps extends ChakraLinkProps, Omit<ComponentProps<typeof NextLink>, "as" | "color" | "href"> {
 	href: Required<ChakraLinkProps["href"]>;
 }
 
