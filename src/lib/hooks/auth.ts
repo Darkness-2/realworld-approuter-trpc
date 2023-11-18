@@ -7,7 +7,9 @@ import { trpc } from "$/lib/trpc/client";
  */
 export const useUser = () => {
 	const getCurrentUser = trpc.auth.getCurrentUser.useQuery(undefined, {
-		refetchOnWindowFocus: false
+		refetchOnWindowFocus: false,
+		// Only refetch the user every 5 minutes if needed
+		staleTime: 1000 * 60 * 5
 	});
 
 	return {
