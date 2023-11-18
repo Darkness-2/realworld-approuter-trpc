@@ -5,14 +5,16 @@ import FollowButton from "$/components/FollowButton";
 import LikeButton from "$/components/LikeButton";
 import { useUser } from "$/lib/hooks/auth";
 import { type RouterOutputs } from "$/lib/trpc/shared";
-import { Box, Container, Flex, Skeleton, Stack, Text } from "@chakra-ui/react";
+import { EditIcon } from "@chakra-ui/icons";
+import { Box, Button, Container, Flex, Skeleton, Stack, Text } from "@chakra-ui/react";
+import Link from "next/link";
 
 type ArticleHeroProps = {
 	article: NonNullable<RouterOutputs["article"]["getArticleById"]>;
 };
 
 export default function ArticleHero({ article }: ArticleHeroProps) {
-	const { user } = useUser();
+	const { user, isLoading } = useUser();
 
 	return (
 		<Box bgColor="gray.800" py={8} shadow="inner">
@@ -25,13 +27,25 @@ export default function ArticleHero({ article }: ArticleHeroProps) {
 						<AuthorAndDate variant="light" createdAt={article.createdAt} username={article.author.username} />
 
 						{/* User is loading */}
-						{user === undefined && <Skeleton h="24px" w="100px" />}
+						{isLoading && <Skeleton h="24px" w="100px" />}
 
 						{/* User is logged in */}
 						{user && (
 							<>
-								{/* Todo: Change-out follow button for edit button if article is the user's */}
-								<FollowButton username={article.author.username} />
+								{/* Show edit button if article is the user's; otherwise show follow button */}
+								{user.userId === article.authorId && (
+									<Button
+										as={Link}
+										href={`/edit/${article.id}`}
+										size="xs"
+										variant="solid"
+										colorScheme="gray"
+										leftIcon={<EditIcon />}
+									>
+										Edit article
+									</Button>
+								)}
+								{user.userId !== article.authorId && <FollowButton username={article.author.username} />}
 								<LikeButton />
 							</>
 						)}

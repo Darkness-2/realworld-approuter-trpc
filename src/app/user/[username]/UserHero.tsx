@@ -24,13 +24,13 @@ export default function UserHero({ user }: UserHeroProps) {
 					{/* If loading, show skeleton */}
 					{isLoading && <Skeleton h="24px" w="100px" />}
 					{/* If logged in user is viewing their own page, show button to go their settings */}
-					{sessionUser?.username === user.username && (
+					{sessionUser?.userId === user.id && (
 						<Button as={Link} href="/settings" size="xs" variant="solid" colorScheme="gray" leftIcon={<SettingsIcon />}>
 							Go to profile settings
 						</Button>
 					)}
 					{/* If logged in user is viewing someone else's page, show follow button */}
-					{sessionUser && sessionUser.username !== user.username && <FollowButton username={user.username} />}
+					{sessionUser && sessionUser.userId !== user.id && <FollowButton username={user.username} />}
 				</Stack>
 			</Container>
 		</Box>
