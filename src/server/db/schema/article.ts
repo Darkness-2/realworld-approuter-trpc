@@ -62,7 +62,7 @@ export const articlesToTags = pgTable(
 			length: 24
 		})
 			.notNull()
-			.references(() => article.id),
+			.references(() => article.id, { onDelete: "cascade" }),
 		tagId: char("tag_id", {
 			length: 24
 		})
