@@ -15,7 +15,7 @@ export class AuthError extends Error {
 	}
 }
 
-export const articleErrorCodes = ["ARTICLE_FAILED_TO_CREATE"] as const;
+export const articleErrorCodes = ["ARTICLE_FAILED_TO_CREATE", "ARTICLE_FAILED_TO_DELETE"] as const;
 
 export type ArticleErrorCodes = (typeof articleErrorCodes)[number];
 
