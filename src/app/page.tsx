@@ -32,4 +32,4 @@ export default function Home({ searchParams }: HomePageProps) {
 	);
 }
 
-export const revalidate = 300;
+// Todo: Look into if it is possible to cache this page again now that it is using searchParams
