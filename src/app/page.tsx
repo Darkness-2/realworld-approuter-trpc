@@ -31,3 +31,5 @@ export default function Home({ searchParams }: HomePageProps) {
 		</>
 	);
 }
+
+export const revalidate = 300;

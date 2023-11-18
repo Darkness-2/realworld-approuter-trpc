@@ -1,7 +1,7 @@
 import { articleAuthorUsernameSchema, articleIdSchema, createArticleSchema } from "$/lib/schemas/article";
 import { limitOffsetSchema } from "$/lib/schemas/helpers";
 import { ArticleError } from "$/lib/utils/errors";
-import { articleByIdQuery, articlesByAuthorId, globalFeedQuery } from "$/server/db/queries/article";
+import { articleByIdQuery, articlesByAuthorId, countTotalArticles, globalFeedQuery } from "$/server/db/queries/article";
 import { userByUsername } from "$/server/db/queries/auth";
 import { article, articlesToTags, tag } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
@@ -57,9 +57,14 @@ export const articleRouter = createTRPCRouter({
 		return { success: true, articleId };
 	}),
 
-	getGlobalFeed: publicProcedure
-		.input(limitOffsetSchema)
-		.query(async ({ ctx, input }) => await globalFeedQuery(ctx.db, input.limit, input.offset)),
+	getGlobalFeed: publicProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
+		const [articles, totalCount] = await Promise.all([
+			globalFeedQuery(ctx.db, input.limit, input.offset),
+			countTotalArticles(ctx.db)
+		]);
+
+		return { articles, totalCount };
+	}),
 
 	getArticleById: publicProcedure
 		.input(articleIdSchema)
