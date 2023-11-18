@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "$/components/ui/Link";
 import { Button, ButtonGroup } from "@chakra-ui/react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode } from "react";
 
