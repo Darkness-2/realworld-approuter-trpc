@@ -1,5 +1,6 @@
 "use client";
 
+import DeleteArticleButton from "$/app/article/[articleId]/DeleteArticleButton";
 import AuthorAndDate from "$/components/AuthorAndDate";
 import FollowButton from "$/components/FollowButton";
 import LikeButton from "$/components/LikeButton";
@@ -32,18 +33,21 @@ export default function ArticleHero({ article }: ArticleHeroProps) {
 						{/* User is logged in */}
 						{user && (
 							<>
-								{/* Show edit button if article is the user's; otherwise show follow button */}
+								{/* Show edit and delete buttons if article is the user's; otherwise show follow button */}
 								{user.userId === article.authorId && (
-									<Button
-										as={Link}
-										href={`/edit/${article.id}`}
-										size="xs"
-										variant="solid"
-										colorScheme="gray"
-										leftIcon={<EditIcon />}
-									>
-										Edit article
-									</Button>
+									<>
+										<Button
+											as={Link}
+											href={`/edit/${article.id}`}
+											size="xs"
+											variant="solid"
+											colorScheme="gray"
+											leftIcon={<EditIcon />}
+										>
+											Edit article
+										</Button>
+										<DeleteArticleButton articleId={article.id} />
+									</>
 								)}
 								{user.userId !== article.authorId && <FollowButton username={article.author.username} />}
 								<LikeButton />
