@@ -17,3 +17,5 @@ export default function HomePagePaginated({ params: { pageNumber } }: HomePagePa
  */
 export const dynamic = "error";
 export const revalidate = 300;
+
+// Todo: Consider removing this page and implemeneting the page functionality client-side with tRPC
