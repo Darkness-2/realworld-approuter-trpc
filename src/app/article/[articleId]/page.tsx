@@ -28,7 +28,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 			<Section>
 				<Stack divider={<StackDivider />} gap={4}>
 					<Text>{article.body}</Text>
-					<ArticleTags tags={articleTags} />
+					{articleTags.length > 0 && <ArticleTags tags={articleTags} />}
 					<Text>Todo: Add comments</Text>
 				</Stack>
 			</Section>
