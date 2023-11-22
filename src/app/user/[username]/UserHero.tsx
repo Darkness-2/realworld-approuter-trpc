@@ -1,6 +1,6 @@
 "use client";
 
-import FollowButton from "$/components/FollowButton";
+import FollowButton from "$/components/author/FollowButton";
 import { useUser } from "$/lib/hooks/auth";
 import { type RouterOutputs } from "$/lib/trpc/shared";
 import { SettingsIcon } from "@chakra-ui/icons";

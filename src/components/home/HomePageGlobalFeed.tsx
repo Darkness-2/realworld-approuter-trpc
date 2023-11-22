@@ -1,4 +1,4 @@
-import Article from "$/components/Article";
+import Article from "$/components/article/Article";
 import PaginationButtons from "$/components/ui/PaginationButtons";
 import { getServerClient } from "$/lib/trpc/serverClient";
 import { Stack, StackDivider } from "@chakra-ui/react";

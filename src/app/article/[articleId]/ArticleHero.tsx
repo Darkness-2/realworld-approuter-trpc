@@ -1,9 +1,9 @@
 "use client";
 
 import DeleteArticleButton from "$/app/article/[articleId]/DeleteArticleButton";
-import AuthorAndDate from "$/components/AuthorAndDate";
-import FollowButton from "$/components/FollowButton";
-import LikeButton from "$/components/LikeButton";
+import AuthorAndDate from "$/components/article/AuthorAndDate";
+import LikeButton from "$/components/article/LikeButton";
+import FollowButton from "$/components/author/FollowButton";
 import { useUser } from "$/lib/hooks/auth";
 import { type RouterOutputs } from "$/lib/trpc/shared";
 import { EditIcon } from "@chakra-ui/icons";

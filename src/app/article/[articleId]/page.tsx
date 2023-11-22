@@ -1,5 +1,5 @@
 import ArticleHero from "$/app/article/[articleId]/ArticleHero";
-import ArticleTags from "$/components/ArticleTags";
+import ArticleTags from "$/components/article/ArticleTags";
 import Section from "$/components/ui/Section";
 import { getServerClient } from "$/lib/trpc/serverClient";
 import { db } from "$/server/db";
