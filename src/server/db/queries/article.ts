@@ -73,6 +73,14 @@ export const articleByIdQuery = cache(
 		})
 );
 
+/**
+ * Cached database call to get a articles created by a specific author, with tag info.
+ *
+ * @param db instance of the DB
+ * @param id id of the author
+ * @param limit how many items to get
+ * @param offset how many items to offset
+ */
 export const articlesByAuthorId = cache(
 	async (db: DB, id: string, limit: number, offset: number) =>
 		await db.query.article.findMany({
