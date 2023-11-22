@@ -40,7 +40,7 @@ export const globalFeedQuery = cache(
  *
  * @param db instance of the DB
  */
-export const countTotalArticles = cache(async (db: DB) => {
+export const countTotalArticlesQuery = cache(async (db: DB) => {
 	const res = await db.select({ count: sql<number>`cast(count(*) as int)` }).from(article);
 
 	// Really should not happen
@@ -81,7 +81,7 @@ export const articleByIdQuery = cache(
  * @param limit how many items to get
  * @param offset how many items to offset
  */
-export const articlesByAuthorId = cache(
+export const articlesByAuthorIdQuery = cache(
 	async (db: DB, id: string, limit: number, offset: number) =>
 		await db.query.article.findMany({
 			columns: { body: false },

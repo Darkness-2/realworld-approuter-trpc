@@ -1,8 +1,13 @@
 import { articleAuthorUsernameSchema, articleIdSchema, createArticleSchema } from "$/lib/schemas/article";
 import { limitOffsetSchema } from "$/lib/schemas/helpers";
 import { ArticleError } from "$/lib/utils/errors";
-import { articleByIdQuery, articlesByAuthorId, countTotalArticles, globalFeedQuery } from "$/server/db/queries/article";
-import { userByUsername } from "$/server/db/queries/auth";
+import {
+	articleByIdQuery,
+	articlesByAuthorIdQuery,
+	countTotalArticlesQuery,
+	globalFeedQuery
+} from "$/server/db/queries/article";
+import { userByUsernameQuery } from "$/server/db/queries/auth";
 import { article, articlesToTags, tag } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
@@ -60,7 +65,7 @@ export const articleRouter = createTRPCRouter({
 	getGlobalFeed: publicProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
 		const [articles, totalCount] = await Promise.all([
 			globalFeedQuery(ctx.db, input.limit, input.offset),
-			countTotalArticles(ctx.db)
+			countTotalArticlesQuery(ctx.db)
 		]);
 
 		return { articles, totalCount };
@@ -77,10 +82,10 @@ export const articleRouter = createTRPCRouter({
 			})
 		)
 		.query(async ({ ctx, input }) => {
-			const author = await userByUsername(ctx.db, input.username);
+			const author = await userByUsernameQuery(ctx.db, input.username);
 			if (!author) return null;
 
-			const articles = await articlesByAuthorId(ctx.db, author.id, input.limit, input.offset);
+			const articles = await articlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.offset);
 
 			return {
 				articles,
