@@ -1,19 +1,20 @@
 import Link from "$/components/ui/Link";
 import Section from "$/components/ui/Section";
 import { Container, Stack, Text } from "@chakra-ui/react";
-import { type ReactNode } from "react";
+import { type ComponentProps, type ReactNode } from "react";
 
 type Props = {
 	children: ReactNode;
 	title: string;
 	linkText?: string;
 	linkHref?: string;
+	containerWidth?: ComponentProps<typeof Container>["maxW"];
 };
 
-export default function FormPage({ children, linkText, linkHref, title }: Props) {
+export default function FormPage({ children, linkText, linkHref, title, containerWidth }: Props) {
 	return (
 		<Section>
-			<Container maxW="xl">
+			<Container maxW={containerWidth ?? "xl"}>
 				<Stack gap={2} alignItems="center">
 					<Text as="h1" fontSize="4xl" align="center">
 						{title}
