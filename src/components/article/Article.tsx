@@ -1,6 +1,6 @@
-import ArticleTags from "$/components/ArticleTags";
-import AuthorAndDate from "$/components/AuthorAndDate";
-import LikesTag from "$/components/LikesTag";
+import ArticleTags from "$/components/article/ArticleTags";
+import AuthorAndDate from "$/components/article/AuthorAndDate";
+import LikesTag from "$/components/article/LikesTag";
 import Link from "$/components/ui/Link";
 import { type RouterOutputs } from "$/lib/trpc/shared";
 import { Flex, Stack, Text } from "@chakra-ui/react";

@@ -1,12 +1,26 @@
-import { articleAuthorUsernameSchema, articleIdSchema, createArticleSchema } from "$/lib/schemas/article";
+import {
+	articleAuthorUsernameSchema,
+	articleIdSchema,
+	createArticleSchema,
+	editArticleSchema
+} from "$/lib/schemas/article";
 import { limitOffsetSchema } from "$/lib/schemas/helpers";
 import { ArticleError } from "$/lib/utils/errors";
-import { articleByIdQuery, articlesByAuthorId, countTotalArticles, globalFeedQuery } from "$/server/db/queries/article";
-import { userByUsername } from "$/server/db/queries/auth";
-import { article, articlesToTags, tag } from "$/server/db/schema/article";
+import { convertTagsToDBFormat } from "$/lib/utils/helpers";
+import {
+	articleByIdQuery,
+	articlesByAuthorIdQuery,
+	connectTagsToArticleQuery,
+	countTotalArticlesQuery,
+	createTagsQuery,
+	globalFeedQuery,
+	tagsByTextQuery
+} from "$/server/db/queries/article";
+import { userByUsernameQuery } from "$/server/db/queries/auth";
+import { article, articlesToTags } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const articleRouter = createTRPCRouter({
@@ -17,17 +31,14 @@ export const articleRouter = createTRPCRouter({
 		const newArticleQuery = ctx.db
 			.insert(article)
 			.values({
-				authorId: ctx.user.userId,
-				title: input.title,
-				description: input.description,
-				body: input.body
+				...input,
+				authorId: ctx.user.userId
 			})
 			.returning({ id: article.id });
 
 		// Convert tags to format DB expects and create if needed
-		const tagsToInsert = input.tags?.map((tag) => ({ text: tag }));
-		const newTagsQuery =
-			tagsToInsert && tagsToInsert.length > 0 ? ctx.db.insert(tag).values(tagsToInsert).onConflictDoNothing() : null;
+		const tagsToInsert = convertTagsToDBFormat(input.tags);
+		const newTagsQuery = createTagsQuery(ctx.db, tagsToInsert);
 
 		// Run queries
 		const [newArticles] = await Promise.all([newArticleQuery, newTagsQuery]);
@@ -40,15 +51,10 @@ export const articleRouter = createTRPCRouter({
 		}
 
 		// Connect tags to article if needed
-		if (input.tags && input.tags.length !== 0) {
-			// Find all needed tags
-			const tags = await ctx.db.query.tag.findMany({
-				where: ({ text }) => inArray(text, input.tags ?? [])
-			});
-
-			// Generate connections needed and add to DB
-			const articleTagConnections = tags.map((tag) => ({ tagId: tag.id, articleId }));
-			await ctx.db.insert(articlesToTags).values(articleTagConnections);
+		if (input.tags && input.tags.length > 0) {
+			const tags = await tagsByTextQuery(ctx.db, input.tags);
+			const tagIds = tags.map((tag) => tag.id);
+			await connectTagsToArticleQuery(ctx.db, tagIds, articleId);
 		}
 
 		// For now, revalidate the entire site to reflect changes
@@ -57,10 +63,60 @@ export const articleRouter = createTRPCRouter({
 		return { success: true, articleId };
 	}),
 
+	editArticle: privateProcedure.input(editArticleSchema).mutation(async ({ ctx, input }) => {
+		// Todo: Explore doing this in a transaction
+
+		// Grab the article to be edited
+		const a = await ctx.db.query.article.findFirst({
+			where: ({ id }, { eq }) => eq(id, input.id)
+		});
+
+		// Check article exists
+		if (!a) {
+			throw new TRPCError({ code: "BAD_REQUEST", cause: new ArticleError("ARTICLE_NOT_FOUND") });
+		}
+
+		// Check article is owned by the user
+		if (a.authorId !== ctx.user.userId) {
+			throw new TRPCError({ code: "FORBIDDEN" });
+		}
+
+		// Edit the article
+		const editArticleQuery = ctx.db
+			.update(article)
+			.set({
+				...input,
+				id: undefined
+			})
+			.where(eq(article.id, a.id));
+
+		// Convert tags to format DB expects and create if needed
+		const tagsToInsert = convertTagsToDBFormat(input.tags);
+		const newTagsQuery = createTagsQuery(ctx.db, tagsToInsert);
+
+		// Remove all existing tags from the article; will reset them later
+		const removeTagsQuery = ctx.db.delete(articlesToTags).where(eq(articlesToTags.articleId, a.id));
+
+		// Run queries
+		await Promise.all([newTagsQuery, editArticleQuery, removeTagsQuery]);
+
+		// Connect tags to article if needed
+		if (input.tags && input.tags.length > 0) {
+			const tags = await tagsByTextQuery(ctx.db, input.tags);
+			const tagIds = tags.map((tag) => tag.id);
+			await connectTagsToArticleQuery(ctx.db, tagIds, a.id);
+		}
+
+		// For now, revalidate the entire site to reflect changes
+		revalidatePath("/", "layout");
+
+		return { success: true };
+	}),
+
 	getGlobalFeed: publicProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
 		const [articles, totalCount] = await Promise.all([
 			globalFeedQuery(ctx.db, input.limit, input.offset),
-			countTotalArticles(ctx.db)
+			countTotalArticlesQuery(ctx.db)
 		]);
 
 		return { articles, totalCount };
@@ -77,10 +133,10 @@ export const articleRouter = createTRPCRouter({
 			})
 		)
 		.query(async ({ ctx, input }) => {
-			const author = await userByUsername(ctx.db, input.username);
+			const author = await userByUsernameQuery(ctx.db, input.username);
 			if (!author) return null;
 
-			const articles = await articlesByAuthorId(ctx.db, author.id, input.limit, input.offset);
+			const articles = await articlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.offset);
 
 			return {
 				articles,

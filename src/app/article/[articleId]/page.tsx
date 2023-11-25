@@ -1,5 +1,5 @@
 import ArticleHero from "$/app/article/[articleId]/ArticleHero";
-import ArticleTags from "$/components/ArticleTags";
+import ArticleTags from "$/components/article/ArticleTags";
 import Section from "$/components/ui/Section";
 import { getServerClient } from "$/lib/trpc/serverClient";
 import { db } from "$/server/db";
@@ -28,7 +28,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 			<Section>
 				<Stack divider={<StackDivider />} gap={4}>
 					<Text>{article.body}</Text>
-					<ArticleTags tags={articleTags} />
+					{articleTags.length > 0 && <ArticleTags tags={articleTags} />}
 					<Text>Todo: Add comments</Text>
 				</Stack>
 			</Section>

@@ -126,14 +126,6 @@ export default function CreateArticleForm() {
 
 				<FormControl isInvalid={!!errors.tags}>
 					<FormLabel htmlFor="tags">Tags:</FormLabel>
-					<Flex gap={1} mb={2} wrap="wrap">
-						{(watch("tags") ?? []).map((tag, index) => (
-							<Tag key={index} size="sm" variant="solid" colorScheme="gray">
-								<TagLabel>{tag}</TagLabel>
-								<TagCloseButton onClick={() => handleRemoveTag(tag)} />
-							</Tag>
-						))}
-					</Flex>
 					<InputGroup>
 						<Input
 							id="tags"
@@ -154,6 +146,14 @@ export default function CreateArticleForm() {
 							/>
 						</InputRightElement>
 					</InputGroup>
+					<Flex gap={1} mt={2} wrap="wrap">
+						{(watch("tags") ?? []).map((tag, index) => (
+							<Tag key={index} size="sm" variant="solid" colorScheme="gray">
+								<TagLabel>{tag}</TagLabel>
+								<TagCloseButton onClick={() => handleRemoveTag(tag)} />
+							</Tag>
+						))}
+					</Flex>
 					<FormErrorMessage>{errors.tags?.message}</FormErrorMessage>
 				</FormControl>
 

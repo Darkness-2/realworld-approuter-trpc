@@ -57,3 +57,11 @@ export const createArticleSchema = z.object({
 	body: bodySchema,
 	tags: tagsSchema
 });
+
+export const editArticleSchema = z.object({
+	id: articleIdSchema,
+	title: titleSchema.optional(),
+	description: descriptionSchema.optional(),
+	body: bodySchema.optional(),
+	tags: tagsSchema
+});

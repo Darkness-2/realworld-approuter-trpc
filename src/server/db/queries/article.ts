@@ -1,5 +1,5 @@
 import { type DB } from "$/server/db";
-import { article } from "$/server/db/schema/article";
+import { article, articlesToTags, tag, type TagInsert } from "$/server/db/schema/article";
 import { sql } from "drizzle-orm";
 import { cache } from "react";
 
@@ -40,7 +40,7 @@ export const globalFeedQuery = cache(
  *
  * @param db instance of the DB
  */
-export const countTotalArticles = cache(async (db: DB) => {
+export const countTotalArticlesQuery = cache(async (db: DB) => {
 	const res = await db.select({ count: sql<number>`cast(count(*) as int)` }).from(article);
 
 	// Really should not happen
@@ -73,7 +73,15 @@ export const articleByIdQuery = cache(
 		})
 );
 
-export const articlesByAuthorId = cache(
+/**
+ * Cached database call to get a articles created by a specific author, with tag info.
+ *
+ * @param db instance of the DB
+ * @param id id of the author
+ * @param limit how many items to get
+ * @param offset how many items to offset
+ */
+export const articlesByAuthorIdQuery = cache(
 	async (db: DB, id: string, limit: number, offset: number) =>
 		await db.query.article.findMany({
 			columns: { body: false },
@@ -91,3 +99,57 @@ export const articlesByAuthorId = cache(
 			}
 		})
 );
+
+/**
+ * Cached database call to get a tags by their text.
+ *
+ * @param db instance of the DB
+ * @param tags string array of tag texts to find
+ */
+export const tagsByTextQuery = cache(
+	async (db: DB, tags: string[]) =>
+		await db.query.tag.findMany({
+			where: ({ text }, { inArray }) => inArray(text, tags)
+		})
+);
+
+/**
+ * Query to add tags to the database. Will only add if the array is not empty.
+ *
+ * @param db instance of the DB
+ * @param tags to be added
+ * @returns true if added; false if no tags added
+ */
+export const createTagsQuery = async (db: DB, tags: TagInsert[]) => {
+	// Don't bother if the array is empty
+	if (tags.length === 0) return false;
+
+	// On conflict does nothing to ensure any tags that already exist are not added again
+	await db.insert(tag).values(tags).onConflictDoNothing();
+
+	return true;
+};
+
+/**
+ * Query to add tag connections to an article. Will only add if tagIds is not empty.
+ *
+ * @param db instance of the DB
+ * @param tagIds IDs of the tags to be added
+ * @param articleId ID of the article to add them to
+ * @returns true if added; false if not
+ */
+export const connectTagsToArticleQuery = async (db: DB, tagIds: string[], articleId: string) => {
+	// Don't bother if the array is empty
+	if (tagIds.length === 0) return false;
+
+	// Generate the connections needed and add to DB
+	const articleTagConnections = tagIds.map((id) => ({
+		tagId: id,
+		articleId
+	}));
+
+	// On conflict does nothing as tag connections might already exist
+	await db.insert(articlesToTags).values(articleTagConnections).onConflictDoNothing();
+
+	return true;
+};

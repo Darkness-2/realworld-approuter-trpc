@@ -1,5 +1,5 @@
 import UserHero from "$/app/user/[username]/UserHero";
-import Article from "$/components/Article";
+import Article from "$/components/article/Article";
 import Section from "$/components/ui/Section";
 import { getServerClient } from "$/lib/trpc/serverClient";
 import { Stack, StackDivider, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";

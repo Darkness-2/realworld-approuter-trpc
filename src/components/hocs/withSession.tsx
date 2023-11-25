@@ -3,6 +3,8 @@ import { type Session } from "lucia";
 import { redirect } from "next/navigation";
 import { type ComponentType } from "react";
 
+// Todo: Consider doing this in middleware instead?
+
 export interface SessionProps {
 	session: Session | null;
 }
