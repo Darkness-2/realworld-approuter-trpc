@@ -1,12 +1,11 @@
 "use client";
 
+import RootErrorMessage from "$/components/forms/RootErrorMessage";
 import { createArticleSchema } from "$/lib/schemas/article";
 import { trpc } from "$/lib/trpc/client";
 import { type RouterInputs } from "$/lib/trpc/shared";
 import { AddIcon } from "@chakra-ui/icons";
 import {
-	Alert,
-	AlertIcon,
 	Box,
 	Button,
 	Flex,
@@ -99,12 +98,7 @@ export default function CreateArticleForm() {
 			onChange={() => clearErrors("root")}
 		>
 			<Stack gap={4}>
-				{errors.root && (
-					<Alert status="error">
-						<AlertIcon />
-						{errors.root.message}
-					</Alert>
-				)}
+				<RootErrorMessage error={errors.root} />
 
 				<FormControl isInvalid={!!errors.title}>
 					<FormLabel htmlFor="title">Title:</FormLabel>
