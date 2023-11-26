@@ -8,7 +8,7 @@ import SubmitButton from "$/components/forms/SubmitButton";
 import { editArticleSchema } from "$/lib/schemas/article";
 import { trpc } from "$/lib/trpc/client";
 import { type RouterInputs } from "$/lib/trpc/shared";
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Stack, useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -21,6 +21,7 @@ type EditArticleFormProps = {
 
 export default function EditArticleForm({ article }: EditArticleFormProps) {
 	const router = useRouter();
+	const toast = useToast();
 	const utils = trpc.useUtils();
 
 	const {
@@ -43,12 +44,40 @@ export default function EditArticleForm({ article }: EditArticleFormProps) {
 			// Invalidate any queries that depend on articles
 			utils.article.invalidate();
 
+			// Todo: Check if other forms need toasts
+
+			// Toast for a message
+			toast({
+				title: "Article edited",
+				description: "The article was successfully edited",
+				status: "success",
+				isClosable: true
+			});
+
 			// Redirect to the edited article
 			router.push(`/article/${article.id}`);
 			router.refresh();
 		},
 		onError: (e) => {
-			// Todo: Deal with expected errors
+			if (e.data?.articleError === "ARTICLE_NOT_FOUND") {
+				toast({
+					title: "Article doesn't exist",
+					description: "The article you tried to edit does not exist",
+					status: "error",
+					isClosable: true
+				});
+				return router.push("/");
+			}
+
+			if (e.data?.articleError === "ARTICLE_NOT_OWNED_BY_USER") {
+				toast({
+					title: "Article is not yours",
+					description: "You don't own the article you tried to edit",
+					status: "error",
+					isClosable: true
+				});
+				return router.push("/unauthorized");
+			}
 
 			console.error(e);
 			setError("root", { message: e.message });
