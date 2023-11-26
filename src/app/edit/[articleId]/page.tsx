@@ -1,3 +1,4 @@
+import EditArticleForm from "$/app/edit/[articleId]/EditArticleForm";
 import FormPage from "$/components/forms/FormPage";
 import { withRequireSession, type SessionRequiredProps } from "$/components/hocs/withSession";
 import { getServerClient } from "$/lib/trpc/serverClient";
@@ -18,6 +19,9 @@ async function EditPage({ params, session }: EditPageProps) {
 	// If the user doesn't match the article author, redirect
 	if (session.user.userId !== article.authorId) redirect("/unauthorized");
 
+	// Generate tags in the correct format
+	const tags = article.articlesToTags.map((rel) => rel.tag.text);
+
 	return (
 		<FormPage
 			title="Edit article"
@@ -25,7 +29,7 @@ async function EditPage({ params, session }: EditPageProps) {
 			linkText="View this article"
 			linkHref={`/article/${article.id}`}
 		>
-			Test
+			<EditArticleForm article={{ ...article, tags }} />
 		</FormPage>
 	);
 }
