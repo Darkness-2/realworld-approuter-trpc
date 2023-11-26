@@ -78,17 +78,19 @@ export const articleRouter = createTRPCRouter({
 
 		// Check article is owned by the user
 		if (a.authorId !== ctx.user.userId) {
-			throw new TRPCError({ code: "FORBIDDEN" });
+			throw new TRPCError({ code: "FORBIDDEN", cause: new ArticleError("ARTICLE_NOT_OWNED_BY_USER") });
 		}
 
+		const newValues = {
+			...input,
+			// Ensure id cannot be changed
+			id: undefined,
+			// Remove tags as it is not an accepted field
+			tags: undefined
+		};
+
 		// Edit the article
-		const editArticleQuery = ctx.db
-			.update(article)
-			.set({
-				...input,
-				id: undefined
-			})
-			.where(eq(article.id, a.id));
+		const editArticleQuery = ctx.db.update(article).set(newValues).where(eq(article.id, a.id));
 
 		// Convert tags to format DB expects and create if needed
 		const tagsToInsert = convertTagsToDBFormat(input.tags);
