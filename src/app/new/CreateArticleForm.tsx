@@ -28,12 +28,6 @@ export default function CreateArticleForm() {
 		clearErrors,
 		watch
 	} = useForm<CreateArticleForm>({
-		defaultValues: {
-			body: "",
-			description: "",
-			tags: [],
-			title: ""
-		},
 		resolver: zodResolver(createArticleSchema)
 	});
 
@@ -78,7 +72,6 @@ export default function CreateArticleForm() {
 
 				<TagsInput tags={watch("tags")} error={errors.tags} setTags={(t) => setValue("tags", t)} />
 
-				{/* Todo: Change buttons to use Chakra loading state */}
 				<SubmitButton isLoading={create.isLoading}>Create</SubmitButton>
 			</Stack>
 		</Box>
