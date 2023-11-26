@@ -1,4 +1,4 @@
-import CreateArticleForm from "$/components/article/CreateArticleForm";
+import CreateArticleForm from "$/app/new/CreateArticleForm";
 import FormPage from "$/components/forms/FormPage";
 import { withRequireSession } from "$/components/hocs/withSession";
 
