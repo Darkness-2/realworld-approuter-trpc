@@ -1,30 +1,16 @@
 "use client";
 
+import TagsInput from "$/components/article/TagsInput";
+import CustomInput from "$/components/forms/CustomInput";
+import CustomTextarea from "$/components/forms/CustomTextarea";
 import RootErrorMessage from "$/components/forms/RootErrorMessage";
+import SubmitButton from "$/components/forms/SubmitButton";
 import { createArticleSchema } from "$/lib/schemas/article";
 import { trpc } from "$/lib/trpc/client";
 import { type RouterInputs } from "$/lib/trpc/shared";
-import { AddIcon } from "@chakra-ui/icons";
-import {
-	Box,
-	Button,
-	Flex,
-	FormControl,
-	FormErrorMessage,
-	FormLabel,
-	IconButton,
-	Input,
-	InputGroup,
-	InputRightElement,
-	Stack,
-	Tag,
-	TagCloseButton,
-	TagLabel,
-	Textarea
-} from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, type KeyboardEvent } from "react";
 import { useForm } from "react-hook-form";
 
 type CreateArticleForm = RouterInputs["article"]["create"];
@@ -33,17 +19,14 @@ export default function CreateArticleForm() {
 	const router = useRouter();
 	const utils = trpc.useUtils();
 
-	const [tag, setTag] = useState("");
-
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 		setError,
-		getValues,
 		setValue,
-		watch,
-		clearErrors
+		clearErrors,
+		watch
 	} = useForm<CreateArticleForm>({
 		defaultValues: {
 			body: "",
@@ -70,25 +53,6 @@ export default function CreateArticleForm() {
 		}
 	});
 
-	const handleTagEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-		// If key was enter, add to the list
-		if (e.key === "Enter") {
-			e.preventDefault();
-			handleAddTag();
-		}
-	};
-
-	const handleAddTag = () => {
-		if (tag.length === 0) return;
-		setValue("tags", [...(getValues("tags") ?? []), tag]);
-		setTag("");
-	};
-
-	const handleRemoveTag = (text: string) => {
-		const newTags = (getValues("tags") ?? []).filter((tag) => tag !== text);
-		setValue("tags", newTags);
-	};
-
 	return (
 		<Box
 			as="form"
@@ -100,61 +64,22 @@ export default function CreateArticleForm() {
 			<Stack gap={4}>
 				<RootErrorMessage error={errors.root} />
 
-				<FormControl isInvalid={!!errors.title}>
-					<FormLabel htmlFor="title">Title:</FormLabel>
-					<Input id="title" type="text" {...register("title")} />
-					<FormErrorMessage>{errors.title?.message}</FormErrorMessage>
-				</FormControl>
+				<CustomInput id="title" type="text" label="Title" error={errors.title} {...register("title")} />
 
-				<FormControl isInvalid={!!errors.description}>
-					<FormLabel htmlFor="description">Description:</FormLabel>
-					<Input id="description" type="text" {...register("description")} />
-					<FormErrorMessage>{errors.description?.message}</FormErrorMessage>
-				</FormControl>
+				<CustomInput
+					id="description"
+					type="text"
+					label="Description"
+					error={errors.description}
+					{...register("description")}
+				/>
 
-				<FormControl isInvalid={!!errors.body}>
-					<FormLabel htmlFor="body">Body:</FormLabel>
-					<Textarea id="body" resize="none" rows={6} {...register("body")} />
-					<FormErrorMessage>{errors.body?.message}</FormErrorMessage>
-				</FormControl>
+				<CustomTextarea id="body" label="Body" resize="none" rows={6} error={errors.body} {...register("body")} />
 
-				<FormControl isInvalid={!!errors.tags}>
-					<FormLabel htmlFor="tags">Tags:</FormLabel>
-					<InputGroup>
-						<Input
-							id="tags"
-							type="text"
-							value={tag}
-							onChange={(e) => setTag(e.target.value)}
-							onKeyDown={handleTagEnter}
-						/>
-						<InputRightElement>
-							<IconButton
-								icon={<AddIcon />}
-								isRound={true}
-								size="xs"
-								variant="solid"
-								colorScheme="gray"
-								aria-label="Add tag"
-								onClick={handleAddTag}
-							/>
-						</InputRightElement>
-					</InputGroup>
-					<Flex gap={1} mt={2} wrap="wrap">
-						{(watch("tags") ?? []).map((tag, index) => (
-							<Tag key={index} size="sm" variant="solid" colorScheme="gray">
-								<TagLabel>{tag}</TagLabel>
-								<TagCloseButton onClick={() => handleRemoveTag(tag)} />
-							</Tag>
-						))}
-					</Flex>
-					<FormErrorMessage>{errors.tags?.message}</FormErrorMessage>
-				</FormControl>
+				<TagsInput tags={watch("tags")} error={errors.tags} setTags={(t) => setValue("tags", t)} />
 
 				{/* Todo: Change buttons to use Chakra loading state */}
-				<Button type="submit" colorScheme="green" px={8} alignSelf="center" disabled={create.isLoading}>
-					{create.isLoading ? "Creating..." : "Create"}
-				</Button>
+				<SubmitButton isLoading={create.isLoading}>Create</SubmitButton>
 			</Stack>
 		</Box>
 	);
