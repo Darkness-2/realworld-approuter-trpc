@@ -1,5 +1,5 @@
 import CreateArticleForm from "$/components/article/CreateArticleForm";
-import FormPage from "$/components/FormPage";
+import FormPage from "$/components/forms/FormPage";
 import { withRequireSession } from "$/components/hocs/withSession";
 
 function NewArticlePage() {

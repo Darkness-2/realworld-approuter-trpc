@@ -1,6 +1,6 @@
 import UpdatePasswordForm from "$/app/settings/UpdatePasswordForm";
 import UpdateUsernameForm from "$/app/settings/UpdateUsernameForm";
-import FormPage from "$/components/FormPage";
+import FormPage from "$/components/forms/FormPage";
 import { withRequireSession } from "$/components/hocs/withSession";
 import { Stack, StackDivider } from "@chakra-ui/react";
 
