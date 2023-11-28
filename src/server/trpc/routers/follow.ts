@@ -33,5 +33,12 @@ export const followRouter = createTRPCRouter({
 		if (f) return true;
 
 		return false;
-	})
+	}),
+
+	getAuthorsFollowing: privateProcedure.query(
+		async ({ ctx }) =>
+			await ctx.db.query.follow.findMany({
+				where: ({ userId }, { eq }) => eq(userId, ctx.user.userId)
+			})
+	)
 });
