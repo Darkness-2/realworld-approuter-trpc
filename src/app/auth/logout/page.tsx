@@ -12,11 +12,11 @@ export default function LogoutPage() {
 	const { mutate } = trpc.auth.logout.useMutation({
 		onSuccess: (data) => {
 			router.push(data.redirectTo);
-			router.refresh();
 		},
 		onSettled: () => {
-			// Refetch current user
-			utils.auth.getCurrentUser.invalidate();
+			// Invalidate all queries and refresh router
+			utils.invalidate();
+			router.refresh();
 		}
 	});
 
