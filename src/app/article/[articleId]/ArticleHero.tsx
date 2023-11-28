@@ -49,7 +49,9 @@ export default function ArticleHero({ article }: ArticleHeroProps) {
 										<DeleteArticleButton articleId={article.id} />
 									</>
 								)}
-								{user.userId !== article.authorId && <FollowButton username={article.author.username} />}
+								{user.userId !== article.authorId && (
+									<FollowButton authorId={article.authorId} username={article.author.username} />
+								)}
 								<LikeButton />
 							</>
 						)}
