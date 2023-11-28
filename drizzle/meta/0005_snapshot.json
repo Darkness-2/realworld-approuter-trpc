@@ -1,0 +1,340 @@
+{
+  "id": "5f0261d1-c04b-4878-879c-d2e215de9810",
+  "prevId": "625e6ad9-da32-4dfd-bba8-08b1e2eb26c8",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "realworld_approuter_trpc_article": {
+      "name": "realworld_approuter_trpc_article",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(24)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "body": {
+          "name": "body",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "author_id": {
+          "name": "author_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "realworld_approuter_trpc_article_author_id_realworld_approuter_trpc_auth_user_id_fk": {
+          "name": "realworld_approuter_trpc_article_author_id_realworld_approuter_trpc_auth_user_id_fk",
+          "tableFrom": "realworld_approuter_trpc_article",
+          "tableTo": "realworld_approuter_trpc_auth_user",
+          "columnsFrom": [
+            "author_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "realworld_approuter_trpc_articles_to_tags": {
+      "name": "realworld_approuter_trpc_articles_to_tags",
+      "schema": "",
+      "columns": {
+        "article_id": {
+          "name": "article_id",
+          "type": "char(24)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tag_id": {
+          "name": "tag_id",
+          "type": "char(24)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "realworld_approuter_trpc_articles_to_tags_article_id_realworld_approuter_trpc_article_id_fk": {
+          "name": "realworld_approuter_trpc_articles_to_tags_article_id_realworld_approuter_trpc_article_id_fk",
+          "tableFrom": "realworld_approuter_trpc_articles_to_tags",
+          "tableTo": "realworld_approuter_trpc_article",
+          "columnsFrom": [
+            "article_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "realworld_approuter_trpc_articles_to_tags_tag_id_realworld_approuter_trpc_tag_id_fk": {
+          "name": "realworld_approuter_trpc_articles_to_tags_tag_id_realworld_approuter_trpc_tag_id_fk",
+          "tableFrom": "realworld_approuter_trpc_articles_to_tags",
+          "tableTo": "realworld_approuter_trpc_tag",
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "realworld_approuter_trpc_articles_to_tags_article_id_tag_id_pk": {
+          "name": "realworld_approuter_trpc_articles_to_tags_article_id_tag_id_pk",
+          "columns": [
+            "article_id",
+            "tag_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "realworld_approuter_trpc_tag": {
+      "name": "realworld_approuter_trpc_tag",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(24)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "text": {
+          "name": "text",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "realworld_approuter_trpc_tag_text_unique": {
+          "name": "realworld_approuter_trpc_tag_text_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "text"
+          ]
+        }
+      }
+    },
+    "realworld_approuter_trpc_user_key": {
+      "name": "realworld_approuter_trpc_user_key",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hashed_password": {
+          "name": "hashed_password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "realworld_approuter_trpc_user_key_user_id_realworld_approuter_trpc_auth_user_id_fk": {
+          "name": "realworld_approuter_trpc_user_key_user_id_realworld_approuter_trpc_auth_user_id_fk",
+          "tableFrom": "realworld_approuter_trpc_user_key",
+          "tableTo": "realworld_approuter_trpc_auth_user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "realworld_approuter_trpc_user_session": {
+      "name": "realworld_approuter_trpc_user_session",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(128)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active_expires": {
+          "name": "active_expires",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idle_expires": {
+          "name": "idle_expires",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "realworld_approuter_trpc_user_session_user_id_realworld_approuter_trpc_auth_user_id_fk": {
+          "name": "realworld_approuter_trpc_user_session_user_id_realworld_approuter_trpc_auth_user_id_fk",
+          "tableFrom": "realworld_approuter_trpc_user_session",
+          "tableTo": "realworld_approuter_trpc_auth_user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "realworld_approuter_trpc_auth_user": {
+      "name": "realworld_approuter_trpc_auth_user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(15)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "realworld_approuter_trpc_auth_user_username_unique": {
+          "name": "realworld_approuter_trpc_auth_user_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        }
+      }
+    },
+    "realworld_approuter_trpc_follow": {
+      "name": "realworld_approuter_trpc_follow",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "author_id": {
+          "name": "author_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "realworld_approuter_trpc_follow_user_id_realworld_approuter_trpc_auth_user_id_fk": {
+          "name": "realworld_approuter_trpc_follow_user_id_realworld_approuter_trpc_auth_user_id_fk",
+          "tableFrom": "realworld_approuter_trpc_follow",
+          "tableTo": "realworld_approuter_trpc_auth_user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "realworld_approuter_trpc_follow_author_id_realworld_approuter_trpc_auth_user_id_fk": {
+          "name": "realworld_approuter_trpc_follow_author_id_realworld_approuter_trpc_auth_user_id_fk",
+          "tableFrom": "realworld_approuter_trpc_follow",
+          "tableTo": "realworld_approuter_trpc_auth_user",
+          "columnsFrom": [
+            "author_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "realworld_approuter_trpc_follow_author_id_user_id_pk": {
+          "name": "realworld_approuter_trpc_follow_author_id_user_id_pk",
+          "columns": [
+            "author_id",
+            "user_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

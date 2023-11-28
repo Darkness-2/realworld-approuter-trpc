@@ -50,8 +50,8 @@ export default function SignupForm() {
 			setError("root", { message: "Something went wrong" });
 		},
 		onSettled: () => {
-			// Refetch current user
-			utils.auth.getCurrentUser.invalidate();
+			// Refetch all queries
+			utils.invalidate();
 		}
 	});
 

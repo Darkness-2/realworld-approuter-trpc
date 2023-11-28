@@ -1,6 +1,6 @@
 "use client";
 
-import FollowButton from "$/components/author/FollowButton";
+import FollowButton from "$/components/follow/FollowButton";
 import { useUser } from "$/lib/hooks/auth";
 import { type RouterOutputs } from "$/lib/trpc/shared";
 import { SettingsIcon } from "@chakra-ui/icons";
@@ -30,7 +30,9 @@ export default function UserHero({ user }: UserHeroProps) {
 						</Button>
 					)}
 					{/* If logged in user is viewing someone else's page, show follow button */}
-					{sessionUser && sessionUser.userId !== user.id && <FollowButton username={user.username} />}
+					{sessionUser && sessionUser.userId !== user.id && (
+						<FollowButton authorId={user.id} username={user.username} />
+					)}
 				</Stack>
 			</Container>
 		</Box>

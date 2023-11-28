@@ -52,8 +52,8 @@ export default function LoginForm() {
 			setError("root", { message: e.message });
 		},
 		onSettled: () => {
-			// Refetch current user and reset password field
-			utils.auth.getCurrentUser.invalidate();
+			// Invalidate all queries
+			utils.invalidate();
 		}
 	});
 
