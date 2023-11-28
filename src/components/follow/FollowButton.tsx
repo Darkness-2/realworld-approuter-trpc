@@ -10,8 +10,6 @@ type FollowButtonProps = {
 	username: string;
 };
 
-// Todo: Make button follow / unfollow author
-
 export default function FollowButton({ authorId, username }: FollowButtonProps) {
 	const utils = trpc.useUtils();
 	const toast = useToast();
