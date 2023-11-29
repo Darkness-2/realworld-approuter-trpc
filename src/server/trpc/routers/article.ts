@@ -155,6 +155,13 @@ export const articleRouter = createTRPCRouter({
 			};
 		}),
 
+	getLikedArticles: privateProcedure.query(
+		async ({ ctx }) =>
+			await ctx.db.query.like.findMany({
+				where: ({ userId }, { eq }) => eq(userId, ctx.user.userId)
+			})
+	),
+
 	deleteArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
 		const deletedArticles = await ctx.db
 			.delete(article)
