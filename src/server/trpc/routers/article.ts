@@ -141,7 +141,9 @@ export const articleRouter = createTRPCRouter({
 			const author = await userByUsernameQuery(ctx.db, input.username);
 			if (!author) return null;
 
-			const articles = await articlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.offset);
+			const articles = (await articlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.offset)).map(
+				({ likes, ...rest }) => ({ ...rest, likesCount: likes.length })
+			);
 
 			return {
 				articles,

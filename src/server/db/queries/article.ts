@@ -98,6 +98,11 @@ export const articlesByAuthorIdQuery = cache(
 					with: {
 						tag: true
 					}
+				},
+				likes: {
+					columns: {
+						articleId: true
+					}
 				}
 			}
 		})
