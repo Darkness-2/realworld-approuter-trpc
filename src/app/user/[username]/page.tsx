@@ -35,7 +35,7 @@ export default async function UserPage({ params }: UserPageProps) {
 				<Tabs>
 					<TabList>
 						<Tab>{author.username}&apos;s articles</Tab>
-						<Tab>Favorited articles</Tab>
+						<Tab>Liked articles</Tab>
 					</TabList>
 					<TabPanels>
 						<TabPanel px={0}>
@@ -45,7 +45,7 @@ export default async function UserPage({ params }: UserPageProps) {
 								))}
 							</Stack>
 						</TabPanel>
-						<TabPanel px={0}>Todo: Enter user favorited articles</TabPanel>
+						<TabPanel px={0}>Todo: Enter user&apos;s liked articles</TabPanel>
 					</TabPanels>
 				</Tabs>
 			</Section>
