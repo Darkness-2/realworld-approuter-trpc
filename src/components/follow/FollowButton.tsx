@@ -87,7 +87,7 @@ export default function FollowButton({ authorId, username }: FollowButtonProps) 
 			leftIcon={isFollowing ? <ViewOffIcon /> : <ViewIcon />}
 			onClick={handleClick}
 		>
-			{isFollowing ? <>Unfollow</> : <>Follow</>} @{username}
+			{isFollowing ? "Unfollow" : "Follow"} @{username}
 		</Button>
 	);
 }
