@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "$/components/ui/Link";
 import { Box, Text } from "@chakra-ui/react";
 
@@ -16,7 +18,9 @@ export default function AuthorAndDate({ createdAt, username, variant }: AuthorAn
 			<Link href={`/user/${username}`} textColor={linkTextColor} fontWeight="medium">
 				@{username}
 			</Link>
-			<Text fontSize="xs" color={dateTextColor}>
+			{/* Note suppressHydrationWarning below is okay as date errors are to be expected */}
+			{/* See https://nextjs.org/docs/messages/react-hydration-error#solution-3-using-suppresshydrationwarning */}
+			<Text fontSize="xs" color={dateTextColor} suppressHydrationWarning>
 				{createdAt.toLocaleDateString("en-CA", {
 					dateStyle: "long"
 				})}
