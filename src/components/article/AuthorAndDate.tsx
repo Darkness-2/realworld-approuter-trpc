@@ -33,7 +33,9 @@ export default function AuthorAndDate({ createdAt, username, variant }: AuthorAn
 			)}
 			{!isClient && <Skeleton h="18px" w="80px" />}
 
-			<Text key={isClient.toString()}>{date}</Text>
+			<Text key={isClient.toString()} suppressHydrationWarning>
+				{date}
+			</Text>
 		</Box>
 	);
 }
