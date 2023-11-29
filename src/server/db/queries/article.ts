@@ -71,7 +71,8 @@ export const articleByIdQuery = cache(
 				},
 				author: {
 					columns: { username: true }
-				}
+				},
+				likes: true
 			}
 		})
 );

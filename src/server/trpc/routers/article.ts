@@ -127,9 +127,17 @@ export const articleRouter = createTRPCRouter({
 		return { articles, totalCount };
 	}),
 
-	getArticleById: publicProcedure
-		.input(articleIdSchema)
-		.query(async ({ ctx, input }) => await articleByIdQuery(ctx.db, input)),
+	getArticleById: publicProcedure.input(articleIdSchema).query(async ({ ctx, input }) => {
+		const rawArticle = await articleByIdQuery(ctx.db, input);
+
+		// Return null if article not found
+		if (!rawArticle) return null;
+
+		const { likes, ...rest } = rawArticle;
+		const article = { ...rest, likesCount: likes.length };
+
+		return article;
+	}),
 
 	getArticlesByAuthorUsername: publicProcedure
 		.input(
