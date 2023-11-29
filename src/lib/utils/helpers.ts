@@ -14,3 +14,10 @@ export type SearchParams = { [key: string]: string | string[] | undefined };
 export const convertTagsToDBFormat = (tags: string[] | undefined): TagInsert[] => {
 	return tags?.map((tag) => ({ text: tag })) ?? [];
 };
+
+/**
+ * Standard date formatter to be used for date strings.
+ */
+export const dateFormatter = new Intl.DateTimeFormat("en-CA", {
+	dateStyle: "long"
+});
