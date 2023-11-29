@@ -214,11 +214,18 @@ export const articleRouter = createTRPCRouter({
 			// Do nothing as like might already exist
 			.onConflictDoNothing();
 
+		// For now, revalidate entire site to update all like totals
+		revalidatePath("/", "layout");
+
 		return true;
 	}),
 
 	unlikeArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
 		await ctx.db.delete(like).where(and(eq(like.articleId, input), eq(like.userId, ctx.user.userId)));
+
+		// For now, revalidate entire site to update all like totals
+		// Todo: Get much more granular with revalidates; consider creating helper functions like "revalidateArticles, revalidateLikes"
+		revalidatePath("/", "layout");
 
 		return true;
 	})
