@@ -116,10 +116,13 @@ export const articleRouter = createTRPCRouter({
 	}),
 
 	getGlobalFeed: publicProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
-		const [articles, totalCount] = await Promise.all([
+		const [rawArticles, totalCount] = await Promise.all([
 			globalFeedQuery(ctx.db, input.limit, input.offset),
 			countTotalArticlesQuery(ctx.db)
 		]);
+
+		// Replace raw likes with likes count
+		const articles = rawArticles.map(({ likes, ...rest }) => ({ ...rest, likesCount: likes.length }));
 
 		return { articles, totalCount };
 	}),

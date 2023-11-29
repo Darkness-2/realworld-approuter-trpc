@@ -30,6 +30,9 @@ export const globalFeedQuery = cache(
 				},
 				author: {
 					columns: { username: true }
+				},
+				likes: {
+					columns: { articleId: true }
 				}
 			}
 		})
