@@ -32,6 +32,8 @@ export default function AuthorAndDate({ createdAt, username, variant }: AuthorAn
 				</Text>
 			)}
 			{!isClient && <Skeleton h="18px" w="80px" />}
+
+			<Text key={isClient.toString()}>{date}</Text>
 		</Box>
 	);
 }
