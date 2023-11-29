@@ -52,7 +52,7 @@ export default function ArticleHero({ article }: ArticleHeroProps) {
 								{user.userId !== article.authorId && (
 									<FollowButton authorId={article.authorId} username={article.author.username} />
 								)}
-								<LikeButton />
+								<LikeButton articleId={article.id} likes={article.likesCount} />
 							</>
 						)}
 					</Flex>
