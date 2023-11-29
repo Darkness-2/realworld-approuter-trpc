@@ -50,6 +50,7 @@ export const tagRelations = relations(tag, ({ many }) => ({
 	articlesToTags: many(articlesToTags)
 }));
 
+// Todo add these helper types for all tables
 export type Tag = typeof tag.$inferSelect;
 export type TagInsert = typeof tag.$inferInsert;
 
