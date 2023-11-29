@@ -4,10 +4,10 @@ import { cache } from "react";
 
 /**
  * Factory to create server-side callers for tRPC.
- * Needed as this ensures every request will get a new caller.
+ * Needed as this ensures every request will get a new, unique caller.
  *
- * NOTE: intentionally not passing in things like headers and cookies,
- * those are better referenced in the server-side code.
+ * NOTE: Intentionally not using dynamic functions like headers and cookies,
+ * in order to ensure that pages using this are still cachable.
  *
  * @returns a server-side caller for tRPC
  */
