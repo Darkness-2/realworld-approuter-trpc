@@ -25,6 +25,9 @@ export default function AuthorAndDate({ createdAt, username, variant }: AuthorAn
 				@{username}
 			</Link>
 
+			{/* Note: suppressHydrationWarning is okay here as dates are expected to be different between server and client */}
+			{/* Also using key here to ensure the date is re-rendered once on client */}
+			{/* See https://nextjs.org/docs/messages/react-hydration-error#solution-3-using-suppresshydrationwarning */}
 			<Text fontSize="xs" color={dateTextColor} key={isClient.toString()} suppressHydrationWarning>
 				{date}
 			</Text>
