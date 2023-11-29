@@ -3,13 +3,15 @@
 import { StarIcon } from "@chakra-ui/icons";
 import { Tag, TagLeftIcon } from "@chakra-ui/react";
 
-// Todo: Get real likes counts
+type LikesTagProps = {
+	likes: number;
+};
 
-export default function LikesTag() {
+export default function LikesTag({ likes }: LikesTagProps) {
 	return (
 		<Tag colorScheme="green">
 			<TagLeftIcon as={StarIcon} />
-			100 Likes
+			{likes} Likes
 		</Tag>
 	);
 }
