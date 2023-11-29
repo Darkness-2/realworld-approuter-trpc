@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "$/components/ui/Link";
 import { Box, Text } from "@chakra-ui/react";
 
