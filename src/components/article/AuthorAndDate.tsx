@@ -3,7 +3,7 @@
 import Link from "$/components/ui/Link";
 import { useIsClient } from "$/lib/hooks/general";
 import { dateFormatter } from "$/lib/utils/helpers";
-import { Box, Skeleton, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 
 type AuthorAndDateProps = {
 	createdAt: Date;
@@ -25,15 +25,7 @@ export default function AuthorAndDate({ createdAt, username, variant }: AuthorAn
 				@{username}
 			</Link>
 
-			{/* Only render date on the client to avoid timezone hydration issues; render skeleton during SSR */}
-			{isClient && (
-				<Text fontSize="xs" color={dateTextColor}>
-					{date}
-				</Text>
-			)}
-			{!isClient && <Skeleton h="18px" w="80px" />}
-
-			<Text key={isClient.toString()} suppressHydrationWarning>
+			<Text fontSize="xs" color={dateTextColor} key={isClient.toString()} suppressHydrationWarning>
 				{date}
 			</Text>
 		</Box>
