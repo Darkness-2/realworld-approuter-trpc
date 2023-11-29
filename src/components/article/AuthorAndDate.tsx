@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "$/components/ui/Link";
+import { useIsClient } from "$/lib/hooks/general";
 import { dateFormatter } from "$/lib/utils/helpers";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Skeleton, Text } from "@chakra-ui/react";
 
 type AuthorAndDateProps = {
 	createdAt: Date;
@@ -11,6 +12,8 @@ type AuthorAndDateProps = {
 };
 
 export default function AuthorAndDate({ createdAt, username, variant }: AuthorAndDateProps) {
+	const isClient = useIsClient();
+
 	const linkTextColor = variant === "light" ? "green.400" : "green.500";
 	const dateTextColor = variant === "light" ? "gray.400" : "gray.500";
 
@@ -22,11 +25,13 @@ export default function AuthorAndDate({ createdAt, username, variant }: AuthorAn
 				@{username}
 			</Link>
 
-			<Text fontSize="xs" color={dateTextColor}>
-				{/* Note suppressHydrationWarning below is okay as date errors are to be expected */}
-				{/* See https://nextjs.org/docs/messages/react-hydration-error#solution-3-using-suppresshydrationwarning */}
-				<span suppressHydrationWarning>{date}</span>
-			</Text>
+			{/* Only render date on the client to avoid timezone hydration issues; render skeleton during SSR */}
+			{isClient && (
+				<Text fontSize="xs" color={dateTextColor}>
+					{date}
+				</Text>
+			)}
+			{!isClient && <Skeleton h="18px" w="80px" />}
 		</Box>
 	);
 }
