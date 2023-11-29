@@ -38,6 +38,7 @@ export const followRouter = createTRPCRouter({
 	getAuthorsFollowing: privateProcedure.query(
 		async ({ ctx }) =>
 			await ctx.db.query.follow.findMany({
+				columns: { authorId: true },
 				where: ({ userId }, { eq }) => eq(userId, ctx.user.userId)
 			})
 	)

@@ -158,6 +158,7 @@ export const articleRouter = createTRPCRouter({
 	getLikedArticles: privateProcedure.query(
 		async ({ ctx }) =>
 			await ctx.db.query.like.findMany({
+				columns: { articleId: true },
 				where: ({ userId }, { eq }) => eq(userId, ctx.user.userId)
 			})
 	),
