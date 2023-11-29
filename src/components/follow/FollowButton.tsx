@@ -82,12 +82,12 @@ export default function FollowButton({ authorId, username }: FollowButtonProps) 
 			isLoading={isLoading || follow.isLoading || unfollow.isLoading}
 			size="xs"
 			variant="solid"
-			// Show as gray while loading or if user is not following
+			// Show as gray while loading or if user is following
 			colorScheme={isFollowing || isLoading ? "gray" : "green"}
 			leftIcon={isFollowing ? <ViewOffIcon /> : <ViewIcon />}
 			onClick={handleClick}
 		>
-			{isFollowing ? <>Unfollow</> : <>Follow</>} @{username}
+			{isFollowing ? "Unfollow" : "Follow"} @{username}
 		</Button>
 	);
 }

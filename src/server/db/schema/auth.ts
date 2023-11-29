@@ -2,7 +2,7 @@ import { follow } from "$/server/db/schema/follow";
 import { relations } from "drizzle-orm";
 import { bigint, varchar } from "drizzle-orm/pg-core";
 import { pgTable } from "../root";
-import { article } from "./article";
+import { article, like } from "./article";
 
 /**
  * Tables for Lucia auth.
@@ -23,6 +23,7 @@ export const userRelations = relations(user, ({ many }) => ({
 	sessions: many(session),
 	keys: many(key),
 	articles: many(article),
+	likes: many(like),
 	follows: many(follow, { relationName: "user" }),
 	followers: many(follow, { relationName: "author" })
 }));

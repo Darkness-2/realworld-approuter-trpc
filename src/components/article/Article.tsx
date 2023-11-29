@@ -23,7 +23,7 @@ export default function Article({ article }: ArticleProps) {
 				alignItems="center"
 			>
 				<AuthorAndDate variant="dark" createdAt={article.createdAt} username={article.author.username} />
-				<LikesTag />
+				<LikesTag likes={article.likesCount} />
 			</Flex>
 
 			{/* Main text content */}

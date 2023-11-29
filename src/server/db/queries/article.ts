@@ -30,6 +30,9 @@ export const globalFeedQuery = cache(
 				},
 				author: {
 					columns: { username: true }
+				},
+				likes: {
+					columns: { articleId: true }
 				}
 			}
 		})
@@ -68,7 +71,8 @@ export const articleByIdQuery = cache(
 				},
 				author: {
 					columns: { username: true }
-				}
+				},
+				likes: true
 			}
 		})
 );
@@ -94,6 +98,11 @@ export const articlesByAuthorIdQuery = cache(
 					columns: {},
 					with: {
 						tag: true
+					}
+				},
+				likes: {
+					columns: {
+						articleId: true
 					}
 				}
 			}

@@ -30,7 +30,8 @@ export const articleRelations = relations(article, ({ one, many }) => ({
 	author: one(user, {
 		fields: [article.authorId],
 		references: [user.id]
-	})
+	}),
+	likes: many(like)
 }));
 
 export const tag = pgTable("tag", {
@@ -84,5 +85,35 @@ export const articlesToTagsRelations = relations(articlesToTags, ({ one }) => ({
 	tag: one(tag, {
 		fields: [articlesToTags.tagId],
 		references: [tag.id]
+	})
+}));
+
+export const like = pgTable(
+	"like",
+	{
+		articleId: char("article_id", {
+			length: 24
+		})
+			.notNull()
+			.references(() => article.id),
+		userId: varchar("user_id", {
+			length: 15
+		})
+			.notNull()
+			.references(() => user.id)
+	},
+	(t) => ({
+		pk: primaryKey({ columns: [t.articleId, t.userId] })
+	})
+);
+
+export const likeRelations = relations(like, ({ one }) => ({
+	article: one(article, {
+		fields: [like.articleId],
+		references: [article.id]
+	}),
+	user: one(user, {
+		fields: [like.userId],
+		references: [user.id]
 	})
 }));

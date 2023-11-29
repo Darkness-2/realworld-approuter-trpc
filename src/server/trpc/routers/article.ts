@@ -17,13 +17,71 @@ import {
 	tagsByTextQuery
 } from "$/server/db/queries/article";
 import { userByUsernameQuery } from "$/server/db/queries/auth";
-import { article, articlesToTags } from "$/server/db/schema/article";
+import { article, articlesToTags, like } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const articleRouter = createTRPCRouter({
+	// Todo: Reorganize all routers like this; or consider breaking these out into separate objects
+
+	/**
+	 * Procedures to retreive articles.
+	 */
+
+	getGlobalFeed: publicProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
+		const [rawArticles, totalCount] = await Promise.all([
+			globalFeedQuery(ctx.db, input.limit, input.offset),
+			countTotalArticlesQuery(ctx.db)
+		]);
+
+		// Replace raw likes with likes count
+		const articles = rawArticles.map(({ likes, ...rest }) => ({ ...rest, likesCount: likes.length }));
+
+		return { articles, totalCount };
+	}),
+
+	getArticleById: publicProcedure.input(articleIdSchema).query(async ({ ctx, input }) => {
+		const rawArticle = await articleByIdQuery(ctx.db, input);
+
+		// Return null if article not found
+		if (!rawArticle) return null;
+
+		const { likes, ...rest } = rawArticle;
+		const article = { ...rest, likesCount: likes.length };
+
+		return article;
+	}),
+
+	getArticlesByAuthorUsername: publicProcedure
+		.input(
+			limitOffsetSchema.extend({
+				username: articleAuthorUsernameSchema
+			})
+		)
+		.query(async ({ ctx, input }) => {
+			const author = await userByUsernameQuery(ctx.db, input.username);
+			if (!author) return null;
+
+			const rawArticles = await articlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.offset);
+
+			const articles = rawArticles.map(({ likes, ...rest }) => ({ ...rest, likesCount: likes.length }));
+
+			return {
+				articles,
+				// Filter author for only fields we want to expose
+				author: {
+					id: author.id,
+					username: author.username
+				}
+			};
+		}),
+
+	/**
+	 * Procedures to mutate articles.
+	 */
+
 	create: privateProcedure.input(createArticleSchema).mutation(async ({ input, ctx }) => {
 		// Todo: Explore doing this in a transaction
 
@@ -65,6 +123,7 @@ export const articleRouter = createTRPCRouter({
 
 	editArticle: privateProcedure.input(editArticleSchema).mutation(async ({ ctx, input }) => {
 		// Todo: Explore doing this in a transaction
+		// Todo: Standardize naming of procedures and queries to CRUD language
 
 		// Grab the article to be edited
 		const a = await ctx.db.query.article.findFirst({
@@ -115,41 +174,6 @@ export const articleRouter = createTRPCRouter({
 		return { success: true };
 	}),
 
-	getGlobalFeed: publicProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
-		const [articles, totalCount] = await Promise.all([
-			globalFeedQuery(ctx.db, input.limit, input.offset),
-			countTotalArticlesQuery(ctx.db)
-		]);
-
-		return { articles, totalCount };
-	}),
-
-	getArticleById: publicProcedure
-		.input(articleIdSchema)
-		.query(async ({ ctx, input }) => await articleByIdQuery(ctx.db, input)),
-
-	getArticlesByAuthorUsername: publicProcedure
-		.input(
-			limitOffsetSchema.extend({
-				username: articleAuthorUsernameSchema
-			})
-		)
-		.query(async ({ ctx, input }) => {
-			const author = await userByUsernameQuery(ctx.db, input.username);
-			if (!author) return null;
-
-			const articles = await articlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.offset);
-
-			return {
-				articles,
-				// Filter author for only fields we want to expose
-				author: {
-					id: author.id,
-					username: author.username
-				}
-			};
-		}),
-
 	deleteArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
 		const deletedArticles = await ctx.db
 			.delete(article)
@@ -163,6 +187,44 @@ export const articleRouter = createTRPCRouter({
 		}
 
 		// For now, revalidate the entire site to reflect changes
+		revalidatePath("/", "layout");
+
+		return true;
+	}),
+
+	/**
+	 * Procedures related to article likes.
+	 */
+
+	getLikedArticles: privateProcedure.query(
+		async ({ ctx }) =>
+			await ctx.db.query.like.findMany({
+				columns: { articleId: true },
+				where: ({ userId }, { eq }) => eq(userId, ctx.user.userId)
+			})
+	),
+
+	likeArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
+		await ctx.db
+			.insert(like)
+			.values({
+				articleId: input,
+				userId: ctx.user.userId
+			})
+			// Do nothing as like might already exist
+			.onConflictDoNothing();
+
+		// For now, revalidate entire site to update all like totals
+		revalidatePath("/", "layout");
+
+		return true;
+	}),
+
+	unlikeArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
+		await ctx.db.delete(like).where(and(eq(like.articleId, input), eq(like.userId, ctx.user.userId)));
+
+		// For now, revalidate entire site to update all like totals
+		// Todo: Get much more granular with revalidates; consider creating helper functions like "revalidateArticles, revalidateLikes"
 		revalidatePath("/", "layout");
 
 		return true;
