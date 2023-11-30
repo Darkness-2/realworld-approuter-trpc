@@ -17,7 +17,8 @@ import {
 	tagsByTextQuery
 } from "$/server/db/queries/article";
 import { userByUsernameQuery } from "$/server/db/queries/auth";
-import { article, articlesToTags, like } from "$/server/db/schema/article";
+import { article, articlesToTags } from "$/server/db/schema/article";
+import { like } from "$/server/db/schema/like";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
