@@ -1,4 +1,4 @@
-import Navbar from "$/components/Navbar";
+import Navbar from "$/components/ui/Navbar";
 import "$/styles/globals.css";
 import { Flex } from "@chakra-ui/react";
 import type { Metadata } from "next";
