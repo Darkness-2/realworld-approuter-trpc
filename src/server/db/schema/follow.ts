@@ -15,12 +15,12 @@ export const follow = pgTable(
 			length: 15
 		})
 			.notNull()
-			.references(() => user.id),
+			.references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
 		authorId: varchar("author_id", {
 			length: 15
 		})
 			.notNull()
-			.references(() => user.id)
+			.references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" })
 	},
 	(t) => ({
 		pk: primaryKey({ columns: [t.authorId, t.userId] })
