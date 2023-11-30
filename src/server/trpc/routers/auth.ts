@@ -9,7 +9,19 @@ import { LuciaError } from "lucia";
 import { revalidatePath } from "next/cache";
 import * as context from "next/headers";
 
-export const authRouter = createTRPCRouter({
+const queries = {
+	getCurrentUser: publicProcedure.use(requireRequestData).query(({ ctx: { user } }) => {
+		if (!user) return null;
+
+		// Filter user for only fields we want to expose
+		return {
+			username: user.username,
+			userId: user.userId
+		};
+	})
+};
+
+const authActions = {
 	login: publicProcedure.input(loginUserSchema).mutation(async ({ input }) => {
 		const { username, password } = input;
 
@@ -44,6 +56,24 @@ export const authRouter = createTRPCRouter({
 		}
 	}),
 
+	logout: publicProcedure.mutation(async () => {
+		const authRequest = auth.handleRequest("POST", context);
+		const session = await authRequest.validate();
+
+		// If session exists, invalidate the current session and clean up any dead user sessions
+		if (session) {
+			await auth.invalidateSession(session.sessionId);
+			await auth.deleteDeadUserSessions(session.user.userId);
+		}
+
+		// Delete session cookie regardless
+		authRequest.setSession(null);
+
+		return { redirectTo: "/" };
+	})
+};
+
+const mutations = {
 	signup: publicProcedure.input(createUserSchema).mutation(async ({ input }) => {
 		const { username, password } = input;
 
@@ -88,32 +118,6 @@ export const authRouter = createTRPCRouter({
 			// Unexpected error occurred
 			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
 		}
-	}),
-
-	logout: publicProcedure.mutation(async () => {
-		const authRequest = auth.handleRequest("POST", context);
-		const session = await authRequest.validate();
-
-		// If session exists, invalidate the current session and clean up any dead user sessions
-		if (session) {
-			await auth.invalidateSession(session.sessionId);
-			await auth.deleteDeadUserSessions(session.user.userId);
-		}
-
-		// Delete session cookie regardless
-		authRequest.setSession(null);
-
-		return { redirectTo: "/" };
-	}),
-
-	getCurrentUser: publicProcedure.use(requireRequestData).query(({ ctx: { user } }) => {
-		if (!user) return null;
-
-		// Filter user for only fields we want to expose
-		return {
-			username: user.username,
-			userId: user.userId
-		};
 	}),
 
 	updateUsername: privateProcedure.input(usernameCreateSchema).mutation(async ({ ctx: { db, user }, input }) => {
@@ -207,4 +211,10 @@ export const authRouter = createTRPCRouter({
 			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
 		}
 	})
+};
+
+export const authRouter = createTRPCRouter({
+	...queries,
+	...authActions,
+	...mutations
 });
