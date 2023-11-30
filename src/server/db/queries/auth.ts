@@ -2,7 +2,7 @@ import { type DB } from "$/server/db";
 import { cache } from "react";
 
 /**
- * Query to get a user based on their username.
+ * Cached query to get a user based on their username.
  *
  * @param db instance of the DB
  * @param name username of the user to find
