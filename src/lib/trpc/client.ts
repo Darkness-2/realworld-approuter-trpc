@@ -17,7 +17,7 @@ export const createTRPCClient = () =>
 			}),
 			httpBatchLink({
 				url: getTRPCUrl(),
-				// Todo: Add max URL length?
+				maxURLLength: 2083,
 				headers: () => ({
 					"x-trpc-source": typeof window !== "undefined" ? "client" : "server-component"
 				})
