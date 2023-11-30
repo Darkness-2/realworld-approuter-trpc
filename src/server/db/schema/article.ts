@@ -21,7 +21,7 @@ export const article = pgTable("article", {
 		length: 15
 	})
 		.notNull()
-		.references(() => user.id),
+		.references(() => user.id, { onDelete: "restrict", onUpdate: "cascade" }),
 	createdAt: timestamp("created_at").notNull().defaultNow()
 });
 
@@ -65,12 +65,12 @@ export const articlesToTags = pgTable(
 			length: 24
 		})
 			.notNull()
-			.references(() => article.id, { onDelete: "cascade" }),
+			.references(() => article.id, { onDelete: "cascade", onUpdate: "cascade" }),
 		tagId: char("tag_id", {
 			length: 24
 		})
 			.notNull()
-			.references(() => tag.id)
+			.references(() => tag.id, { onDelete: "cascade", onUpdate: "cascade" })
 	},
 	(t) => ({
 		pk: primaryKey({ columns: [t.articleId, t.tagId] })
@@ -95,12 +95,12 @@ export const like = pgTable(
 			length: 24
 		})
 			.notNull()
-			.references(() => article.id),
+			.references(() => article.id, { onDelete: "cascade", onUpdate: "cascade" }),
 		userId: varchar("user_id", {
 			length: 15
 		})
 			.notNull()
-			.references(() => user.id)
+			.references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" })
 	},
 	(t) => ({
 		pk: primaryKey({ columns: [t.articleId, t.userId] })

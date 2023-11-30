@@ -50,6 +50,13 @@
       "when": 1701223873356,
       "tag": "0006_bumpy_hulk",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1701303586114,
+      "tag": "0007_unknown_wallop",
+      "breakpoints": true
     }
   ]
 }

@@ -9,7 +9,6 @@ import { article, like } from "./article";
  * @see https://lucia-auth.com/getting-started/nextjs-app/
  *
  * Todo: Determine what needs to be indexed
- * Todo: Consider what to do on delete and on update
  * Todo: Customize user ids
  */
 export const user = pgTable("auth_user", {
@@ -36,7 +35,7 @@ export const session = pgTable("user_session", {
 		length: 15
 	})
 		.notNull()
-		.references(() => user.id),
+		.references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
 	activeExpires: bigint("active_expires", {
 		mode: "number"
 	}).notNull(),
@@ -60,7 +59,7 @@ export const key = pgTable("user_key", {
 		length: 15
 	})
 		.notNull()
-		.references(() => user.id),
+		.references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
 	hashedPassword: varchar("hashed_password", {
 		length: 255
 	})
