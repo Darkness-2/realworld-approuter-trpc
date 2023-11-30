@@ -1,35 +1,29 @@
 import { userIdSchema } from "$/lib/schemas/auth";
-import { follow } from "$/server/db/schema/follow";
+import { deleteFollow, getAuthorsFollowingQuery, insertFollow } from "$/server/db/queries/follow";
 import { createTRPCRouter, privateProcedure } from "$/server/trpc/trpc";
-import { and, eq } from "drizzle-orm";
 
 // Todo: Move all DB queries and mutations into db queries folder
 
 export const followRouter = createTRPCRouter({
 	follow: privateProcedure.input(userIdSchema).mutation(async ({ ctx, input }) => {
-		await ctx.db
-			.insert(follow)
-			.values({
-				authorId: input,
-				userId: ctx.user.userId
-			})
-			// Do nothing as follow relationship might already exist
-			.onConflictDoNothing();
+		await insertFollow(ctx.db, {
+			authorId: input,
+			userId: ctx.user.userId
+		});
 
 		return true;
 	}),
 
 	unfollow: privateProcedure.input(userIdSchema).mutation(async ({ ctx, input }) => {
-		await ctx.db.delete(follow).where(and(eq(follow.userId, ctx.user.userId), eq(follow.authorId, input)));
+		await deleteFollow(ctx.db, {
+			authorId: input,
+			userId: ctx.user.userId
+		});
 
 		return true;
 	}),
 
 	getAuthorsFollowing: privateProcedure.query(
-		async ({ ctx }) =>
-			await ctx.db.query.follow.findMany({
-				columns: { authorId: true },
-				where: ({ userId }, { eq }) => eq(userId, ctx.user.userId)
-			})
+		async ({ ctx }) => await getAuthorsFollowingQuery(ctx.db, ctx.user.userId)
 	)
 });
