@@ -25,17 +25,6 @@ export const followRouter = createTRPCRouter({
 		return true;
 	}),
 
-	// Todo: Check if this is being used; remove any unused procedures
-	checkIfFollowing: privateProcedure.input(userIdSchema).query(async ({ ctx, input }) => {
-		const f = await ctx.db.query.follow.findFirst({
-			where: ({ authorId, userId }, { and, eq }) => and(eq(authorId, input), eq(userId, ctx.user.userId))
-		});
-
-		if (f) return true;
-
-		return false;
-	}),
-
 	getAuthorsFollowing: privateProcedure.query(
 		async ({ ctx }) =>
 			await ctx.db.query.follow.findMany({
