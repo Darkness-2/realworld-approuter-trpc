@@ -1,6 +1,8 @@
 import { type DB } from "$/server/db";
 import { cache } from "react";
 
+/** Queries */
+
 /**
  * Cached query to get a user based on their username.
  *
@@ -8,7 +10,7 @@ import { cache } from "react";
  * @param name username of the user to find
  * @returns the user or undefined if not found
  */
-export const userByUsernameQuery = cache(
+export const getUserByUsernameQuery = cache(
 	async (db: DB, name: string) =>
 		await db.query.user.findFirst({
 			where: ({ username }, { eq }) => eq(username, name)

@@ -16,7 +16,7 @@ import {
 	globalFeedQuery,
 	tagsByTextQuery
 } from "$/server/db/queries/article";
-import { userByUsernameQuery } from "$/server/db/queries/auth";
+import { getUserByUsernameQuery } from "$/server/db/queries/auth";
 import { article, articlesToTags } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
@@ -61,7 +61,7 @@ export const articleRouter = createTRPCRouter({
 			})
 		)
 		.query(async ({ ctx, input }) => {
-			const author = await userByUsernameQuery(ctx.db, input.username);
+			const author = await getUserByUsernameQuery(ctx.db, input.username);
 			if (!author) return null;
 
 			const rawArticles = await articlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.offset);
