@@ -2,9 +2,13 @@ import { userIdSchema } from "$/lib/schemas/auth";
 import { deleteFollow, getAuthorsFollowingQuery, insertFollow } from "$/server/db/queries/follow";
 import { createTRPCRouter, privateProcedure } from "$/server/trpc/trpc";
 
-// Todo: Move all DB queries and mutations into db queries folder
+const queries = {
+	getAuthorsFollowing: privateProcedure.query(
+		async ({ ctx }) => await getAuthorsFollowingQuery(ctx.db, ctx.user.userId)
+	)
+};
 
-export const followRouter = createTRPCRouter({
+const mutations = {
 	follow: privateProcedure.input(userIdSchema).mutation(async ({ ctx, input }) => {
 		await insertFollow(ctx.db, {
 			authorId: input,
@@ -21,9 +25,10 @@ export const followRouter = createTRPCRouter({
 		});
 
 		return true;
-	}),
+	})
+};
 
-	getAuthorsFollowing: privateProcedure.query(
-		async ({ ctx }) => await getAuthorsFollowingQuery(ctx.db, ctx.user.userId)
-	)
+export const followRouter = createTRPCRouter({
+	...queries,
+	...mutations
 });
