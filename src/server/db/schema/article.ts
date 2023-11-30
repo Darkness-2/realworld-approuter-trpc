@@ -38,6 +38,8 @@ export const articleRelations = relations(article, ({ one, many }) => ({
 export type Article = typeof article.$inferSelect;
 export type ArticleInsert = typeof article.$inferInsert;
 
+// Todo: Consider breaking tag out into a separate schema
+
 export const tag = pgTable("tag", {
 	id: char("id", {
 		length: 24
