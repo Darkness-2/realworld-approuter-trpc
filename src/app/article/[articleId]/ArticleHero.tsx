@@ -2,8 +2,8 @@
 
 import DeleteArticleButton from "$/app/article/[articleId]/DeleteArticleButton";
 import AuthorAndDate from "$/components/article/AuthorAndDate";
-import LikeButton from "$/components/article/LikeButton";
 import FollowButton from "$/components/follow/FollowButton";
+import LikeButton from "$/components/like/LikeButton";
 import { useUser } from "$/lib/hooks/auth";
 import { type RouterOutputs } from "$/lib/trpc/shared";
 import { EditIcon } from "@chakra-ui/icons";

@@ -17,7 +17,7 @@ import {
 	tagsByTextQuery
 } from "$/server/db/queries/article";
 import { userByUsernameQuery } from "$/server/db/queries/auth";
-import { article, articlesToTags, like } from "$/server/db/schema/article";
+import { article, articlesToTags } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
@@ -187,44 +187,6 @@ export const articleRouter = createTRPCRouter({
 		}
 
 		// For now, revalidate the entire site to reflect changes
-		revalidatePath("/", "layout");
-
-		return true;
-	}),
-
-	/**
-	 * Procedures related to article likes.
-	 */
-
-	getLikedArticles: privateProcedure.query(
-		async ({ ctx }) =>
-			await ctx.db.query.like.findMany({
-				columns: { articleId: true },
-				where: ({ userId }, { eq }) => eq(userId, ctx.user.userId)
-			})
-	),
-
-	likeArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
-		await ctx.db
-			.insert(like)
-			.values({
-				articleId: input,
-				userId: ctx.user.userId
-			})
-			// Do nothing as like might already exist
-			.onConflictDoNothing();
-
-		// For now, revalidate entire site to update all like totals
-		revalidatePath("/", "layout");
-
-		return true;
-	}),
-
-	unlikeArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
-		await ctx.db.delete(like).where(and(eq(like.articleId, input), eq(like.userId, ctx.user.userId)));
-
-		// For now, revalidate entire site to update all like totals
-		// Todo: Get much more granular with revalidates; consider creating helper functions like "revalidateArticles, revalidateLikes"
 		revalidatePath("/", "layout");
 
 		return true;

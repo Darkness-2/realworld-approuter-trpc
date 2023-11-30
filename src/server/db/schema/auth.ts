@@ -2,7 +2,8 @@ import { follow } from "$/server/db/schema/follow";
 import { relations } from "drizzle-orm";
 import { bigint, varchar } from "drizzle-orm/pg-core";
 import { pgTable } from "../root";
-import { article, like } from "./article";
+import { article } from "./article";
+import { like } from "./like";
 
 /**
  * Tables for Lucia auth.

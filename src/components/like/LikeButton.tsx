@@ -17,7 +17,7 @@ export default function LikeButton({ likes, articleId }: LikeButtonProps) {
 	const toast = useToast();
 	const { likedArticles, isLoading } = useLikedArticles();
 
-	const like = trpc.article.likeArticle.useMutation({
+	const like = trpc.like.likeArticle.useMutation({
 		onError: (e) => {
 			// Something unexpected happened
 			toast({
@@ -30,13 +30,14 @@ export default function LikeButton({ likes, articleId }: LikeButtonProps) {
 			console.error(e);
 		},
 		onSettled: () => {
-			// Invalidate liked articles query and refresh the router
-			utils.article.getLikedArticles.invalidate();
+			// Invalidate likes and articles; refresh router
+			utils.article.invalidate();
+			utils.like.invalidate();
 			router.refresh();
 		}
 	});
 
-	const unlike = trpc.article.unlikeArticle.useMutation({
+	const unlike = trpc.like.unlikeArticle.useMutation({
 		onError: (e) => {
 			// Something unexpected happened
 			toast({
@@ -49,8 +50,9 @@ export default function LikeButton({ likes, articleId }: LikeButtonProps) {
 			console.error(e);
 		},
 		onSettled: () => {
-			// Invalidate liked articles query and refresh the router
-			utils.article.getLikedArticles.invalidate();
+			// Invalidate likes and articles; refresh router
+			utils.article.invalidate();
+			utils.like.invalidate();
 			router.refresh();
 		}
 	});
