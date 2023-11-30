@@ -33,3 +33,6 @@ export const likeRelations = relations(like, ({ one }) => ({
 		references: [user.id]
 	})
 }));
+
+export type Like = typeof like.$inferSelect;
+export type LikeInsert = typeof like.$inferInsert;
