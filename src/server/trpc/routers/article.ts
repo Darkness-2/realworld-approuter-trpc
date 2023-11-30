@@ -8,13 +8,13 @@ import { limitOffsetSchema } from "$/lib/schemas/helpers";
 import { ArticleError } from "$/lib/utils/errors";
 import { convertTagsToDBFormat } from "$/lib/utils/helpers";
 import {
-	articleByIdQuery,
-	articlesByAuthorIdQuery,
-	connectTagsToArticleQuery,
-	countTotalArticlesQuery,
-	createTagsQuery,
-	globalFeedQuery,
-	tagsByTextQuery
+	connectTagsToArticleMutation,
+	getArticleByIdQuery,
+	getArticlesByAuthorIdQuery,
+	getGlobalFeedQuery,
+	getTagsByTextQuery,
+	getTotalArticlesCountQuery,
+	insertTagsMutation
 } from "$/server/db/queries/article";
 import { getUserByUsernameQuery } from "$/server/db/queries/auth";
 import { article, articlesToTags } from "$/server/db/schema/article";
@@ -32,8 +32,8 @@ export const articleRouter = createTRPCRouter({
 
 	getGlobalFeed: publicProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
 		const [rawArticles, totalCount] = await Promise.all([
-			globalFeedQuery(ctx.db, input.limit, input.offset),
-			countTotalArticlesQuery(ctx.db)
+			getGlobalFeedQuery(ctx.db, input.limit, input.offset),
+			getTotalArticlesCountQuery(ctx.db)
 		]);
 
 		// Replace raw likes with likes count
@@ -43,7 +43,7 @@ export const articleRouter = createTRPCRouter({
 	}),
 
 	getArticleById: publicProcedure.input(articleIdSchema).query(async ({ ctx, input }) => {
-		const rawArticle = await articleByIdQuery(ctx.db, input);
+		const rawArticle = await getArticleByIdQuery(ctx.db, input);
 
 		// Return null if article not found
 		if (!rawArticle) return null;
@@ -64,7 +64,7 @@ export const articleRouter = createTRPCRouter({
 			const author = await getUserByUsernameQuery(ctx.db, input.username);
 			if (!author) return null;
 
-			const rawArticles = await articlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.offset);
+			const rawArticles = await getArticlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.offset);
 
 			const articles = rawArticles.map(({ likes, ...rest }) => ({ ...rest, likesCount: likes.length }));
 
@@ -96,7 +96,7 @@ export const articleRouter = createTRPCRouter({
 
 		// Convert tags to format DB expects and create if needed
 		const tagsToInsert = convertTagsToDBFormat(input.tags);
-		const newTagsQuery = createTagsQuery(ctx.db, tagsToInsert);
+		const newTagsQuery = insertTagsMutation(ctx.db, tagsToInsert);
 
 		// Run queries
 		const [newArticles] = await Promise.all([newArticleQuery, newTagsQuery]);
@@ -110,9 +110,9 @@ export const articleRouter = createTRPCRouter({
 
 		// Connect tags to article if needed
 		if (input.tags && input.tags.length > 0) {
-			const tags = await tagsByTextQuery(ctx.db, input.tags);
+			const tags = await getTagsByTextQuery(ctx.db, input.tags);
 			const tagIds = tags.map((tag) => tag.id);
-			await connectTagsToArticleQuery(ctx.db, tagIds, articleId);
+			await connectTagsToArticleMutation(ctx.db, tagIds, articleId);
 		}
 
 		// For now, revalidate the entire site to reflect changes
@@ -153,7 +153,7 @@ export const articleRouter = createTRPCRouter({
 
 		// Convert tags to format DB expects and create if needed
 		const tagsToInsert = convertTagsToDBFormat(input.tags);
-		const newTagsQuery = createTagsQuery(ctx.db, tagsToInsert);
+		const newTagsQuery = insertTagsMutation(ctx.db, tagsToInsert);
 
 		// Remove all existing tags from the article; will reset them later
 		const removeTagsQuery = ctx.db.delete(articlesToTags).where(eq(articlesToTags.articleId, a.id));
@@ -163,9 +163,9 @@ export const articleRouter = createTRPCRouter({
 
 		// Connect tags to article if needed
 		if (input.tags && input.tags.length > 0) {
-			const tags = await tagsByTextQuery(ctx.db, input.tags);
+			const tags = await getTagsByTextQuery(ctx.db, input.tags);
 			const tagIds = tags.map((tag) => tag.id);
-			await connectTagsToArticleQuery(ctx.db, tagIds, a.id);
+			await connectTagsToArticleMutation(ctx.db, tagIds, a.id);
 		}
 
 		// For now, revalidate the entire site to reflect changes

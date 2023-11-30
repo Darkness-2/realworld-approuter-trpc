@@ -3,6 +3,8 @@ import { article, articlesToTags, tag, type TagInsert } from "$/server/db/schema
 import { sql } from "drizzle-orm";
 import { cache } from "react";
 
+/** Queries */
+
 /**
  * Cached database call to get the data required for the global feed.
  * Sorted descending by createdAt date.
@@ -14,7 +16,7 @@ import { cache } from "react";
  * @param limit how many items to get
  * @param offset how many items to offset
  */
-export const globalFeedQuery = cache(
+export const getGlobalFeedQuery = cache(
 	async (db: DB, limit: number, offset: number) =>
 		await db.query.article.findMany({
 			columns: { body: false },
@@ -43,7 +45,7 @@ export const globalFeedQuery = cache(
  *
  * @param db instance of the DB
  */
-export const countTotalArticlesQuery = cache(async (db: DB) => {
+export const getTotalArticlesCountQuery = cache(async (db: DB) => {
 	const res = await db.select({ count: sql<number>`cast(count(*) as int)` }).from(article);
 
 	// Really should not happen
@@ -58,7 +60,7 @@ export const countTotalArticlesQuery = cache(async (db: DB) => {
  * @param db instance of the DB
  * @param articleId id of the article to get
  */
-export const articleByIdQuery = cache(
+export const getArticleByIdQuery = cache(
 	async (db: DB, articleId: string) =>
 		await db.query.article.findFirst({
 			where: ({ id }, { eq }) => eq(id, articleId),
@@ -78,14 +80,14 @@ export const articleByIdQuery = cache(
 );
 
 /**
- * Cached database call to get a articles created by a specific author, with tag info.
+ * Cached database call to get articles created by a specific author, with tag info.
  *
  * @param db instance of the DB
  * @param id id of the author
  * @param limit how many items to get
  * @param offset how many items to offset
  */
-export const articlesByAuthorIdQuery = cache(
+export const getArticlesByAuthorIdQuery = cache(
 	async (db: DB, id: string, limit: number, offset: number) =>
 		await db.query.article.findMany({
 			columns: { body: false },
@@ -110,17 +112,19 @@ export const articlesByAuthorIdQuery = cache(
 );
 
 /**
- * Cached database call to get a tags by their text.
+ * Cached database call to get tags by their text.
  *
  * @param db instance of the DB
  * @param tags string array of tag texts to find
  */
-export const tagsByTextQuery = cache(
+export const getTagsByTextQuery = cache(
 	async (db: DB, tags: string[]) =>
 		await db.query.tag.findMany({
 			where: ({ text }, { inArray }) => inArray(text, tags)
 		})
 );
+
+/** Mutations */
 
 /**
  * Query to add tags to the database. Will only add if the array is not empty.
@@ -129,7 +133,7 @@ export const tagsByTextQuery = cache(
  * @param tags to be added
  * @returns true if added; false if no tags added
  */
-export const createTagsQuery = async (db: DB, tags: TagInsert[]) => {
+export const insertTagsMutation = async (db: DB, tags: TagInsert[]) => {
 	// Don't bother if the array is empty
 	if (tags.length === 0) return false;
 
@@ -147,7 +151,7 @@ export const createTagsQuery = async (db: DB, tags: TagInsert[]) => {
  * @param articleId ID of the article to add them to
  * @returns true if added; false if not
  */
-export const connectTagsToArticleQuery = async (db: DB, tagIds: string[], articleId: string) => {
+export const connectTagsToArticleMutation = async (db: DB, tagIds: string[], articleId: string) => {
 	// Don't bother if the array is empty
 	if (tagIds.length === 0) return false;
 
