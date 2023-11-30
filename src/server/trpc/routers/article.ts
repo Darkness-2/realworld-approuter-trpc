@@ -23,13 +23,7 @@ import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-export const articleRouter = createTRPCRouter({
-	// Todo: Reorganize all routers like this; or consider breaking these out into separate objects
-
-	/**
-	 * Procedures to retreive articles.
-	 */
-
+const feeds = {
 	getGlobalFeed: publicProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
 		const [rawArticles, totalCount] = await Promise.all([
 			getGlobalFeedQuery(ctx.db, input.limit, input.offset),
@@ -40,8 +34,10 @@ export const articleRouter = createTRPCRouter({
 		const articles = rawArticles.map(({ likes, ...rest }) => ({ ...rest, likesCount: likes.length }));
 
 		return { articles, totalCount };
-	}),
+	})
+};
 
+const queries = {
 	getArticleById: publicProcedure.input(articleIdSchema).query(async ({ ctx, input }) => {
 		const rawArticle = await getArticleByIdQuery(ctx.db, input);
 
@@ -76,12 +72,10 @@ export const articleRouter = createTRPCRouter({
 					username: author.username
 				}
 			};
-		}),
+		})
+};
 
-	/**
-	 * Procedures to mutate articles.
-	 */
-
+const mutations = {
 	create: privateProcedure.input(createArticleSchema).mutation(async ({ input, ctx }) => {
 		// Todo: Explore doing this in a transaction
 
@@ -191,4 +185,10 @@ export const articleRouter = createTRPCRouter({
 
 		return true;
 	})
+};
+
+export const articleRouter = createTRPCRouter({
+	...feeds,
+	...queries,
+	...mutations
 });
