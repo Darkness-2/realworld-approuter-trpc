@@ -28,6 +28,9 @@ export const userRelations = relations(user, ({ many }) => ({
 	followers: many(follow, { relationName: "author" })
 }));
 
+export type User = typeof user.$inferSelect;
+export type UserInsert = typeof user.$inferInsert;
+
 export const session = pgTable("user_session", {
 	id: varchar("id", {
 		length: 128
@@ -52,6 +55,9 @@ export const sessionRelations = relations(session, ({ one }) => ({
 	})
 }));
 
+export type Session = typeof session.$inferSelect;
+export type SessionInsert = typeof session.$inferInsert;
+
 export const key = pgTable("user_key", {
 	id: varchar("id", {
 		length: 255
@@ -72,3 +78,6 @@ export const keyRelations = relations(key, ({ one }) => ({
 		references: [user.id]
 	})
 }));
+
+export type Key = typeof key.$inferSelect;
+export type KeyInsert = typeof key.$inferInsert;
