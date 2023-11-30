@@ -3,10 +3,7 @@ import { like, type Like, type LikeInsert } from "$/server/db/schema/like";
 import { and, eq } from "drizzle-orm";
 import { cache } from "react";
 
-/**
- * Queries
- * Should be cached where possible.
- */
+/** Queries */
 
 /**
  * Cached database call to get the liked articles of a specific user.
@@ -23,9 +20,7 @@ export const getLikedArticlesQuery = cache(
 		})
 );
 
-/**
- * Mutations
- */
+/** Mutations */
 
 /**
  * Adds a new like into the database.
