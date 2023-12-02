@@ -19,6 +19,7 @@ export const createTRPCClient = () =>
 				url: getTRPCUrl(),
 				maxURLLength: 2083,
 				headers: () => ({
+					// Todo: Is it even possible to trigger this client server-side?
 					"x-trpc-source": typeof window !== "undefined" ? "client" : "server-component"
 				})
 			})
