@@ -8,9 +8,8 @@ type HomePageProps = {
 	searchParams: SearchParams;
 };
 
-export default function HomePage({ searchParams }: HomePageProps) {
-	const pageString = "page" in searchParams && typeof searchParams.page === "string" ? searchParams.page : "1";
-	const page = parseInt(pageString);
+export default function HomePage({ searchParams: { page } }: HomePageProps) {
+	const pageNumber = typeof page === "string" ? parseInt(page) : 1;
 
 	return (
 		<>
@@ -23,7 +22,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
 					</TabList>
 					<TabPanels>
 						<TabPanel px={0}>
-							<HomePageGlobalFeed page={page} />
+							<HomePageGlobalFeed page={pageNumber} />
 						</TabPanel>
 						<TabPanel px={0}>Todo: Put in user&apos;s feed</TabPanel>
 					</TabPanels>
