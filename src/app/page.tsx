@@ -32,4 +32,9 @@ export default function HomePage({ searchParams: { page } }: HomePageProps) {
 	);
 }
 
-export const revalidate = 300;
+/**  Todo: Using searchParams currently doesn't support static rendering
+ * Possible solutions: wait for unstable_cache to become stable or
+ * extract paginated stuff into separate page so that home page can still be static.
+ */
+
+// export const revalidate = 300;
