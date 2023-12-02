@@ -29,7 +29,11 @@ export default async function HomePageGlobalFeed({ page }: HomePageGlobalFeedPro
 			{articles.map((article) => (
 				<Article key={article.id} article={article} />
 			))}
-			<PaginationButtons currentPage={page} lastPage={findLastPageNumber(totalCount, DEFAULT_PAGE_SIZE)} />
+			<PaginationButtons
+				currentPage={page}
+				lastPage={findLastPageNumber(totalCount, DEFAULT_PAGE_SIZE)}
+				pathname="/feed"
+			/>
 		</Stack>
 	);
 }

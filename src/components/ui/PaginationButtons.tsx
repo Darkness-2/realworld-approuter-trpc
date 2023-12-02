@@ -9,9 +9,11 @@ type PaginationButtonsProps = {
 	currentPage: number;
 	lastPage: number;
 	firstPage?: number;
+	// To be used if the desired pathname is not the same as the page itself
+	pathname?: string;
 };
 
-export default function PaginationButtons({ currentPage, lastPage, firstPage = 1 }: PaginationButtonsProps) {
+export default function PaginationButtons({ currentPage, lastPage, firstPage = 1, pathname }: PaginationButtonsProps) {
 	// Determine what page numbers to render
 	const pagesToRender: number[] = [];
 
@@ -26,13 +28,17 @@ export default function PaginationButtons({ currentPage, lastPage, firstPage = 1
 		// Todo: Create loading state for this
 		<Suspense fallback={<Skeleton h="32px" w="150px" />}>
 			<ButtonGroup isAttached>
-				<PaginationButton page={firstPage}>{"<<"}</PaginationButton>
+				<PaginationButton page={firstPage} pathname={pathname}>
+					{"<<"}
+				</PaginationButton>
 				{pagesToRender.map((page) => (
-					<PaginationButton key={page} page={page} currentPage={currentPage === page}>
+					<PaginationButton key={page} page={page} currentPage={currentPage === page} pathname={pathname}>
 						{page}
 					</PaginationButton>
 				))}
-				<PaginationButton page={lastPage}>{">>"}</PaginationButton>
+				<PaginationButton page={lastPage} pathname={pathname}>
+					{">>"}
+				</PaginationButton>
 			</ButtonGroup>
 		</Suspense>
 	);
@@ -42,10 +48,11 @@ type PaginationButtonProps = {
 	children: ReactNode;
 	page: number;
 	currentPage?: boolean;
+	pathname?: string;
 };
 
-function PaginationButton({ children, page, currentPage = false }: PaginationButtonProps) {
-	const pathname = usePathname();
+function PaginationButton({ children, page, currentPage = false, pathname }: PaginationButtonProps) {
+	const actualPathname = usePathname();
 	const searchParams = useSearchParams();
 
 	// Generate new search params for the page, taking into account others that might already be set
@@ -53,7 +60,7 @@ function PaginationButton({ children, page, currentPage = false }: PaginationBut
 	newSearchParams.set("page", page.toString());
 
 	// Generate the href for the link
-	const href = `${pathname}?${newSearchParams.toString()}`;
+	const href = `${pathname ?? actualPathname}?${newSearchParams.toString()}`;
 
 	return (
 		<Button as={Link} href={href} size="sm" colorScheme={currentPage ? "green" : "gray"}>
