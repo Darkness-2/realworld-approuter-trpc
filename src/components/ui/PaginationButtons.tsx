@@ -1,9 +1,9 @@
 "use client";
 
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { Button, ButtonGroup, Skeleton } from "@chakra-ui/react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { type ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 
 type PaginationButtonsProps = {
 	currentPage: number;
@@ -22,15 +22,19 @@ export default function PaginationButtons({ currentPage, lastPage, firstPage = 1
 	if (currentPage + 2 <= lastPage) pagesToRender.push(currentPage + 2);
 
 	return (
-		<ButtonGroup isAttached>
-			<PaginationButton page={firstPage}>{"<<"}</PaginationButton>
-			{pagesToRender.map((page) => (
-				<PaginationButton key={page} page={page} currentPage={currentPage === page}>
-					{page}
-				</PaginationButton>
-			))}
-			<PaginationButton page={lastPage}>{">>"}</PaginationButton>
-		</ButtonGroup>
+		// Wrapped in suspense as useSearchParams defers rendering to client-side
+		// Todo: Create loading state for this
+		<Suspense fallback={<Skeleton h="32px" w="150px" />}>
+			<ButtonGroup isAttached>
+				<PaginationButton page={firstPage}>{"<<"}</PaginationButton>
+				{pagesToRender.map((page) => (
+					<PaginationButton key={page} page={page} currentPage={currentPage === page}>
+						{page}
+					</PaginationButton>
+				))}
+				<PaginationButton page={lastPage}>{">>"}</PaginationButton>
+			</ButtonGroup>
+		</Suspense>
 	);
 }
 
