@@ -6,7 +6,12 @@ import { revalidatePath } from "next/cache";
 // Todo: Get much more granular with revalidates; consider creating helper functions like "revalidateArticles, revalidateLikes"
 
 const queries = {
-	getLikedArticles: privateProcedure.query(async ({ ctx }) => await getLikedArticlesQuery(ctx.db, ctx.user.userId))
+	getLikedArticles: privateProcedure.query(async ({ ctx }) => {
+		const rawLikes = await getLikedArticlesQuery(ctx.db, ctx.user.userId);
+		const likes = rawLikes.map((l) => l.articleId);
+
+		return likes;
+	})
 };
 
 const mutations = {
