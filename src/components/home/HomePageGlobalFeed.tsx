@@ -14,8 +14,8 @@ type HomePageGlobalFeedProps = {
 };
 
 export default async function HomePageGlobalFeed({ page }: HomePageGlobalFeedProps) {
-	// If going to a zero or negative page, throw not found
-	if (page < 1) notFound();
+	// If page is not valid, throw not found
+	if (page < 1 || isNaN(page)) notFound();
 
 	const { articles, totalCount } = await getServerClient().article.getGlobalFeed(
 		getLimitOffsetForPage(page, DEFAULT_PAGE_SIZE)
