@@ -21,3 +21,26 @@ export const convertTagsToDBFormat = (tags: string[] | undefined): TagInsert[] =
 export const dateFormatter = new Intl.DateTimeFormat("en-CA", {
 	dateStyle: "long"
 });
+
+/**
+ * Helper function to find the last page number of a given set of paginated items.
+ * @param total number of items being paginated
+ * @param pageSize number of items per page
+ * @returns number of the last page
+ */
+export const findLastPageNumber = (total: number, pageSize: number) => {
+	return Math.ceil(total / pageSize);
+};
+
+/**
+ * Helper function to get the limit and offset values for a particular page number.
+ * @param pageNumber page number to get the values for
+ * @param pageSize size of a page
+ * @returns object including limit and offset values
+ */
+export const getLimitOffsetForPage = (pageNumber: number, pageSize: number) => {
+	return {
+		limit: pageSize,
+		offset: (pageNumber - 1) * pageSize
+	};
+};
