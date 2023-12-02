@@ -2,7 +2,7 @@
 
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { type ReactNode } from "react";
 
 type PaginationButtonsProps = {
@@ -12,11 +12,6 @@ type PaginationButtonsProps = {
 };
 
 export default function PaginationButtons({ currentPage, lastPage, firstPage = 1 }: PaginationButtonsProps) {
-	// Remove the existing page number from the page
-	const fullPathname = usePathname().split("/");
-	fullPathname.pop();
-	const pathname = fullPathname.join("");
-
 	// Determine what page numbers to render
 	const pagesToRender: number[] = [];
 
@@ -28,24 +23,34 @@ export default function PaginationButtons({ currentPage, lastPage, firstPage = 1
 
 	return (
 		<ButtonGroup isAttached>
-			<PaginationButton href={`${pathname}/${firstPage}`}>{"<<"}</PaginationButton>
+			<PaginationButton page={firstPage}>{"<<"}</PaginationButton>
 			{pagesToRender.map((page) => (
-				<PaginationButton key={page} href={`${pathname}/${page}`} currentPage={currentPage === page}>
+				<PaginationButton key={page} page={page} currentPage={currentPage === page}>
 					{page}
 				</PaginationButton>
 			))}
-			<PaginationButton href={`${pathname}/${lastPage}`}>{">>"}</PaginationButton>
+			<PaginationButton page={lastPage}>{">>"}</PaginationButton>
 		</ButtonGroup>
 	);
 }
 
 type PaginationButtonProps = {
 	children: ReactNode;
-	href: string;
+	page: number;
 	currentPage?: boolean;
 };
 
-function PaginationButton({ children, href, currentPage = false }: PaginationButtonProps) {
+function PaginationButton({ children, page, currentPage = false }: PaginationButtonProps) {
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
+
+	// Generate new search params for the page, taking into account others that might already be set
+	const newSearchParams = new URLSearchParams(searchParams);
+	newSearchParams.set("page", page.toString());
+
+	// Generate the href for the link
+	const href = `${pathname}?${newSearchParams.toString()}`;
+
 	return (
 		<Button as={Link} href={href} size="sm" colorScheme={currentPage ? "green" : "gray"}>
 			{children}
