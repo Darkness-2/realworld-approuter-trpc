@@ -1,4 +1,4 @@
-import HomePageGlobalFeedLoader from "$/components/home/HomePageGlobalFeedLoader";
+import HomePageGlobalFeedServer from "$/components/home/HomePageGlobalFeedServer";
 import HomePageHero from "$/components/home/HomePageHero";
 import Section from "$/components/ui/Section";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
@@ -15,7 +15,7 @@ export default function Home() {
 					</TabList>
 					<TabPanels>
 						<TabPanel px={0}>
-							<HomePageGlobalFeedLoader />
+							<HomePageGlobalFeedServer />
 						</TabPanel>
 						<TabPanel px={0}>Todo: Put in user&apos;s feed</TabPanel>
 					</TabPanels>

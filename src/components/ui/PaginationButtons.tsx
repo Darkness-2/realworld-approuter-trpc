@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { type ReactNode } from "react";
 
-type PaginationButtonsProps = {
+export type PaginationButtonsProps = {
 	currentPage: number;
 	lastPage: number;
 	firstPage?: number;
