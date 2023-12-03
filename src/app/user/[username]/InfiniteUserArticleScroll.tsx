@@ -58,8 +58,9 @@ export default function InfiniteUserArticleScroll({
 		});
 
 	// Merge articles from the pages together and format for the ArticleList component
-	const mergedArticles: ComponentProps<typeof ArticleList>["articles"] = useMemo(
-		() =>
+	const mergedArticles: ComponentProps<typeof ArticleList>["articles"] = useMemo(() => {
+		console.log("use memo running");
+		return (
 			data?.pages.flatMap((page) => {
 				// Theoretically shouldn't be null as at this point we know the username exists
 				if (!page) return [];
@@ -67,9 +68,9 @@ export default function InfiniteUserArticleScroll({
 				// Add author information back into the articles
 				const articles = page.articles.map((article) => ({ ...article, author: { username } }));
 				return [...articles];
-			}) ?? [],
-		[data, username]
-	);
+			}) ?? []
+		);
+	}, [data, username]);
 
 	return (
 		<Stack gap={2} divider={<StackDivider />}>
