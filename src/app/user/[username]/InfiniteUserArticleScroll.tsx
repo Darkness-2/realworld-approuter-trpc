@@ -32,6 +32,10 @@ export default function InfiniteUserArticleScroll({
 
 	// Set the initial data if it is fresher than existing data or if no data exists
 	if (!state || state.dataUpdatedAt < initialDataTimestamp) {
+		console.log("resetting query data");
+		console.log(`state refreshed at ${state?.dataUpdatedAt}`);
+		console.log(`server data refreshed at ${initialDataTimestamp}`);
+
 		utils.article.getArticlesByAuthorUsername.setInfiniteData(
 			queryInputs,
 			{ pages: [initialData], pageParams: [undefined] },
