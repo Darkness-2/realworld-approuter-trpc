@@ -7,7 +7,6 @@ import { trpc } from "$/lib/trpc/client";
  */
 export const useFollows = () => {
 	const authorsFollowing = trpc.follow.getAuthorsFollowing.useQuery(undefined, {
-		refetchOnWindowFocus: false,
 		// Only refetch the user's followers every 5 minutes if needed
 		staleTime: 1000 * 60 * 5
 	});

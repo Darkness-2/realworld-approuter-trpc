@@ -1,5 +1,6 @@
 import { getTRPCUrl } from "$/lib/trpc/shared";
 import { type AppRouter } from "$/server/trpc/root";
+import { QueryClient } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import superjson from "superjson";
@@ -24,4 +25,13 @@ export const createTRPCClient = () =>
 				})
 			})
 		]
+	});
+
+export const createQueryClient = () =>
+	new QueryClient({
+		defaultOptions: {
+			queries: {
+				refetchOnWindowFocus: false
+			}
+		}
 	});
