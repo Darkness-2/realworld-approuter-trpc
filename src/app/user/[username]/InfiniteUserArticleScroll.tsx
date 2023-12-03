@@ -32,6 +32,8 @@ export default function InfiniteUserArticleScroll({ username, initialData }: Inf
 				// Todo: Test this the user has a number of articles divisible by 10
 				// Probably better to return a hasMore from the tRPC procedure
 
+				// Todo: Just have the procedure itself return the nextCursor as well?
+
 				const lastArticle = lastPage.articles.slice(-1);
 				return lastArticle?.[0]?.createdAt;
 			}
