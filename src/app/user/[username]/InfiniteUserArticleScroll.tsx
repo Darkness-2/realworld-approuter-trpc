@@ -1,5 +1,6 @@
 "use client";
 
+import Article from "$/components/article/Article";
 import ArticleList from "$/components/article/ArticleList";
 import { trpc } from "$/lib/trpc/client";
 import { type RouterOutputs } from "$/lib/trpc/shared";
@@ -71,9 +72,11 @@ export default function InfiniteUserArticleScroll({
 
 	return (
 		<Stack gap={2} divider={<StackDivider />}>
-			{/* Todo: Add loading state */}
+			{/* Display loading state if loading; otherwise show article list */}
+			{isLoading && <Article isLoading={true} />}
 			{!isLoading && <ArticleList articles={mergedArticles} />}
-			{/* Todo: Loading state for this button */}
+
+			{/* Load more button, only shown if another page is available */}
 			<Flex justifyContent="center">
 				{hasNextPage && (
 					<Button isLoading={isFetching} onClick={() => !isFetching && fetchNextPage()}>
