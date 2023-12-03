@@ -4,7 +4,7 @@ import {
 	createArticleSchema,
 	editArticleSchema
 } from "$/lib/schemas/article";
-import { limitOffsetSchema } from "$/lib/schemas/helpers";
+import { limitCreatedAtCursorSchema, limitOffsetSchema } from "$/lib/schemas/helpers";
 import { ArticleError } from "$/lib/utils/errors";
 import { convertTagsToDBFormat } from "$/lib/utils/helpers";
 import {
@@ -52,7 +52,7 @@ const queries = {
 
 	getArticlesByAuthorUsername: publicProcedure
 		.input(
-			limitOffsetSchema.extend({
+			limitCreatedAtCursorSchema.extend({
 				username: articleAuthorUsernameSchema
 			})
 		)
@@ -60,7 +60,7 @@ const queries = {
 			const author = await getUserByUsernameQuery(ctx.db, input.username);
 			if (!author) return null;
 
-			const rawArticles = await getArticlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.offset);
+			const rawArticles = await getArticlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.cursor);
 
 			const articles = rawArticles.map(({ likes, ...rest }) => ({ ...rest, likesCount: likes.length }));
 

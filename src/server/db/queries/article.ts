@@ -85,31 +85,33 @@ export const getArticleByIdQuery = cache(
  * @param db instance of the DB
  * @param id id of the author
  * @param limit how many items to get
- * @param offset how many items to offset
+ * @param cursor createdAt timestamp to get articles older than
  */
-export const getArticlesByAuthorIdQuery = cache(
-	async (db: DB, id: string, limit: number, offset: number) =>
-		await db.query.article.findMany({
-			columns: { body: false },
-			where: ({ authorId }, { eq }) => eq(authorId, id),
-			orderBy: ({ createdAt }, { desc }) => desc(createdAt),
-			limit,
-			offset,
-			with: {
-				articlesToTags: {
-					columns: {},
-					with: {
-						tag: true
-					}
-				},
-				likes: {
-					columns: {
-						articleId: true
-					}
+export const getArticlesByAuthorIdQuery = cache(async (db: DB, id: string, limit: number, cursor?: Date) => {
+	// If date is undefined, generate a random date far into the future
+	const date = cursor ?? new Date();
+	if (!cursor) date.setFullYear(date.getFullYear() + 10);
+
+	return await db.query.article.findMany({
+		columns: { body: false },
+		where: ({ authorId, createdAt }, { eq, and, lt }) => and(eq(authorId, id), lt(createdAt, date)),
+		orderBy: ({ createdAt }, { desc }) => desc(createdAt),
+		limit,
+		with: {
+			articlesToTags: {
+				columns: {},
+				with: {
+					tag: true
+				}
+			},
+			likes: {
+				columns: {
+					articleId: true
 				}
 			}
-		})
-);
+		}
+	});
+});
 
 /**
  * Cached database call to get tags by their text.
