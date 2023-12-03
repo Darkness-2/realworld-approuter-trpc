@@ -1,11 +1,9 @@
+import InfiniteUserArticleScroll from "$/app/user/[username]/InfiniteUserArticleScroll";
 import UserHero from "$/app/user/[username]/UserHero";
-import type Article from "$/components/article/Article";
-import ArticleList from "$/components/article/ArticleList";
 import Section from "$/components/ui/Section";
 import { getServerClient } from "$/lib/trpc/serverClient";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { notFound } from "next/navigation";
-import { type ComponentProps } from "react";
 
 type UserPageProps = {
 	params: {
@@ -16,31 +14,21 @@ type UserPageProps = {
 // Todo: Add not-found boundary
 
 export default async function UserPage({ params }: UserPageProps) {
-	const userArticles = await getServerClient().article.getArticlesByAuthorUsername({ username: params.username });
-	if (!userArticles) notFound();
-
-	const { author } = userArticles;
-
-	// Re-attach author context as expected for article type
-	const articles: ComponentProps<typeof Article>["article"][] = userArticles.articles.map((article) => ({
-		...article,
-		author: {
-			username: userArticles.author.username
-		}
-	}));
+	const initialData = await getServerClient().article.getArticlesByAuthorUsername({ username: params.username });
+	if (!initialData) notFound();
 
 	return (
 		<>
-			<UserHero user={author} />
+			<UserHero user={initialData.author} />
 			<Section>
 				<Tabs>
 					<TabList>
-						<Tab>{author.username}&apos;s articles</Tab>
+						<Tab>{initialData.author.username}&apos;s articles</Tab>
 						<Tab>Liked articles</Tab>
 					</TabList>
 					<TabPanels>
 						<TabPanel px={0}>
-							<ArticleList articles={articles} />
+							<InfiniteUserArticleScroll username={initialData.author.username} initialData={initialData} />
 						</TabPanel>
 						<TabPanel px={0}>Todo: Enter user&apos;s liked articles</TabPanel>
 					</TabPanels>
