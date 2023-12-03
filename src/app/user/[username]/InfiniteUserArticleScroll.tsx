@@ -7,7 +7,7 @@ import { type RouterOutputs } from "$/lib/trpc/shared";
 import { Button, Flex, Stack, StackDivider } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
-import { useMemo, type ComponentProps } from "react";
+import { useMemo, useState, type ComponentProps } from "react";
 
 type InfiniteArticleScrollProps = {
 	username: string;
@@ -24,6 +24,7 @@ export default function InfiniteUserArticleScroll({
 }: InfiniteArticleScrollProps) {
 	const utils = trpc.useUtils();
 	const queryClient = useQueryClient();
+	const [usedInitialData, setUsedInitialData] = useState(false);
 
 	const queryInputs = { username, limit: pageSize };
 
@@ -31,7 +32,8 @@ export default function InfiniteUserArticleScroll({
 	const state = queryClient.getQueryState(queryKey);
 
 	// Set the initial data if it is fresher than existing data or if no data exists
-	if (!state || (state.dataUpdatedAt < initialDataTimestamp && state.fetchStatus === "idle")) {
+	if (!usedInitialData && (!state || state.dataUpdatedAt < initialDataTimestamp)) {
+		setUsedInitialData(true);
 		console.log("resetting query data");
 		console.log(`state refreshed at ${state?.dataUpdatedAt}`);
 		console.log(`server data refreshed at ${initialDataTimestamp}`);
