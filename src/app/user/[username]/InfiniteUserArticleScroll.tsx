@@ -6,16 +6,15 @@ import { type RouterOutputs } from "$/lib/trpc/shared";
 import { Button } from "@chakra-ui/react";
 import { type ComponentProps } from "react";
 
-const DEFAULT_PAGE_SIZE = 10;
-
 type InfiniteArticleScrollProps = {
 	username: string;
 	initialData: RouterOutputs["article"]["getArticlesByAuthorUsername"];
+	pageSize: number;
 };
 
-export default function InfiniteUserArticleScroll({ username, initialData }: InfiniteArticleScrollProps) {
+export default function InfiniteUserArticleScroll({ username, initialData, pageSize }: InfiniteArticleScrollProps) {
 	const { data, hasNextPage, fetchNextPage } = trpc.article.getArticlesByAuthorUsername.useInfiniteQuery(
-		{ username, limit: DEFAULT_PAGE_SIZE },
+		{ username, limit: pageSize },
 		{
 			initialData: {
 				pages: [initialData],
@@ -26,14 +25,10 @@ export default function InfiniteUserArticleScroll({ username, initialData }: Inf
 				// Shouldn't theoretically happen as at this point we know the username exists
 				if (!lastPage) return undefined;
 
-				// If last page already wasn't full, no more pages exist
-				if (lastPage.articles.length < DEFAULT_PAGE_SIZE) return undefined;
+				// If there are no more pages, return undefined
+				if (!lastPage.hasMore) return undefined;
 
-				// Todo: Test this the user has a number of articles divisible by 10
-				// Probably better to return a hasMore from the tRPC procedure
-
-				// Todo: Just have the procedure itself return the nextCursor as well?
-
+				// Else, return the last createdAt timestamp
 				const lastArticle = lastPage.articles.slice(-1);
 				return lastArticle?.[0]?.createdAt;
 			}
