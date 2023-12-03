@@ -7,7 +7,7 @@ import { type RouterOutputs } from "$/lib/trpc/shared";
 import { Button, Flex, Stack, StackDivider } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
-import { useMemo, useState, type ComponentProps } from "react";
+import { useEffect, useMemo, useState, type ComponentProps } from "react";
 
 type InfiniteArticleScrollProps = {
 	username: string;
@@ -32,12 +32,9 @@ export default function InfiniteUserArticleScroll({
 	const state = queryClient.getQueryState(queryKey);
 
 	// Set the initial data if it is fresher than existing data or if no data exists
-	// Todo: look into whether useEffect is better for this
 	if (!usedInitialData && (!state || state.dataUpdatedAt < initialDataTimestamp)) {
 		setUsedInitialData(true);
 		console.log("resetting query data");
-		console.log(`state refreshed at ${state?.dataUpdatedAt}`);
-		console.log(`server data refreshed at ${initialDataTimestamp}`);
 
 		utils.article.getArticlesByAuthorUsername.setInfiniteData(
 			queryInputs,
@@ -45,6 +42,14 @@ export default function InfiniteUserArticleScroll({
 			{ updatedAt: initialDataTimestamp }
 		);
 	}
+
+	// Reset state if initialData changes
+	useEffect(() => {
+		console.log("use effect ran");
+		setUsedInitialData(false);
+	}, [initialData]);
+
+	console.log(usedInitialData);
 
 	const { data, hasNextPage, fetchNextPage, isFetching, isLoading } =
 		trpc.article.getArticlesByAuthorUsername.useInfiniteQuery(queryInputs, {
@@ -66,8 +71,6 @@ export default function InfiniteUserArticleScroll({
 
 	// Merge articles from the pages together and format for the ArticleList component
 	const mergedArticles: ComponentProps<typeof ArticleList>["articles"] = useMemo(() => {
-		console.log("use memo running");
-		console.log(data);
 		return (
 			data?.pages.flatMap((page) => {
 				// Theoretically shouldn't be null as at this point we know the username exists
