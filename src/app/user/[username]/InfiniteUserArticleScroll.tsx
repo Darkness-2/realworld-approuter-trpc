@@ -3,7 +3,7 @@
 import ArticleList from "$/components/article/ArticleList";
 import { trpc } from "$/lib/trpc/client";
 import { type RouterOutputs } from "$/lib/trpc/shared";
-import { Button } from "@chakra-ui/react";
+import { Button, Flex, Stack, StackDivider } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 import { type ComponentProps } from "react";
@@ -70,11 +70,17 @@ export default function InfiniteUserArticleScroll({
 		}) ?? [];
 
 	return (
-		<>
+		<Stack gap={2} divider={<StackDivider />}>
 			{/* Todo: Add loading state */}
 			{!isLoading && <ArticleList articles={mergedArticles} />}
 			{/* Todo: Loading state for this button */}
-			{hasNextPage && <Button onClick={() => !isFetching && fetchNextPage()}>Fetch more</Button>}
-		</>
+			<Flex justifyContent="center">
+				{hasNextPage && (
+					<Button isLoading={isFetching} onClick={() => !isFetching && fetchNextPage()}>
+						Load more
+					</Button>
+				)}
+			</Flex>
+		</Stack>
 	);
 }
