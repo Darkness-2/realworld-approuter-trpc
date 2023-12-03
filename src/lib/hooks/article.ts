@@ -7,7 +7,6 @@ import { trpc } from "$/lib/trpc/client";
  */
 export const useLikedArticles = () => {
 	const likedArticles = trpc.like.getLikedArticles.useQuery(undefined, {
-		refetchOnWindowFocus: false,
 		// Only refetch the user's liked articles every 5 minutes if needed
 		staleTime: 1000 * 60 * 5
 	});
