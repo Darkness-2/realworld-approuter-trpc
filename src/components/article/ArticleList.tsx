@@ -4,7 +4,7 @@ import { Stack, StackDivider } from "@chakra-ui/react";
 import { type ComponentProps } from "react";
 
 type ArticleListProps = {
-	articles: ComponentProps<typeof Article>["article"][];
+	articles: Required<ComponentProps<typeof Article>["article"][]>;
 	paginationOptions?: ComponentProps<typeof PaginationButtons>;
 };
 
