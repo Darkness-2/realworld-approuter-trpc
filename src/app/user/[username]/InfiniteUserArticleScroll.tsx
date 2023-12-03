@@ -7,7 +7,7 @@ import { type RouterOutputs } from "$/lib/trpc/shared";
 import { Button, Flex, Stack, StackDivider } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
-import { useEffect, useMemo, useState, type ComponentProps } from "react";
+import { useMemo, useState, type ComponentProps } from "react";
 
 type InfiniteArticleScrollProps = {
 	username: string;
@@ -28,13 +28,17 @@ export default function InfiniteUserArticleScroll({
 
 	const queryInputs = { username, limit: pageSize };
 
+	console.log("usedInitialData?", usedInitialData);
+	console.log(initialData);
+
 	const queryKey = getQueryKey(trpc.article.getArticlesByAuthorUsername, queryInputs, "infinite");
 	const state = queryClient.getQueryState(queryKey);
 
 	// Set the initial data if it is fresher than existing data or if no data exists
 	if (!usedInitialData && (!state || state.dataUpdatedAt < initialDataTimestamp)) {
 		setUsedInitialData(true);
-		console.log("resetting query data");
+
+		console.log("Resetting data using initial data");
 
 		utils.article.getArticlesByAuthorUsername.setInfiniteData(
 			queryInputs,
@@ -42,14 +46,6 @@ export default function InfiniteUserArticleScroll({
 			{ updatedAt: initialDataTimestamp }
 		);
 	}
-
-	// Reset state if initialData changes
-	useEffect(() => {
-		console.log("use effect ran");
-		setUsedInitialData(false);
-	}, [initialData]);
-
-	console.log(usedInitialData);
 
 	const { data, hasNextPage, fetchNextPage, isFetching, isLoading } =
 		trpc.article.getArticlesByAuthorUsername.useInfiniteQuery(queryInputs, {
