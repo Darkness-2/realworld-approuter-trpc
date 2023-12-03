@@ -20,6 +20,7 @@ export default function InfiniteUserArticleScroll({ username, initialData, pageS
 				pages: [initialData],
 				pageParams: []
 			},
+			initialDataUpdatedAt: new Date().getTime(),
 			getNextPageParam: (lastPage) => {
 				// Shouldn't theoretically happen as at this point we know the username exists
 				if (!lastPage) return undefined;
