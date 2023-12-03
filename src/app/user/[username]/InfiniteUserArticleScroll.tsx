@@ -13,14 +13,13 @@ type InfiniteArticleScrollProps = {
 };
 
 export default function InfiniteUserArticleScroll({ username, initialData, pageSize }: InfiniteArticleScrollProps) {
-	const { data, hasNextPage, fetchNextPage } = trpc.article.getArticlesByAuthorUsername.useInfiniteQuery(
+	const { data, hasNextPage, fetchNextPage, isFetching } = trpc.article.getArticlesByAuthorUsername.useInfiniteQuery(
 		{ username, limit: pageSize },
 		{
 			initialData: {
 				pages: [initialData],
 				pageParams: []
 			},
-			// Todo: Probably want to configure this to not refetch every page again when revisiting the page
 			getNextPageParam: (lastPage) => {
 				// Shouldn't theoretically happen as at this point we know the username exists
 				if (!lastPage) return undefined;
@@ -31,7 +30,10 @@ export default function InfiniteUserArticleScroll({ username, initialData, pageS
 				// Else, return the last createdAt timestamp
 				const lastArticle = lastPage.articles.slice(-1);
 				return lastArticle?.[0]?.createdAt;
-			}
+			},
+			// Setting stale time to the same as the page revalidate time
+			// Mutations changing articles should call article.invalidate anyway
+			staleTime: 5 * 60 * 1000
 		}
 	);
 
@@ -51,7 +53,7 @@ export default function InfiniteUserArticleScroll({ username, initialData, pageS
 			{/* Todo: Add loading state */}
 			{mergedArticles && <ArticleList articles={mergedArticles} />}
 			{/* Todo: Loading state for this button */}
-			{hasNextPage && <Button onClick={() => fetchNextPage()}>Fetch more</Button>}
+			{hasNextPage && <Button onClick={() => !isFetching && fetchNextPage()}>Fetch more</Button>}
 		</>
 	);
 }
