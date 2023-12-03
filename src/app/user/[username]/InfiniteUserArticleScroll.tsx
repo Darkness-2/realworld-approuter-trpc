@@ -24,7 +24,7 @@ export default function InfiniteUserArticleScroll({
 		{
 			initialData: {
 				pages: [initialData],
-				pageParams: []
+				pageParams: [undefined]
 			},
 			initialDataUpdatedAt: initialDataTimestamp,
 			getNextPageParam: (lastPage) => {
