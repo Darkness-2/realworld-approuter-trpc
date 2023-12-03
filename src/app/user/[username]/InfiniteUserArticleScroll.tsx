@@ -9,10 +9,16 @@ import { type ComponentProps } from "react";
 type InfiniteArticleScrollProps = {
 	username: string;
 	initialData: RouterOutputs["article"]["getArticlesByAuthorUsername"];
+	initialDataTimestamp: number;
 	pageSize: number;
 };
 
-export default function InfiniteUserArticleScroll({ username, initialData, pageSize }: InfiniteArticleScrollProps) {
+export default function InfiniteUserArticleScroll({
+	username,
+	initialData,
+	initialDataTimestamp,
+	pageSize
+}: InfiniteArticleScrollProps) {
 	const { data, hasNextPage, fetchNextPage, isFetching } = trpc.article.getArticlesByAuthorUsername.useInfiniteQuery(
 		{ username, limit: pageSize },
 		{
@@ -20,7 +26,7 @@ export default function InfiniteUserArticleScroll({ username, initialData, pageS
 				pages: [initialData],
 				pageParams: []
 			},
-			initialDataUpdatedAt: new Date().getTime(),
+			initialDataUpdatedAt: initialDataTimestamp,
 			getNextPageParam: (lastPage) => {
 				// Shouldn't theoretically happen as at this point we know the username exists
 				if (!lastPage) return undefined;

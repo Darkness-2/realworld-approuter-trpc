@@ -36,6 +36,7 @@ export default async function UserPage({ params }: UserPageProps) {
 							<InfiniteUserArticleScroll
 								username={initialData.author.username}
 								initialData={initialData}
+								initialDataTimestamp={new Date().getTime()}
 								pageSize={DEFAULT_PAGE_SIZE}
 							/>
 						</TabPanel>
