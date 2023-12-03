@@ -32,6 +32,7 @@ export default function InfiniteUserArticleScroll({
 	const state = queryClient.getQueryState(queryKey);
 
 	// Set the initial data if it is fresher than existing data or if no data exists
+	// Todo: look into whether useEffect is better for this
 	if (!usedInitialData && (!state || state.dataUpdatedAt < initialDataTimestamp)) {
 		setUsedInitialData(true);
 		console.log("resetting query data");
