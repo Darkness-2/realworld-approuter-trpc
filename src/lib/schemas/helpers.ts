@@ -11,7 +11,7 @@ export const limitOffsetSchema = z.object({
 /**
  * Schema for cursor pagination, using createdAt timestamps.
  */
-export const limitCreatedAtCursorSchema = z.object({
+export const limitDateCursorSchema = z.object({
 	limit: z.number().min(1).max(100).default(10),
 	cursor: z.date().optional()
 });

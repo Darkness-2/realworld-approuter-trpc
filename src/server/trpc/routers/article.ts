@@ -4,7 +4,7 @@ import {
 	createArticleSchema,
 	editArticleSchema
 } from "$/lib/schemas/article";
-import { limitCreatedAtCursorSchema, limitOffsetSchema } from "$/lib/schemas/helpers";
+import { limitDateCursorSchema, limitOffsetSchema } from "$/lib/schemas/helpers";
 import { ArticleError } from "$/lib/utils/errors";
 import { convertTagsToDBFormat } from "$/lib/utils/helpers";
 import {
@@ -52,7 +52,7 @@ const queries = {
 
 	getArticlesByAuthorUsername: publicProcedure
 		.input(
-			limitCreatedAtCursorSchema.extend({
+			limitDateCursorSchema.extend({
 				username: articleAuthorUsernameSchema
 			})
 		)
