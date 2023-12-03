@@ -1,8 +1,9 @@
 import UserHero from "$/app/user/[username]/UserHero";
-import Article from "$/components/article/Article";
+import type Article from "$/components/article/Article";
+import ArticleList from "$/components/article/ArticleList";
 import Section from "$/components/ui/Section";
 import { getServerClient } from "$/lib/trpc/serverClient";
-import { Stack, StackDivider, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { notFound } from "next/navigation";
 import { type ComponentProps } from "react";
 
@@ -39,11 +40,7 @@ export default async function UserPage({ params }: UserPageProps) {
 					</TabList>
 					<TabPanels>
 						<TabPanel px={0}>
-							<Stack gap={2} divider={<StackDivider />}>
-								{articles.map((article) => (
-									<Article key={article.id} article={article} />
-								))}
-							</Stack>
+							<ArticleList articles={articles} />
 						</TabPanel>
 						<TabPanel px={0}>Todo: Enter user&apos;s liked articles</TabPanel>
 					</TabPanels>
