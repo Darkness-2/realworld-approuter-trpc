@@ -60,7 +60,14 @@ const queries = {
 			const author = await getUserByUsernameQuery(ctx.db, input.username);
 			if (!author) return null;
 
-			const rawArticles = await getArticlesByAuthorIdQuery(ctx.db, author.id, input.limit, input.cursor);
+			// Grab one more than limit so we can tell if there are more pages
+			const rawArticles = await getArticlesByAuthorIdQuery(ctx.db, author.id, input.limit + 1, input.cursor);
+
+			// Determine if we have a next page
+			const hasMore = rawArticles.length > input.limit;
+
+			// Pop last one if we grabbed more than needed
+			if (hasMore) rawArticles.pop();
 
 			const articles = rawArticles.map(({ likes, ...rest }) => ({ ...rest, likesCount: likes.length }));
 
@@ -70,7 +77,8 @@ const queries = {
 				author: {
 					id: author.id,
 					username: author.username
-				}
+				},
+				hasMore
 			};
 		})
 };

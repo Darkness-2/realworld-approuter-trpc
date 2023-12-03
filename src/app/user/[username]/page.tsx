@@ -5,6 +5,8 @@ import { getServerClient } from "$/lib/trpc/serverClient";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { notFound } from "next/navigation";
 
+const DEFAULT_PAGE_SIZE = 10;
+
 type UserPageProps = {
 	params: {
 		username: string;
@@ -14,7 +16,10 @@ type UserPageProps = {
 // Todo: Add not-found boundary
 
 export default async function UserPage({ params }: UserPageProps) {
-	const initialData = await getServerClient().article.getArticlesByAuthorUsername({ username: params.username });
+	const initialData = await getServerClient().article.getArticlesByAuthorUsername({
+		limit: DEFAULT_PAGE_SIZE,
+		username: params.username
+	});
 	if (!initialData) notFound();
 
 	return (
@@ -28,7 +33,11 @@ export default async function UserPage({ params }: UserPageProps) {
 					</TabList>
 					<TabPanels>
 						<TabPanel px={0}>
-							<InfiniteUserArticleScroll username={initialData.author.username} initialData={initialData} />
+							<InfiniteUserArticleScroll
+								username={initialData.author.username}
+								initialData={initialData}
+								pageSize={DEFAULT_PAGE_SIZE}
+							/>
 						</TabPanel>
 						<TabPanel px={0}>Todo: Enter user&apos;s liked articles</TabPanel>
 					</TabPanels>
