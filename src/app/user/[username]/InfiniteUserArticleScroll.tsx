@@ -64,6 +64,7 @@ export default function InfiniteUserArticleScroll({
 	// Merge articles from the pages together and format for the ArticleList component
 	const mergedArticles: ComponentProps<typeof ArticleList>["articles"] = useMemo(() => {
 		console.log("use memo running");
+		console.log(data);
 		return (
 			data?.pages.flatMap((page) => {
 				// Theoretically shouldn't be null as at this point we know the username exists
