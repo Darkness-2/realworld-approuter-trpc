@@ -36,7 +36,8 @@ export default async function UserPage({ params }: UserPageProps) {
 							<InfiniteUserArticleScroll
 								username={initialData.author.username}
 								initialData={initialData}
-								initialDataTimestamp={new Date().getTime()}
+								// Artificially discount server generation time by 2 seconds to avoid client-server timestamp mismatches
+								initialDataTimestamp={new Date().getTime() - 2000}
 								pageSize={DEFAULT_PAGE_SIZE}
 							/>
 						</TabPanel>
