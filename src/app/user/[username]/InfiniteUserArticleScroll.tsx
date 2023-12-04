@@ -11,15 +11,15 @@ import { useMemo, type ComponentProps } from "react";
 
 type InfiniteArticleScrollProps = {
 	username: string;
-	initialData: RouterOutputs["article"]["getArticlesByAuthorUsername"];
-	initialDataTimestamp: number;
+	serverData: RouterOutputs["article"]["getArticlesByAuthorUsername"];
+	serverDataTimestamp: number;
 	pageSize: number;
 };
 
 export default function InfiniteUserArticleScroll({
 	username,
-	initialData,
-	initialDataTimestamp,
+	serverData,
+	serverDataTimestamp,
 	pageSize
 }: InfiniteArticleScrollProps) {
 	const utils = trpc.useUtils();
@@ -27,20 +27,16 @@ export default function InfiniteUserArticleScroll({
 
 	const queryInputs = { username, limit: pageSize };
 
+	// Todo: Can this procedure be broken out into a hook?
 	const queryKey = getQueryKey(trpc.article.getArticlesByAuthorUsername, queryInputs, "infinite");
 	const state = queryClient.getQueryState(queryKey);
 
-	console.log(`Server time: ${initialDataTimestamp}`);
-	console.log(`Data updated: ${state?.dataUpdatedAt}`);
-
 	// Set the initial data if it is fresher than existing data or if no data exists
-	if (!state || state.dataUpdatedAt < initialDataTimestamp) {
-		console.log("Resetting data using initial data");
-
+	if (!state || state.dataUpdatedAt < serverDataTimestamp) {
 		utils.article.getArticlesByAuthorUsername.setInfiniteData(
 			queryInputs,
-			{ pages: [initialData], pageParams: [undefined] },
-			{ updatedAt: initialDataTimestamp }
+			{ pages: [serverData], pageParams: [undefined] },
+			{ updatedAt: serverDataTimestamp }
 		);
 	}
 
