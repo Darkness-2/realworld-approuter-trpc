@@ -10,8 +10,6 @@ type CustomInputProps = InputProps & {
 	id: Required<InputProps["id"]>;
 };
 
-// Todo: Replace forms with these
-
 const CustomInput = forwardRef(function CustomInput(props: CustomInputProps, ref) {
 	return (
 		<FormControl isInvalid={!!props.error}>

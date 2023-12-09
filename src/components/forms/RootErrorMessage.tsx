@@ -5,8 +5,6 @@ type RootErrorMessageProps = {
 	error?: FieldErrors["root"];
 };
 
-// Todo: Use this for all forms
-
 export default function RootErrorMessage({ error }: RootErrorMessageProps) {
 	return (
 		<>
