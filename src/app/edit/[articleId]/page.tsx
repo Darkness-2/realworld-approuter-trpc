@@ -1,7 +1,7 @@
 import EditArticleForm from "$/app/edit/[articleId]/EditArticleForm";
 import FormPage from "$/components/forms/FormPage";
 import { withRequireSession, type SessionRequiredProps } from "$/components/hocs/withSession";
-import { getServerClient } from "$/lib/trpc/serverClient";
+import { getServerTRPCClient } from "$/lib/trpc/serverClient";
 import { notFound, redirect } from "next/navigation";
 
 type EditPageProps = SessionRequiredProps & {
@@ -13,7 +13,7 @@ type EditPageProps = SessionRequiredProps & {
 // Todo: Add not-found boundary
 
 async function EditPage({ params, session }: EditPageProps) {
-	const article = await getServerClient().article.getArticleById(params.articleId);
+	const article = await getServerTRPCClient().article.getArticleById.fetch(params.articleId);
 	if (!article) notFound();
 
 	// If the user doesn't match the article author, redirect

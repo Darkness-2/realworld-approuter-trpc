@@ -1,5 +1,5 @@
 import ArticleList from "$/components/article/ArticleList";
-import { getServerClient } from "$/lib/trpc/serverClient";
+import { getServerTRPCClient } from "$/lib/trpc/serverClient";
 import { findLastPageNumber, getLimitOffsetForPage } from "$/lib/utils/helpers";
 import { notFound } from "next/navigation";
 
@@ -15,7 +15,7 @@ export default async function HomePageGlobalFeed({ page }: HomePageGlobalFeedPro
 	// If page is not valid, throw not found
 	if (page < 1 || isNaN(page)) notFound();
 
-	const { articles, totalCount } = await getServerClient().article.getGlobalFeed(
+	const { articles, totalCount } = await getServerTRPCClient().article.getGlobalFeed.fetch(
 		getLimitOffsetForPage(page, DEFAULT_PAGE_SIZE)
 	);
 

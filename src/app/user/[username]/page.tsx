@@ -1,7 +1,7 @@
 import InfiniteUserArticleScroll from "$/app/user/[username]/InfiniteUserArticleScroll";
 import UserHero from "$/app/user/[username]/UserHero";
 import Section from "$/components/ui/Section";
-import { getServerSideHelpers } from "$/lib/trpc/serverClient";
+import { getServerTRPCClient } from "$/lib/trpc/serverClient";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { Hydrate, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
@@ -17,9 +17,9 @@ type UserPageProps = {
 // Todo: Add not-found boundary
 
 export default async function UserPage({ params }: UserPageProps) {
-	const helpers = getServerSideHelpers();
+	const serverClient = getServerTRPCClient();
 
-	const data = await helpers.article.getArticlesByAuthorUsername.fetchInfinite({
+	const data = await serverClient.article.getArticlesByAuthorUsername.fetchInfinite({
 		username: params.username,
 		limit: DEFAULT_PAGE_SIZE
 	});
@@ -27,7 +27,7 @@ export default async function UserPage({ params }: UserPageProps) {
 	const firstPage = data.pages[0];
 	if (!firstPage) notFound();
 
-	const dehydratedState = dehydrate(helpers.queryClient);
+	const dehydratedState = dehydrate(serverClient.queryClient);
 
 	return (
 		<>

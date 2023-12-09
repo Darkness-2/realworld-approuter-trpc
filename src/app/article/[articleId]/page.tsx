@@ -1,7 +1,7 @@
 import ArticleHero from "$/app/article/[articleId]/ArticleHero";
 import ArticleTags from "$/components/article/ArticleTags";
 import Section from "$/components/ui/Section";
-import { getServerClient } from "$/lib/trpc/serverClient";
+import { getServerTRPCClient } from "$/lib/trpc/serverClient";
 import { db } from "$/server/db";
 import { Stack, StackDivider, Text } from "@chakra-ui/react";
 import { notFound } from "next/navigation";
@@ -15,7 +15,7 @@ type ArticlePageProps = {
 // Todo: Add not-found boundary
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-	const article = await getServerClient().article.getArticleById(params.articleId);
+	const article = await getServerTRPCClient().article.getArticleById.fetch(params.articleId);
 	if (!article) notFound();
 
 	const articleTags = article.articlesToTags.map(({ tag }) => tag);
