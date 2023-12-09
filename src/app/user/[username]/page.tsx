@@ -40,6 +40,7 @@ export default async function UserPage({ params }: UserPageProps) {
 					</TabList>
 					<TabPanels>
 						<TabPanel px={0}>
+							{/* Todo: Could create custom hydrate that takes in tRPC helpers */}
 							<Hydrate state={dehydratedState}>
 								<InfiniteUserArticleScroll username={firstPage.author.username} pageSize={DEFAULT_PAGE_SIZE} />
 							</Hydrate>
