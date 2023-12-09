@@ -1,6 +1,8 @@
 import { appRouter } from "$/server/trpc/root";
 import { createTRPCContext } from "$/server/trpc/trpc";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import { cache } from "react";
+import superjson from "superjson";
 
 /**
  * Factory to create server-side callers for tRPC.
@@ -25,3 +27,14 @@ export const createServerClient = () => {
  * Todo: Consider if this needs to be wrapped in cache given I moved most context stuff into middleware.
  */
 export const getServerClient = cache(createServerClient);
+
+/**
+ * Todo: Document this and replace all usage of the above functions.
+ */
+export const getServerSideHelpers = cache(() =>
+	createServerSideHelpers({
+		router: appRouter,
+		ctx: createTRPCContext({ source: "server-helpers" }),
+		transformer: superjson
+	})
+);
