@@ -1,8 +1,9 @@
 import InfiniteUserArticleScroll from "$/app/user/[username]/InfiniteUserArticleScroll";
 import UserHero from "$/app/user/[username]/UserHero";
 import Section from "$/components/ui/Section";
-import { getServerClient } from "$/lib/trpc/serverClient";
+import { getServerSideHelpers } from "$/lib/trpc/serverClient";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Hydrate, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -16,30 +17,32 @@ type UserPageProps = {
 // Todo: Add not-found boundary
 
 export default async function UserPage({ params }: UserPageProps) {
-	const initialData = await getServerClient().article.getArticlesByAuthorUsername({
-		limit: DEFAULT_PAGE_SIZE,
-		username: params.username
+	const helpers = getServerSideHelpers();
+
+	const data = await helpers.article.getArticlesByAuthorUsername.fetchInfinite({
+		username: params.username,
+		limit: DEFAULT_PAGE_SIZE
 	});
-	if (!initialData) notFound();
+
+	const firstPage = data.pages[0];
+	if (!firstPage) notFound();
+
+	const dehydratedState = dehydrate(helpers.queryClient);
 
 	return (
 		<>
-			<UserHero user={initialData.author} />
+			<UserHero user={firstPage.author} />
 			<Section>
 				<Tabs>
 					<TabList>
-						<Tab>{initialData.author.username}&apos;s articles</Tab>
+						<Tab>{firstPage.author.username}&apos;s articles</Tab>
 						<Tab>Liked articles</Tab>
 					</TabList>
 					<TabPanels>
 						<TabPanel px={0}>
-							<InfiniteUserArticleScroll
-								username={initialData.author.username}
-								serverData={initialData}
-								// Artificially discount server generation time by 2 seconds to avoid client-server timestamp mismatches
-								serverDataTimestamp={new Date().getTime() - 2000}
-								pageSize={DEFAULT_PAGE_SIZE}
-							/>
+							<Hydrate state={dehydratedState}>
+								<InfiniteUserArticleScroll username={firstPage.author.username} pageSize={DEFAULT_PAGE_SIZE} />
+							</Hydrate>
 						</TabPanel>
 						<TabPanel px={0}>Todo: Enter user&apos;s liked articles</TabPanel>
 					</TabPanels>

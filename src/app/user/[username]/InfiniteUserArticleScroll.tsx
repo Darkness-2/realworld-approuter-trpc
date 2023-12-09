@@ -3,42 +3,16 @@
 import Article from "$/components/article/Article";
 import ArticleList from "$/components/article/ArticleList";
 import { trpc } from "$/lib/trpc/client";
-import { type RouterOutputs } from "$/lib/trpc/shared";
 import { Button, Flex, Stack, StackDivider } from "@chakra-ui/react";
-import { useQueryClient } from "@tanstack/react-query";
-import { getQueryKey } from "@trpc/react-query";
 import { useMemo, type ComponentProps } from "react";
 
 type InfiniteArticleScrollProps = {
 	username: string;
-	serverData: RouterOutputs["article"]["getArticlesByAuthorUsername"];
-	serverDataTimestamp: number;
 	pageSize: number;
 };
 
-export default function InfiniteUserArticleScroll({
-	username,
-	serverData,
-	serverDataTimestamp,
-	pageSize
-}: InfiniteArticleScrollProps) {
-	const utils = trpc.useUtils();
-	const queryClient = useQueryClient();
-
+export default function InfiniteUserArticleScroll({ username, pageSize }: InfiniteArticleScrollProps) {
 	const queryInputs = { username, limit: pageSize };
-
-	// Todo: Can this procedure be broken out into a hook?
-	const queryKey = getQueryKey(trpc.article.getArticlesByAuthorUsername, queryInputs, "infinite");
-	const state = queryClient.getQueryState(queryKey);
-
-	// Set the initial data if it is fresher than existing data or if no data exists
-	if (!state || state.dataUpdatedAt < serverDataTimestamp) {
-		utils.article.getArticlesByAuthorUsername.setInfiniteData(
-			queryInputs,
-			{ pages: [serverData], pageParams: [undefined] },
-			{ updatedAt: serverDataTimestamp }
-		);
-	}
 
 	const { data, hasNextPage, fetchNextPage, isFetching, isLoading } =
 		trpc.article.getArticlesByAuthorUsername.useInfiniteQuery(queryInputs, {
