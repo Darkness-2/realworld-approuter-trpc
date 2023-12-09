@@ -36,13 +36,15 @@ export default function UpdateUsernameForm() {
 		onSuccess: () => {
 			// Clear form, show success message, clear router cache
 			reset();
-			router.refresh();
+
 			toast({
 				title: "Username updated",
 				description: "Your username was updated successfully",
 				status: "success",
 				isClosable: true
 			});
+
+			router.refresh();
 		},
 		onError: (e) => {
 			// Deal with expected errors

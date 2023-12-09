@@ -29,8 +29,8 @@ export default function SignupForm() {
 
 	const signup = trpc.auth.signup.useMutation({
 		onSuccess: (data) => {
-			router.push(data.redirectTo);
 			router.refresh();
+			router.push(data.redirectTo);
 		},
 		onError: (e) => {
 			// Deal with expected errors

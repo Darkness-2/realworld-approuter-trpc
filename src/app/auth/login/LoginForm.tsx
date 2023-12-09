@@ -30,8 +30,8 @@ export default function LoginForm() {
 
 	const login = trpc.auth.login.useMutation({
 		onSuccess: (data) => {
-			router.push(data.redirectTo);
 			router.refresh();
+			router.push(data.redirectTo);
 		},
 		onError: (e) => {
 			// Deal with expected errors

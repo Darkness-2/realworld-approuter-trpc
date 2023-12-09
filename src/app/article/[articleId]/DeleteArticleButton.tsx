@@ -25,10 +25,8 @@ export default function DeleteArticleButton({ articleId }: DeleteArticleButtonPr
 			});
 
 			utils.article.invalidate();
-			router.push("/");
-			// Todo: I think putting this after the push is causing duplicate requests to be sent
-			// Should review that and change order of all router.refresh() calls
 			router.refresh();
+			router.push("/");
 		},
 		onError: (e) => {
 			// Deal with expected errors

@@ -55,8 +55,8 @@ export default function EditArticleForm({ article }: EditArticleFormProps) {
 			});
 
 			// Redirect to the edited article
-			router.push(`/article/${article.id}`);
 			router.refresh();
+			router.push(`/article/${article.id}`);
 		},
 		onError: (e) => {
 			if (e.data?.articleError === "ARTICLE_NOT_FOUND") {
