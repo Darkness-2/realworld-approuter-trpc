@@ -3,9 +3,12 @@ import { deleteFollow, getAuthorsFollowingQuery, insertFollow } from "$/server/d
 import { createTRPCRouter, privateProcedure } from "$/server/trpc/trpc";
 
 const queries = {
-	getAuthorsFollowing: privateProcedure.query(
-		async ({ ctx }) => await getAuthorsFollowingQuery(ctx.db, ctx.user.userId)
-	)
+	getAuthorsFollowing: privateProcedure.query(async ({ ctx }) => {
+		const rawFollows = await getAuthorsFollowingQuery(ctx.db, ctx.user.userId);
+		const follows = rawFollows.map((f) => f.authorId);
+
+		return follows;
+	})
 };
 
 const mutations = {

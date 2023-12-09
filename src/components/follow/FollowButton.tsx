@@ -2,7 +2,6 @@
 
 import { useFollows } from "$/lib/hooks/follow";
 import { trpc } from "$/lib/trpc/client";
-import { type RouterOutputs } from "$/lib/trpc/shared";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Button, useToast } from "@chakra-ui/react";
 
@@ -14,7 +13,6 @@ type FollowButtonProps = {
 export default function FollowButton({ authorId, username }: FollowButtonProps) {
 	const utils = trpc.useUtils();
 	const toast = useToast();
-	// Todo: Update useFollows query to only return an array
 	const { authorsFollowing, isLoading } = useFollows();
 
 	const toggleFollow = trpc.follow.toggleFollow.useMutation({
@@ -25,22 +23,14 @@ export default function FollowButton({ authorId, username }: FollowButtonProps) 
 			// Snapshot the previous value
 			const previousFollows = utils.follow.getAuthorsFollowing.getData(undefined);
 
-			// Generate the new follow
-			const newFollow: RouterOutputs["follow"]["getAuthorsFollowing"][number] = {
-				authorId
-			};
-
 			// Optimistically update the follows query based on the action
 			switch (action) {
 				case "follow":
-					utils.follow.getAuthorsFollowing.setData(undefined, (old) => (old ? [...old, newFollow] : [newFollow]));
+					utils.follow.getAuthorsFollowing.setData(undefined, (old) => (old ? [...old, authorId] : [authorId]));
 					break;
 
 				case "unfollow":
-					utils.follow.getAuthorsFollowing.setData(
-						undefined,
-						(old) => old?.filter((follow) => follow.authorId !== authorId)
-					);
+					utils.follow.getAuthorsFollowing.setData(undefined, (old) => old?.filter((f) => f !== authorId));
 					break;
 			}
 
@@ -76,7 +66,7 @@ export default function FollowButton({ authorId, username }: FollowButtonProps) 
 	});
 
 	// Determine if user is following this author
-	const isFollowing = authorsFollowing && authorsFollowing.some((f) => f.authorId === authorId);
+	const isFollowing = authorsFollowing && authorsFollowing.some((f) => f === authorId);
 
 	const handleClick = () => {
 		if (isFollowing) toggleFollow.mutate({ authorId, action: "unfollow" });

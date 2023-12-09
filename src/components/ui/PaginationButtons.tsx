@@ -25,7 +25,6 @@ export default function PaginationButtons({ currentPage, lastPage, firstPage = 1
 
 	return (
 		// Wrapped in suspense as useSearchParams defers rendering to client-side
-		// Todo: Create loading state for this
 		<Suspense fallback={<Skeleton h="32px" w="150px" />}>
 			<ButtonGroup isAttached>
 				<PaginationButton page={firstPage} pathname={pathname}>
