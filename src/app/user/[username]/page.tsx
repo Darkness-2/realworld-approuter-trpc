@@ -1,9 +1,9 @@
 import InfiniteUserArticleScroll from "$/app/user/[username]/InfiniteUserArticleScroll";
 import UserHero from "$/app/user/[username]/UserHero";
 import Section from "$/components/ui/Section";
+import TRPCHydrate from "$/lib/trpc/TRPCHydrate";
 import { getServerTRPCClient } from "$/lib/trpc/serverClient";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import { Hydrate, dehydrate } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -27,8 +27,6 @@ export default async function UserPage({ params }: UserPageProps) {
 	const firstPage = data.pages[0];
 	if (!firstPage) notFound();
 
-	const dehydratedState = dehydrate(serverClient.queryClient);
-
 	return (
 		<>
 			<UserHero user={firstPage.author} />
@@ -40,10 +38,9 @@ export default async function UserPage({ params }: UserPageProps) {
 					</TabList>
 					<TabPanels>
 						<TabPanel px={0}>
-							{/* Todo: Could create custom hydrate that takes in tRPC helpers */}
-							<Hydrate state={dehydratedState}>
+							<TRPCHydrate serverTRPCClient={serverClient}>
 								<InfiniteUserArticleScroll username={firstPage.author.username} pageSize={DEFAULT_PAGE_SIZE} />
-							</Hydrate>
+							</TRPCHydrate>
 						</TabPanel>
 						<TabPanel px={0}>Todo: Enter user&apos;s liked articles</TabPanel>
 					</TabPanels>
