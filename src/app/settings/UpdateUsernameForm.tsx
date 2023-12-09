@@ -1,22 +1,13 @@
 "use client";
 
+import CustomInput from "$/components/forms/CustomInput";
+import RootErrorMessage from "$/components/forms/RootErrorMessage";
+import SubmitButton from "$/components/forms/SubmitButton";
 import { useUser } from "$/lib/hooks/auth";
 import { usernameCreateSchema } from "$/lib/schemas/auth";
 import { trpc } from "$/lib/trpc/client";
 import { type RouterInputs } from "$/lib/trpc/shared";
-import {
-	Alert,
-	AlertIcon,
-	Box,
-	Button,
-	FormControl,
-	FormErrorMessage,
-	FormLabel,
-	Input,
-	Stack,
-	Text,
-	useToast
-} from "@chakra-ui/react";
+import { Box, Stack, Text, useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -56,7 +47,7 @@ export default function UpdateUsernameForm() {
 		onError: (e) => {
 			// Deal with expected errors
 			if (e.data?.authError === "USERNAME_TAKEN") {
-				return setError("username", { message: "This username is taken" });
+				return setError("username", { message: "That username is already taken" });
 			}
 
 			// Something unexpected happened
@@ -81,26 +72,20 @@ export default function UpdateUsernameForm() {
 				<Text as="h2" fontSize="2xl">
 					Update username
 				</Text>
-				{errors.root && (
-					<Alert status="error">
-						<AlertIcon />
-						{errors.root.message}
-					</Alert>
-				)}
-				<FormControl isInvalid={!!errors.username}>
-					<FormLabel htmlFor="username">New username:</FormLabel>
-					<Input
-						id="username"
-						autoCapitalize="none"
-						type="text"
-						placeholder={user?.username ?? ""}
-						{...register("username")}
-					/>
-					<FormErrorMessage>{errors.username?.message}</FormErrorMessage>
-				</FormControl>
-				<Button type="submit" colorScheme="green" px={8} alignSelf="center" disabled={updateUsername.isLoading}>
-					{updateUsername.isLoading ? "Loading..." : "Update username"}
-				</Button>
+
+				<RootErrorMessage error={errors.root} />
+
+				<CustomInput
+					id="username"
+					type="text"
+					label="New username"
+					autoCapitalize="none"
+					placeholder={user?.username ?? ""}
+					error={errors.username}
+					{...register("username")}
+				/>
+
+				<SubmitButton isLoading={updateUsername.isLoading}>Update username</SubmitButton>
 			</Stack>
 		</Box>
 	);

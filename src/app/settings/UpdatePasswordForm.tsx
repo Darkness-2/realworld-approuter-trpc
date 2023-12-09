@@ -66,6 +66,7 @@ export default function UpdatePasswordForm() {
 				<Text as="h2" fontSize="2xl">
 					Update password
 				</Text>
+
 				<RootErrorMessage error={errors.root} />
 
 				<CustomInput
