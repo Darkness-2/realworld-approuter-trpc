@@ -102,12 +102,20 @@ const logTRPCSource = t.middleware(async ({ ctx, path, next }) => {
 });
 
 /**
+ * Base procedure
+ *
+ * Not to be used outside this file but sets up basic, reused middleware.
+ */
+
+const baseProcedure = t.procedure.use(logTRPCSource);
+
+/**
  * Public (unauthenticated) procedure
  *
  * This is the base piece you use to build new queries and mutations on your tRPC API.
  * Should be cacheable as it doesn't leverage headers or cookies.
  */
-export const publicProcedure = t.procedure.use(logTRPCSource);
+export const publicProcedure = baseProcedure;
 
 /**
  * Helper function to grab data related to an individual request.
@@ -172,4 +180,4 @@ const enforceUserIsAuthed = t.middleware(async ({ next, type }) => {
  * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
  * the session is valid and guarantees `ctx.session and ctx.user` is not null.
  */
-export const privateProcedure = t.procedure.use(logTRPCSource).use(enforceUserIsAuthed);
+export const privateProcedure = baseProcedure.use(enforceUserIsAuthed);
