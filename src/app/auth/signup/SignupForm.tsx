@@ -1,19 +1,12 @@
 "use client";
 
+import CustomInput from "$/components/forms/CustomInput";
+import RootErrorMessage from "$/components/forms/RootErrorMessage";
+import SubmitButton from "$/components/forms/SubmitButton";
 import { createUserSchema } from "$/lib/schemas/auth";
 import { trpc } from "$/lib/trpc/client";
 import { type RouterInputs } from "$/lib/trpc/shared";
-import {
-	Alert,
-	AlertIcon,
-	Box,
-	Button,
-	FormControl,
-	FormErrorMessage,
-	FormLabel,
-	Input,
-	Stack
-} from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -64,31 +57,28 @@ export default function SignupForm() {
 			onChange={() => clearErrors("root")}
 		>
 			<Stack gap={4}>
-				{errors.root && (
-					<Alert status="error">
-						<AlertIcon />
-						{errors.root.message}
-					</Alert>
-				)}
-				{/* Todo: extract inputs to new ui component */}
-				<FormControl isInvalid={!!errors.username}>
-					<FormLabel htmlFor="username">Username:</FormLabel>
-					<Input id="username" autoCapitalize="none" type="text" {...register("username")} />
-					<FormErrorMessage>{errors.username?.message}</FormErrorMessage>
-				</FormControl>
-				<FormControl isInvalid={!!errors.password}>
-					<FormLabel htmlFor="password">Password:</FormLabel>
-					<Input id="password" type="password" {...register("password")} />
-					<FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-				</FormControl>
-				<FormControl isInvalid={!!errors.confirmPassword}>
-					<FormLabel htmlFor="confirmPassword">Confirm password:</FormLabel>
-					<Input id="confirmPassword" type="password" {...register("confirmPassword")} />
-					<FormErrorMessage>{errors.confirmPassword?.message}</FormErrorMessage>
-				</FormControl>
-				<Button type="submit" colorScheme="green" px={8} alignSelf="center" disabled={signup.isLoading}>
-					{signup.isLoading ? "Loading..." : "Sign up"}
-				</Button>
+				<RootErrorMessage error={errors.root} />
+
+				<CustomInput
+					id="username"
+					type="text"
+					label="Username"
+					autoCapitalize="none"
+					error={errors.username}
+					{...register("username")}
+				/>
+
+				<CustomInput id="password" type="password" label="Password" error={errors.password} {...register("password")} />
+
+				<CustomInput
+					id="confirmPassword"
+					type="password"
+					label="Confirm password"
+					error={errors.confirmPassword}
+					{...register("confirmPassword")}
+				/>
+
+				<SubmitButton isLoading={signup.isLoading}>Sign up</SubmitButton>
 			</Stack>
 		</Box>
 	);
