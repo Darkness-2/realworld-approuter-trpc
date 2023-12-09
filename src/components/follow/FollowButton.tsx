@@ -14,6 +14,7 @@ type FollowButtonProps = {
 export default function FollowButton({ authorId, username }: FollowButtonProps) {
 	const utils = trpc.useUtils();
 	const toast = useToast();
+	// Todo: Update useFollows query to only return an array
 	const { authorsFollowing, isLoading } = useFollows();
 
 	const toggleFollow = trpc.follow.toggleFollow.useMutation({

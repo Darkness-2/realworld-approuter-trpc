@@ -1,4 +1,4 @@
-import { articleIdSchema } from "$/lib/schemas/article";
+import { toggleLikeSchema } from "$/lib/schemas/like";
 import { getLikedArticlesQuery, likeArticleMutation, unlikeArticleMutation } from "$/server/db/queries/like";
 import { createTRPCRouter, privateProcedure } from "$/server/trpc/trpc";
 import { revalidatePath } from "next/cache";
@@ -15,23 +15,22 @@ const queries = {
 };
 
 const mutations = {
-	likeArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
-		await likeArticleMutation(ctx.db, {
-			articleId: input,
-			userId: ctx.user.userId
-		});
+	toggleLike: privateProcedure.input(toggleLikeSchema).mutation(async ({ ctx, input }) => {
+		switch (input.action) {
+			case "like":
+				await likeArticleMutation(ctx.db, {
+					articleId: input.articleId,
+					userId: ctx.user.userId
+				});
+				break;
 
-		// For now, revalidate entire site to update all like totals
-		revalidatePath("/", "layout");
-
-		return true;
-	}),
-
-	unlikeArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
-		await unlikeArticleMutation(ctx.db, {
-			articleId: input,
-			userId: ctx.user.userId
-		});
+			case "unlike":
+				await unlikeArticleMutation(ctx.db, {
+					articleId: input.articleId,
+					userId: ctx.user.userId
+				});
+				break;
+		}
 
 		// For now, revalidate entire site to update all like totals
 		revalidatePath("/", "layout");

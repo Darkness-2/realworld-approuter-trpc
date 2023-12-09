@@ -17,32 +17,34 @@ export default function LikeButton({ likes, articleId }: LikeButtonProps) {
 	const toast = useToast();
 	const { likedArticles, isLoading } = useLikedArticles();
 
-	const like = trpc.like.likeArticle.useMutation({
-		onError: (e) => {
-			// Something unexpected happened
-			toast({
-				title: "Something went wrong",
-				description: "Unable to like the article",
-				status: "error",
-				isClosable: true
-			});
+	// Todo: Also optimistically update the article's like count
 
-			console.error(e);
+	const toggleLike = trpc.like.toggleLike.useMutation({
+		onMutate: async ({ action, articleId }) => {
+			// Cancel anything outgoing so it doesn't override
+			await utils.like.getLikedArticles.cancel(undefined);
+
+			// Snapshot the previous value
+			const previousLikes = utils.like.getLikedArticles.getData(undefined);
+
+			// Optimistically update the likes query based on the action
+			switch (action) {
+				case "like":
+					utils.like.getLikedArticles.setData(undefined, (old) => (old ? [...old, articleId] : [articleId]));
+					break;
+
+				case "unlike":
+					utils.like.getLikedArticles.setData(undefined, (old) => old?.filter((like) => like !== articleId));
+					break;
+			}
+
+			return { previousLikes };
 		},
-		onSettled: () => {
-			// Invalidate likes and articles; refresh router
-			utils.article.invalidate();
-			utils.like.invalidate();
-			router.refresh();
-		}
-	});
-
-	const unlike = trpc.like.unlikeArticle.useMutation({
 		onError: (e) => {
 			// Something unexpected happened
 			toast({
 				title: "Something went wrong",
-				description: "Unable to unlike the article",
+				description: "Unable to like/unlike the article",
 				status: "error",
 				isClosable: true
 			});
@@ -63,13 +65,13 @@ export default function LikeButton({ likes, articleId }: LikeButtonProps) {
 	// Todo: Look into optimistic update for this
 
 	const handleClick = () => {
-		if (isLiked) unlike.mutate(articleId);
-		if (!isLiked) like.mutate(articleId);
+		if (isLiked) toggleLike.mutate({ articleId, action: "unlike" });
+		if (!isLiked) toggleLike.mutate({ articleId, action: "like" });
 	};
 
 	return (
 		<Button
-			isLoading={isLoading || like.isLoading || unlike.isLoading}
+			isLoading={isLoading}
 			size="xs"
 			variant="solid"
 			// Show as gray while loading or if user has liked
