@@ -3,7 +3,7 @@ import { z } from "zod";
 /**
  * Error messages
  *
- * Todo: Consider translation file for this?
+ * Todo: Consider translation file for this and all other text?
  */
 const usernameErrorMessages = {
 	required_error: "Username is required",
