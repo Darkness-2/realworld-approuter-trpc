@@ -34,7 +34,6 @@ export default function InfiniteUserArticleScroll({ username, pageSize }: Infini
 		);
 
 	// Merge articles from the pages together and format for the ArticleList component
-	// Todo: Can react query select do this?
 	const mergedArticles: ComponentProps<typeof ArticleList>["articles"] =
 		data?.pages.flatMap((page) => {
 			// Theoretically shouldn't be null as at this point we know the username exists
