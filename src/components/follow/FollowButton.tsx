@@ -16,6 +16,8 @@ export default function FollowButton({ authorId, username }: FollowButtonProps) 
 	const toast = useToast();
 	const { authorsFollowing, isLoading } = useFollows();
 
+	// Todo: Create single "toggleFollow" mutation
+
 	const follow = trpc.follow.follow.useMutation({
 		onMutate: async (authorId) => {
 			// Cancel anything outgoing so it doesn't override
@@ -106,8 +108,6 @@ export default function FollowButton({ authorId, username }: FollowButtonProps) 
 
 	// Determine if user is following this author
 	const isFollowing = authorsFollowing && authorsFollowing.some((f) => f.authorId === authorId);
-
-	// Todo: Look into optimistic update for this
 
 	const handleClick = () => {
 		if (isFollowing) unfollow.mutate(authorId);
