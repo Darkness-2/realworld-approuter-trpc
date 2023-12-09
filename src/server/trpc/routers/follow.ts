@@ -1,4 +1,4 @@
-import { userIdSchema } from "$/lib/schemas/auth";
+import { toggleFollowSchema } from "$/lib/schemas/follow";
 import { deleteFollow, getAuthorsFollowingQuery, insertFollow } from "$/server/db/queries/follow";
 import { createTRPCRouter, privateProcedure } from "$/server/trpc/trpc";
 
@@ -9,20 +9,22 @@ const queries = {
 };
 
 const mutations = {
-	follow: privateProcedure.input(userIdSchema).mutation(async ({ ctx, input }) => {
-		await insertFollow(ctx.db, {
-			authorId: input,
-			userId: ctx.user.userId
-		});
+	toggleFollow: privateProcedure.input(toggleFollowSchema).mutation(async ({ ctx, input }) => {
+		switch (input.action) {
+			case "follow":
+				await insertFollow(ctx.db, {
+					authorId: input.authorId,
+					userId: ctx.user.userId
+				});
+				break;
 
-		return true;
-	}),
-
-	unfollow: privateProcedure.input(userIdSchema).mutation(async ({ ctx, input }) => {
-		await deleteFollow(ctx.db, {
-			authorId: input,
-			userId: ctx.user.userId
-		});
+			case "unfollow":
+				await deleteFollow(ctx.db, {
+					authorId: input.authorId,
+					userId: ctx.user.userId
+				});
+				break;
+		}
 
 		return true;
 	})

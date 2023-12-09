@@ -16,81 +16,49 @@ export default function FollowButton({ authorId, username }: FollowButtonProps) 
 	const toast = useToast();
 	const { authorsFollowing, isLoading } = useFollows();
 
-	// Todo: Create single "toggleFollow" mutation
-
-	const follow = trpc.follow.follow.useMutation({
-		onMutate: async (authorId) => {
-			// Cancel anything outgoing so it doesn't override
-			await utils.follow.getAuthorsFollowing.cancel(undefined);
-
-			// Snapshot the previous value and create new one
-			const previousFollows = utils.follow.getAuthorsFollowing.getData(undefined);
-			const newFollow: RouterOutputs["follow"]["getAuthorsFollowing"][number] = {
-				authorId
-			};
-
-			// Update follows query with the optimistic data
-			utils.follow.getAuthorsFollowing.setData(undefined, (old) => (old ? [...old, newFollow] : [newFollow]));
-
-			return { previousFollows };
-		},
-		onSuccess: () => {
-			toast({
-				title: `Followed @${username}`,
-				description: `Successfully followed @${username}`,
-				status: "success",
-				isClosable: true
-			});
-		},
-		onError: (e, _, context) => {
-			// Something unexpected happened
-			toast({
-				title: "Something went wrong",
-				description: `Unable to follow @${username}`,
-				status: "error",
-				isClosable: true
-			});
-
-			// Reset the optimistic update
-			utils.follow.getAuthorsFollowing.setData(undefined, context?.previousFollows);
-
-			console.error(e);
-		},
-		onSettled: () => {
-			// Invalidate follows queries
-			utils.follow.invalidate();
-		}
-	});
-
-	const unfollow = trpc.follow.unfollow.useMutation({
-		onMutate: async (authorId) => {
+	const toggleFollow = trpc.follow.toggleFollow.useMutation({
+		onMutate: async ({ authorId, action }) => {
 			// Cancel anything outgoing so it doesn't override
 			await utils.follow.getAuthorsFollowing.cancel(undefined);
 
 			// Snapshot the previous value
 			const previousFollows = utils.follow.getAuthorsFollowing.getData(undefined);
 
-			// Update follows query with optimistic delete
-			utils.follow.getAuthorsFollowing.setData(
-				undefined,
-				(old) => old?.filter((follow) => follow.authorId !== authorId)
-			);
+			// Generate the new follow
+			const newFollow: RouterOutputs["follow"]["getAuthorsFollowing"][number] = {
+				authorId
+			};
+
+			// Optimistically update the follows query based on the action
+			switch (action) {
+				case "follow":
+					utils.follow.getAuthorsFollowing.setData(undefined, (old) => (old ? [...old, newFollow] : [newFollow]));
+					break;
+
+				case "unfollow":
+					utils.follow.getAuthorsFollowing.setData(
+						undefined,
+						(old) => old?.filter((follow) => follow.authorId !== authorId)
+					);
+					break;
+			}
 
 			return { previousFollows };
 		},
-		onSuccess: () => {
+		onSuccess: (_, { action }) => {
 			toast({
-				title: `Unfollowed @${username}`,
-				description: `Successfully unfollowed @${username}`,
+				title: action === "follow" ? `Followed @${username}` : `Unfollowed @${username}`,
+				description:
+					action === "follow" ? `Successfully followed @${username}` : `Successfully unfollowed @${username}`,
 				status: "success",
 				isClosable: true
 			});
 		},
-		onError: (e, _, context) => {
-			// Something unexpected happened
+		onError: (e, { action }, context) => {
+			// Something unexpected happening
 			toast({
 				title: "Something went wrong",
-				description: `Unable to unfollow @${username}`,
+				description: action === "follow" ? `Unable to follow @${username}` : `Unable to unfollow @${username}`,
 				status: "error",
 				isClosable: true
 			});
@@ -110,8 +78,8 @@ export default function FollowButton({ authorId, username }: FollowButtonProps) 
 	const isFollowing = authorsFollowing && authorsFollowing.some((f) => f.authorId === authorId);
 
 	const handleClick = () => {
-		if (isFollowing) unfollow.mutate(authorId);
-		if (!isFollowing) follow.mutate(authorId);
+		if (isFollowing) toggleFollow.mutate({ authorId, action: "unfollow" });
+		if (!isFollowing) toggleFollow.mutate({ authorId, action: "follow" });
 	};
 
 	return (
