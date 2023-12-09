@@ -1,21 +1,12 @@
 "use client";
 
+import CustomInput from "$/components/forms/CustomInput";
+import RootErrorMessage from "$/components/forms/RootErrorMessage";
+import SubmitButton from "$/components/forms/SubmitButton";
 import { updatePasswordSchema } from "$/lib/schemas/auth";
 import { trpc } from "$/lib/trpc/client";
 import { type RouterInputs } from "$/lib/trpc/shared";
-import {
-	Alert,
-	AlertIcon,
-	Box,
-	Button,
-	FormControl,
-	FormErrorMessage,
-	FormLabel,
-	Input,
-	Stack,
-	Text,
-	useToast
-} from "@chakra-ui/react";
+import { Box, Stack, Text, useToast } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -75,30 +66,33 @@ export default function UpdatePasswordForm() {
 				<Text as="h2" fontSize="2xl">
 					Update password
 				</Text>
-				{errors.root && (
-					<Alert status="error">
-						<AlertIcon />
-						{errors.root.message}
-					</Alert>
-				)}
-				<FormControl isInvalid={!!errors.currentPassword}>
-					<FormLabel htmlFor="currentPassword">Current password:</FormLabel>
-					<Input id="currentPassword" autoCapitalize="none" type="password" {...register("currentPassword")} />
-					<FormErrorMessage>{errors.currentPassword?.message}</FormErrorMessage>
-				</FormControl>
-				<FormControl isInvalid={!!errors.newPassword}>
-					<FormLabel htmlFor="newPassword">New password:</FormLabel>
-					<Input id="newPassword" autoCapitalize="none" type="password" {...register("newPassword")} />
-					<FormErrorMessage>{errors.newPassword?.message}</FormErrorMessage>
-				</FormControl>
-				<FormControl isInvalid={!!errors.confirmNewPassword}>
-					<FormLabel htmlFor="currentPassword">Confirm new password:</FormLabel>
-					<Input id="confirmNewPassword" autoCapitalize="none" type="password" {...register("confirmNewPassword")} />
-					<FormErrorMessage>{errors.confirmNewPassword?.message}</FormErrorMessage>
-				</FormControl>
-				<Button type="submit" colorScheme="green" px={8} alignSelf="center" disabled={updatePassword.isLoading}>
-					{updatePassword.isLoading ? "Loading..." : "Update password"}
-				</Button>
+				<RootErrorMessage error={errors.root} />
+
+				<CustomInput
+					id="currentPassword"
+					type="password"
+					label="Current password"
+					error={errors.currentPassword}
+					{...register("currentPassword")}
+				/>
+
+				<CustomInput
+					id="newPassword"
+					type="password"
+					label="New password"
+					error={errors.newPassword}
+					{...register("newPassword")}
+				/>
+
+				<CustomInput
+					id="confirmNewPassword"
+					type="password"
+					label="Confirm new password"
+					error={errors.confirmNewPassword}
+					{...register("confirmNewPassword")}
+				/>
+
+				<SubmitButton isLoading={updatePassword.isLoading}>Update password</SubmitButton>
 			</Stack>
 		</Box>
 	);
