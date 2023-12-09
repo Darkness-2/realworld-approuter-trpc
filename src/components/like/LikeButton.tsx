@@ -40,7 +40,7 @@ export default function LikeButton({ likes, articleId }: LikeButtonProps) {
 
 			return { previousLikes };
 		},
-		onError: (e) => {
+		onError: (e, _, context) => {
 			// Something unexpected happened
 			toast({
 				title: "Something went wrong",
@@ -48,6 +48,9 @@ export default function LikeButton({ likes, articleId }: LikeButtonProps) {
 				status: "error",
 				isClosable: true
 			});
+
+			// Reset the optimisitic update
+			utils.like.getLikedArticles.setData(undefined, context?.previousLikes);
 
 			console.error(e);
 		},
