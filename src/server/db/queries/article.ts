@@ -55,7 +55,8 @@ export const getTotalArticlesCountQuery = cache(async (db: DB) => {
 });
 
 /**
- * Cached database call to get a specific article by ID with author and tag info.
+ * Cached database call to get a specific article by ID.
+ * Includes author, tag, comment, and like info,
  *
  * @param db instance of the DB
  * @param articleId id of the article to get
@@ -65,15 +66,25 @@ export const getArticleByIdQuery = cache(
 		await db.query.article.findFirst({
 			where: ({ id }, { eq }) => eq(id, articleId),
 			with: {
+				// Get tags
 				articlesToTags: {
 					columns: {},
 					with: {
 						tag: true
 					}
 				},
+				// Get author's username
 				author: {
 					columns: { username: true }
 				},
+				// Get comments + comment author
+				comments: {
+					columns: { authorId: true, body: true, createdAt: true, id: true },
+					with: {
+						author: { columns: { username: true } }
+					}
+				},
+				// Get likes
 				likes: true
 			}
 		})
