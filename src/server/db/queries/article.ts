@@ -1,3 +1,4 @@
+import { generateFutureDate } from "$/lib/utils/helpers";
 import { type DB } from "$/server/db";
 import { article, articleToTag, tag, type TagInsert } from "$/server/db/schema/article";
 import { sql } from "drizzle-orm";
@@ -89,8 +90,7 @@ export const getArticleByIdQuery = cache(
  */
 export const getArticlesByAuthorIdQuery = cache(async (db: DB, id: string, limit: number, cursor?: Date) => {
 	// If date is undefined, generate a random date far into the future
-	const date = cursor ?? new Date();
-	if (!cursor) date.setFullYear(date.getFullYear() + 10);
+	const date = cursor ?? generateFutureDate();
 
 	return await db.query.article.findMany({
 		columns: { body: false },
