@@ -7,6 +7,8 @@ import * as commentSchema from "./schema/comment";
 import * as followSchema from "./schema/follow";
 import * as likeSchema from "./schema/like";
 
+// Todo: Determine if I can make everything in here aliased imports
+
 // Todo: Determine if this needs to be cached per request as recommended in the Neon docs
 // See: https://neon.tech/docs/serverless/serverless-driver#how-to-use-the-driver-over-http
 // OR convert back to Neon http
