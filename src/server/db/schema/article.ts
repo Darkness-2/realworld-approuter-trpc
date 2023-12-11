@@ -27,7 +27,7 @@ export const article = pgTable("article", {
 });
 
 export const articleRelations = relations(article, ({ one, many }) => ({
-	articlesToTags: many(articlesToTags),
+	articlesToTags: many(articleToTag),
 	author: one(user, {
 		fields: [article.authorId],
 		references: [user.id]
@@ -54,7 +54,7 @@ export const tag = pgTable("tag", {
 });
 
 export const tagRelations = relations(tag, ({ many }) => ({
-	articlesToTags: many(articlesToTags)
+	articlesToTags: many(articleToTag)
 }));
 
 export type Tag = typeof tag.$inferSelect;
@@ -62,10 +62,9 @@ export type TagInsert = typeof tag.$inferInsert;
 
 /**
  * Article-to-tag many-to-many relationship table.
- * Todo: Consider making singular
  */
-export const articlesToTags = pgTable(
-	"articles_to_tags",
+export const articleToTag = pgTable(
+	"article_to_tag",
 	{
 		articleId: char("article_id", {
 			length: 24
@@ -81,16 +80,16 @@ export const articlesToTags = pgTable(
 	(t) => ({})
 );
 
-export const articlesToTagsRelations = relations(articlesToTags, ({ one }) => ({
+export const articleToTagRelations = relations(articleToTag, ({ one }) => ({
 	article: one(article, {
-		fields: [articlesToTags.articleId],
+		fields: [articleToTag.articleId],
 		references: [article.id]
 	}),
 	tag: one(tag, {
-		fields: [articlesToTags.tagId],
+		fields: [articleToTag.tagId],
 		references: [tag.id]
 	})
 }));
 
-export type ArticleToTag = typeof articlesToTags.$inferSelect;
-export type ArticleToTagInsert = typeof articlesToTags.$inferInsert;
+export type ArticleToTag = typeof articleToTag.$inferSelect;
+export type ArticleToTagInsert = typeof articleToTag.$inferInsert;

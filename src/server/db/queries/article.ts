@@ -1,5 +1,5 @@
 import { type DB } from "$/server/db";
-import { article, articlesToTags, tag, type TagInsert } from "$/server/db/schema/article";
+import { article, articleToTag, tag, type TagInsert } from "$/server/db/schema/article";
 import { sql } from "drizzle-orm";
 import { cache } from "react";
 
@@ -164,7 +164,7 @@ export const connectTagsToArticleMutation = async (db: DB, tagIds: string[], art
 	}));
 
 	// On conflict does nothing as tag connections might already exist
-	await db.insert(articlesToTags).values(articleTagConnections).onConflictDoNothing();
+	await db.insert(articleToTag).values(articleTagConnections).onConflictDoNothing();
 
 	return true;
 };
