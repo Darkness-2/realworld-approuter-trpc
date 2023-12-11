@@ -17,7 +17,7 @@ import {
 	insertTagsMutation
 } from "$/server/db/queries/article";
 import { getUserByUsernameQuery } from "$/server/db/queries/auth";
-import { article, articlesToTags } from "$/server/db/schema/article";
+import { article, articleToTag } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
@@ -158,7 +158,7 @@ const mutations = {
 		const newTagsQuery = insertTagsMutation(ctx.db, tagsToInsert);
 
 		// Remove all existing tags from the article; will reset them later
-		const removeTagsQuery = ctx.db.delete(articlesToTags).where(eq(articlesToTags.articleId, a.id));
+		const removeTagsQuery = ctx.db.delete(articleToTag).where(eq(articleToTag.articleId, a.id));
 
 		// Run queries
 		await Promise.all([newTagsQuery, editArticleQuery, removeTagsQuery]);
