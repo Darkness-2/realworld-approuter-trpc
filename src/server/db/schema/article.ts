@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm";
 import { char, primaryKey, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { pgTable } from "../root";
 import { user } from "./auth";
+import { comment } from "./comment";
 import { like } from "./like";
 
 export const article = pgTable("article", {
@@ -32,6 +33,7 @@ export const articleRelations = relations(article, ({ one, many }) => ({
 		fields: [article.authorId],
 		references: [user.id]
 	}),
+	comments: many(comment),
 	likes: many(like)
 }));
 
