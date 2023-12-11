@@ -6,12 +6,12 @@ import { trpc } from "$/lib/trpc/client";
 import { Button, Flex, Stack, StackDivider } from "@chakra-ui/react";
 import { type ComponentProps } from "react";
 
-type InfiniteArticleScrollProps = {
+type UserArticlesInfiniteScrollProps = {
 	username: string;
 	pageSize: number;
 };
 
-export default function InfiniteUserArticleScroll({ username, pageSize }: InfiniteArticleScrollProps) {
+export default function UserArticlesInfiniteScroll({ username, pageSize }: UserArticlesInfiniteScrollProps) {
 	const { data, hasNextPage, fetchNextPage, isFetching, isLoading } =
 		trpc.article.getArticlesByAuthorUsername.useInfiniteQuery(
 			{ username, limit: pageSize },
