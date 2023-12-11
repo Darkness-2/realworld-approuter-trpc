@@ -1,4 +1,5 @@
 import ArticleHero from "$/app/article/[articleId]/ArticleHero";
+import CommentsInfiniteScroll from "$/app/article/[articleId]/CommentsInfiniteScroll";
 import ArticleTags from "$/components/article/ArticleTags";
 import Section from "$/components/ui/Section";
 import { getServerTRPCClient } from "$/lib/trpc/serverClient";
@@ -29,7 +30,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 				<Stack divider={<StackDivider />} gap={4}>
 					<Text>{article.body}</Text>
 					{articleTags.length > 0 && <ArticleTags tags={articleTags} />}
-					<Text>Todo: Add comments</Text>
+					<CommentsInfiniteScroll articleId={article.id} />
 				</Stack>
 			</Section>
 		</>
