@@ -44,3 +44,14 @@ export const getLimitOffsetForPage = (pageNumber: number, pageSize: number) => {
 		offset: (pageNumber - 1) * pageSize
 	};
 };
+
+/**
+ * Helper function to generate a date far into the future.
+ * @returns date 10 years in the future
+ */
+export const generateFutureDate = () => {
+	const date = new Date();
+	date.setFullYear(date.getFullYear() + 10);
+
+	return date;
+};
