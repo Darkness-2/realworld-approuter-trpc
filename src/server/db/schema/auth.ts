@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm";
 import { bigint, varchar } from "drizzle-orm/pg-core";
 import { pgTable } from "../root";
 import { article } from "./article";
+import { comment } from "./comment";
 import { like } from "./like";
 
 /**
@@ -23,6 +24,7 @@ export const userRelations = relations(user, ({ many }) => ({
 	sessions: many(session),
 	keys: many(key),
 	articles: many(article),
+	comments: many(comment),
 	likes: many(like),
 	follows: many(follow, { relationName: "user" }),
 	followers: many(follow, { relationName: "author" })
