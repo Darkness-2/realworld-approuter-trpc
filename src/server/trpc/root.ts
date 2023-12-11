@@ -1,5 +1,6 @@
 import { articleRouter } from "$/server/trpc/routers/article";
 import { authRouter } from "$/server/trpc/routers/auth";
+import { commentRouter } from "$/server/trpc/routers/comment";
 import { followRouter } from "$/server/trpc/routers/follow";
 import { likeRouter } from "$/server/trpc/routers/like";
 import { cache } from "react";
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
 	hello: publicProcedure.query(() => generateString()),
 	auth: authRouter,
 	article: articleRouter,
+	comment: commentRouter,
 	follow: followRouter,
 	like: likeRouter
 });
