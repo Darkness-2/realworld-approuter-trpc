@@ -3,6 +3,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as articleSchema from "./schema/article";
 import * as authSchema from "./schema/auth";
+import * as commentSchema from "./schema/comment";
 import * as followSchema from "./schema/follow";
 import * as likeSchema from "./schema/like";
 
@@ -14,7 +15,7 @@ export const pool = new Pool({
 });
 
 export const db = drizzle(pool, {
-	schema: { ...authSchema, ...articleSchema, ...followSchema, ...likeSchema },
+	schema: { ...authSchema, ...articleSchema, ...commentSchema, ...followSchema, ...likeSchema },
 	logger: env.NODE_ENV === "development"
 });
 
