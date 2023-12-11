@@ -1,0 +1,1 @@
+ALTER TABLE "realworld_approuter_trpc_articles_to_tags" DROP CONSTRAINT "realworld_approuter_trpc_articles_to_tags_article_id_tag_id_pk";
