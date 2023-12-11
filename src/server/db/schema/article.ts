@@ -77,7 +77,9 @@ export const articleToTag = pgTable(
 			.notNull()
 			.references(() => tag.id, { onDelete: "cascade", onUpdate: "cascade" })
 	},
-	(t) => ({})
+	(t) => ({
+		pk: primaryKey({ columns: [t.articleId, t.tagId] })
+	})
 );
 
 export const articleToTagRelations = relations(articleToTag, ({ one }) => ({

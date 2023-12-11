@@ -1,0 +1,1 @@
+ALTER TABLE "realworld_approuter_trpc_article_to_tag" ADD CONSTRAINT "realworld_approuter_trpc_article_to_tag_article_id_tag_id_pk" PRIMARY KEY("article_id","tag_id");
