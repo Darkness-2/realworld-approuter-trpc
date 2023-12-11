@@ -6,6 +6,8 @@ import { type ComponentType } from "react";
 // Todo: Consider doing this in middleware instead?
 // Todo: Replace this with calls to tRPC server-side helper; add TRPCHydrate
 // (doing that will mean the getCurrentUser call can be pre-fetched server-side and hydrated for instant loading)
+// Note that this does not prefetch that call for anything higher in the tree (layouts)
+// Might want to extract this into layouts instead
 
 export interface SessionProps {
 	session: Session | null;
