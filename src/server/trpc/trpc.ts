@@ -1,5 +1,5 @@
 import { env } from "$/env.mjs";
-import { ArticleError, AuthError } from "$/lib/utils/errors";
+import { ArticleError, AuthError, CommentError } from "$/lib/utils/errors";
 import { getPageSession } from "$/server/auth/lucia";
 import { db } from "$/server/db";
 import { TRPCError, initTRPC } from "@trpc/server";
@@ -61,7 +61,8 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 			...shape.data,
 			zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
 			authError: error.cause instanceof AuthError ? error.cause.code : null,
-			articleError: error.cause instanceof ArticleError ? error.cause.code : null
+			articleError: error.cause instanceof ArticleError ? error.cause.code : null,
+			commentError: error.cause instanceof CommentError ? error.cause.code : null
 		}
 	})
 });
