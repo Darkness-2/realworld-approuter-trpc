@@ -2,8 +2,9 @@
 
 import Article from "$/components/article/Article";
 import ArticleList from "$/components/article/ArticleList";
+import LoadMoreButton from "$/components/ui/LoadMoreButton";
 import { trpc } from "$/lib/trpc/client";
-import { Button, Flex, Stack, StackDivider } from "@chakra-ui/react";
+import { Flex, Stack, StackDivider } from "@chakra-ui/react";
 import { type ComponentProps } from "react";
 
 type UserArticlesInfiniteScrollProps = {
@@ -52,11 +53,7 @@ export default function UserArticlesInfiniteScroll({ username, pageSize }: UserA
 
 			{/* Load more button, only shown if another page is available */}
 			<Flex justifyContent="center">
-				{hasNextPage && (
-					<Button isLoading={isFetching} onClick={() => !isFetching && fetchNextPage()}>
-						Load more
-					</Button>
-				)}
+				<LoadMoreButton isFetching={isFetching} hasNextPage={hasNextPage} onClick={fetchNextPage} />
 			</Flex>
 		</Stack>
 	);
