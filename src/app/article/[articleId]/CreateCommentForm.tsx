@@ -34,18 +34,18 @@ export default function CreateCommentForm({ articleId }: CreateCommentFormProps)
 	register("articleId", { value: articleId });
 
 	const create = trpc.comment.create.useMutation({
-		// Todo: Make optimistic by adding the new comment to the top of the first page
-		onMutate: () => {
+		onMutate: async () => {
+			// Reset the form
 			reset();
-		},
-		onSuccess: () => {
-			// Invalidate any queries that depend on comments
-			utils.comment.invalidate();
 		},
 		onError: (e) => {
 			// Something unexpected happened
 			console.error(e);
 			setError("root", { message: e.message });
+		},
+		onSettled: () => {
+			// Invalidate any queries that depend on comments
+			utils.comment.invalidate();
 		}
 	});
 
