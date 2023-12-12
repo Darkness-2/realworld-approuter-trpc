@@ -1,5 +1,8 @@
 "use client";
 
+import Comment from "$/components/comment/Comment";
+import CommentList from "$/components/comment/CommentList";
+import LoadMoreButton from "$/components/ui/LoadMoreButton";
 import { trpc } from "$/lib/trpc/client";
 import { Stack, StackDivider } from "@chakra-ui/react";
 
@@ -24,9 +27,20 @@ export default function CommentsInfiniteScroll({ articleId }: CommentsInfiniteSc
 		}
 	);
 
+	// Merge comments from the pages together
+	const mergedComments = data?.pages.flatMap((page) => [...page.comments]) ?? [];
+
 	return (
 		<Stack gap={2} divider={<StackDivider />}>
-			Todo
+			{/* Todo: Add add comment form */}
+			{/* Display loading state if loading; otherwise show comment list */}
+			{isLoading && <Comment isLoading={true} />}
+			{!isLoading && mergedComments.length > 0 && <CommentList comments={mergedComments} />}
+
+			{/* Load more button, only shown if another page is available */}
+			<LoadMoreButton isFetching={isFetching} hasNextPage={hasNextPage} onClick={fetchNextPage}>
+				Load more comments
+			</LoadMoreButton>
 		</Stack>
 	);
 }
