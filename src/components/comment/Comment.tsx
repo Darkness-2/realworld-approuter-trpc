@@ -30,6 +30,8 @@ export default function Comment({ comment = mockData, isLoading = false }: Comme
 	const { author, body, createdAt } = comment;
 
 	return (
+		// Todo: Add delete button if comment is the user's
+		// Todo: Add update button if comment is the user's
 		<Card border="1px" borderColor="gray.200" boxShadow="none">
 			<CardBody py={4}>
 				<Skeleton isLoaded={!isLoading}>
