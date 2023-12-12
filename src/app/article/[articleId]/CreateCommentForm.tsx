@@ -58,7 +58,6 @@ export default function CreateCommentForm({ articleId }: CreateCommentFormProps)
 				onSubmit={handleSubmit((v) => create.mutate(v))}
 				onChange={() => clearErrors("root")}
 			>
-				{/* Todo: format nicer */}
 				<Stack gap={4}>
 					<RootErrorMessage error={errors.root} />
 
