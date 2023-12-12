@@ -8,7 +8,7 @@ import { useUser } from "$/lib/hooks/auth";
 import { trpc } from "$/lib/trpc/client";
 import { Stack, StackDivider } from "@chakra-ui/react";
 
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 5;
 
 type CommentsInfiniteScrollProps = {
 	articleId: string;
