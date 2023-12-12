@@ -1,8 +1,10 @@
 "use client";
 
+import CreateCommentForm from "$/app/article/[articleId]/CreateCommentForm";
 import Comment from "$/components/comment/Comment";
 import CommentList from "$/components/comment/CommentList";
 import LoadMoreButton from "$/components/ui/LoadMoreButton";
+import { useUser } from "$/lib/hooks/auth";
 import { trpc } from "$/lib/trpc/client";
 import { Stack, StackDivider } from "@chakra-ui/react";
 
@@ -13,6 +15,8 @@ type CommentsInfiniteScrollProps = {
 };
 
 export default function CommentsInfiniteScroll({ articleId }: CommentsInfiniteScrollProps) {
+	const { user } = useUser();
+
 	const { data, hasNextPage, fetchNextPage, isFetching, isLoading } = trpc.comment.getArticleComments.useInfiniteQuery(
 		{ articleId, limit: DEFAULT_PAGE_SIZE },
 		{
@@ -32,15 +36,20 @@ export default function CommentsInfiniteScroll({ articleId }: CommentsInfiniteSc
 
 	return (
 		<Stack gap={2} divider={<StackDivider />}>
-			{/* Todo: Add add comment form */}
 			{/* Display loading state if loading; otherwise show comment list */}
 			{isLoading && <Comment isLoading={true} />}
-			{!isLoading && mergedComments.length > 0 && <CommentList comments={mergedComments} />}
 
-			{/* Load more button, only shown if another page is available */}
-			<LoadMoreButton isFetching={isFetching} hasNextPage={hasNextPage} onClick={fetchNextPage}>
-				Load more comments
-			</LoadMoreButton>
+			<Stack gap={4}>
+				{!isLoading && mergedComments.length > 0 && <CommentList comments={mergedComments} />}
+
+				{/* Load more button, only shown if another page is available */}
+				<LoadMoreButton isFetching={isFetching} hasNextPage={hasNextPage} onClick={fetchNextPage}>
+					Load more comments
+				</LoadMoreButton>
+
+				{/* Display the add comment form if there is a user */}
+				{user && <CreateCommentForm articleId={articleId} />}
+			</Stack>
 		</Stack>
 	);
 }
