@@ -107,7 +107,7 @@ const mutations = {
 		const articleId = newArticles[0]?.id;
 
 		if (!articleId) {
-			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", cause: new ArticleError("ARTICLE_FAILED_TO_CREATE") });
+			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", cause: new ArticleError("ARTICLE_FAILED_TO_RETURN") });
 		}
 
 		// Connect tags to article if needed

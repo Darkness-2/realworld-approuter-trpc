@@ -1,7 +1,10 @@
 import { articleIdSchema } from "$/lib/schemas/article";
+import { createCommentSchema } from "$/lib/schemas/comment";
 import { limitDateCursorSchema } from "$/lib/schemas/helpers";
-import { getArticleCommentsQuery } from "$/server/db/queries/comment";
-import { createTRPCRouter, publicProcedure } from "$/server/trpc/trpc";
+import { CommentError } from "$/lib/utils/errors";
+import { createCommentMutation, getArticleCommentsQuery } from "$/server/db/queries/comment";
+import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
+import { TRPCError } from "@trpc/server";
 
 const queries = {
 	getArticleComments: publicProcedure
@@ -24,7 +27,24 @@ const queries = {
 		})
 };
 
-const mutations = {};
+const mutations = {
+	create: privateProcedure.input(createCommentSchema).mutation(async ({ ctx, input }) => {
+		// Create the new comment
+		const newComments = await createCommentMutation(ctx.db, {
+			...input,
+			authorId: ctx.user.userId
+		});
+
+		const newComment = newComments?.[0];
+
+		// Throw an error if the comment wasn't returned for some reason
+		if (!newComment) {
+			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", cause: new CommentError("COMMENT_FAILED_TO_RETURN") });
+		}
+
+		return { success: true, comment: newComment };
+	})
+};
 
 export const commentRouter = createTRPCRouter({
 	...queries,
