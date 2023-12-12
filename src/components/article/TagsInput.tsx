@@ -66,6 +66,7 @@ export default function TagsInput(props: TagsInputProps) {
 			</InputGroup>
 			<Flex gap={1} mt={2} wrap="wrap">
 				{(props.tags ?? []).map((tag, index) => (
+					// Todo: Extract tag into a component and make prettier
 					<Tag key={index} size="sm" variant="solid" colorScheme="gray">
 						<TagLabel>{tag}</TagLabel>
 						<TagCloseButton onClick={() => handleRemoveTag(tag)} />
