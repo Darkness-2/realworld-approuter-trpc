@@ -27,9 +27,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 			<ArticleHero article={article} />
 			{/* Main section */}
 			<Section>
-				<Stack divider={<StackDivider />} gap={4}>
-					<Text>{article.body}</Text>
-					{articleTags.length > 0 && <ArticleTags tags={articleTags} />}
+				<Stack gap={4} divider={<StackDivider />}>
+					<Stack divider={<StackDivider />} gap={4}>
+						<Text>{article.body}</Text>
+						{articleTags.length > 0 && <ArticleTags tags={articleTags} />}
+					</Stack>
 					<CommentsInfiniteScroll articleId={article.id} />
 				</Stack>
 			</Section>
