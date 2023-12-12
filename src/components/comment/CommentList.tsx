@@ -1,5 +1,5 @@
 import Comment from "$/components/comment/Comment";
-import { Stack, StackDivider } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import { type ComponentProps } from "react";
 
 type CommentListProps = {
@@ -8,7 +8,7 @@ type CommentListProps = {
 
 export default function CommentList({ comments }: CommentListProps) {
 	return (
-		<Stack gap={2} divider={<StackDivider />}>
+		<Stack gap={2}>
 			{comments.map((comment) => (
 				<Comment key={comment.id} comment={comment} />
 			))}
