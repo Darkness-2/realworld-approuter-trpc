@@ -65,8 +65,6 @@ export default function LikeButton({ likes, articleId }: LikeButtonProps) {
 	// Determine if the user likes this article
 	const isLiked = likedArticles && likedArticles.some((like) => like === articleId);
 
-	// Todo: Look into optimistic update for this
-
 	const handleClick = () => {
 		if (isLiked) toggleLike.mutate({ articleId, action: "unlike" });
 		if (!isLiked) toggleLike.mutate({ articleId, action: "like" });
