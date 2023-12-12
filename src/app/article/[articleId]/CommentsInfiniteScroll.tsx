@@ -6,7 +6,7 @@ import CommentList from "$/components/comment/CommentList";
 import LoadMoreButton from "$/components/ui/LoadMoreButton";
 import { useUser } from "$/lib/hooks/auth";
 import { trpc } from "$/lib/trpc/client";
-import { Stack, StackDivider } from "@chakra-ui/react";
+import { Flex, Stack } from "@chakra-ui/react";
 
 const DEFAULT_PAGE_SIZE = 5;
 
@@ -35,11 +35,10 @@ export default function CommentsInfiniteScroll({ articleId }: CommentsInfiniteSc
 	const mergedComments = data?.pages.flatMap((page) => [...page.comments]) ?? [];
 
 	return (
-		<Stack gap={2} divider={<StackDivider />}>
-			{/* Display loading state if loading; otherwise show comment list */}
-			{isLoading && <Comment isLoading={true} />}
-
-			<Stack gap={4}>
+		<Flex justifyContent="center">
+			<Stack gap={4} w="full" maxW="xl">
+				{/* Display loading state if loading; otherwise show comment list */}
+				{isLoading && <Comment isLoading={true} />}
 				{!isLoading && mergedComments.length > 0 && <CommentList comments={mergedComments} />}
 
 				{/* Load more button, only shown if another page is available */}
@@ -50,6 +49,6 @@ export default function CommentsInfiniteScroll({ articleId }: CommentsInfiniteSc
 				{/* Display the add comment form if there is a user */}
 				{user && <CreateCommentForm articleId={articleId} />}
 			</Stack>
-		</Stack>
+		</Flex>
 	);
 }
