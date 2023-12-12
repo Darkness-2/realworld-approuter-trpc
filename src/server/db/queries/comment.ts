@@ -1,5 +1,6 @@
 import { generateFutureDate } from "$/lib/utils/helpers";
 import { type DB } from "$/server/db";
+import { comment, type CommentInsert } from "$/server/db/schema/comment";
 import { cache } from "react";
 
 /** Queries */
@@ -29,3 +30,12 @@ export const getArticleCommentsQuery = cache(async (db: DB, articleId: string, l
 });
 
 /** Mutations */
+
+/**
+ *
+ * @param db instance of the db
+ * @param newComment
+ * @returns array of new comments
+ */
+export const createCommentMutation = async (db: DB, newComment: CommentInsert) =>
+	await db.insert(comment).values(newComment).returning();
