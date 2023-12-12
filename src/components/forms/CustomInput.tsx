@@ -4,7 +4,7 @@ import { type FieldError } from "react-hook-form";
 
 type CustomInputProps = InputProps & {
 	error?: FieldError;
-	label: string;
+	label?: string;
 	// Ensures these are required
 	type: Required<InputProps["type"]>;
 	id: Required<InputProps["id"]>;
@@ -13,7 +13,7 @@ type CustomInputProps = InputProps & {
 const CustomInput = forwardRef(function CustomInput(props: CustomInputProps, ref) {
 	return (
 		<FormControl isInvalid={!!props.error}>
-			<FormLabel htmlFor={props.id}>{props.label}</FormLabel>
+			{props.label && <FormLabel htmlFor={props.id}>{props.label}</FormLabel>}
 			<Input {...props} ref={ref} />
 			<FormErrorMessage>{props.error?.message}</FormErrorMessage>
 		</FormControl>

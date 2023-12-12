@@ -4,7 +4,7 @@ import { type FieldError } from "react-hook-form";
 
 type CustomTextareaProps = TextareaProps & {
 	error?: FieldError;
-	label: string;
+	label?: string;
 	// Ensures these are required
 	id: Required<TextareaProps["id"]>;
 };
@@ -12,7 +12,7 @@ type CustomTextareaProps = TextareaProps & {
 const CustomTextarea = forwardRef(function CustomTextarea(props: CustomTextareaProps, ref) {
 	return (
 		<FormControl isInvalid={!!props.error}>
-			<FormLabel htmlFor={props.id}>{props.label}</FormLabel>
+			{props.label && <FormLabel htmlFor={props.id}>{props.label}</FormLabel>}
 			<Textarea {...props} ref={ref} />
 			<FormErrorMessage>{props.error?.message}</FormErrorMessage>
 		</FormControl>
