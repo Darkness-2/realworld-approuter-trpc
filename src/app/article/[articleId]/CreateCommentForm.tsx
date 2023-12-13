@@ -33,6 +33,8 @@ export default function CreateCommentForm({ articleId }: CreateCommentFormProps)
 	// Register the articleId as it is not a user input
 	register("articleId", { value: articleId });
 
+	// Todo: On create, scroll to the new comment
+
 	const create = trpc.comment.create.useMutation({
 		onMutate: async () => {
 			// Reset the form
