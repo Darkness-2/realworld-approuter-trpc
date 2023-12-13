@@ -1,6 +1,10 @@
+"use client";
+
 import AuthorAndDate from "$/components/article/AuthorAndDate";
+import DeleteCommentButton from "$/components/comment/DeleteCommentButton";
+import { useUser } from "$/lib/hooks/auth";
 import { type RouterOutputs } from "$/lib/trpc/shared";
-import { Card, CardBody, CardFooter, Skeleton, Text } from "@chakra-ui/react";
+import { Card, CardBody, CardFooter, Flex, Skeleton, Text } from "@chakra-ui/react";
 
 type Comment = RouterOutputs["comment"]["getArticleComments"]["comments"][number];
 
@@ -27,10 +31,12 @@ const mockData: Comment = {
 };
 
 export default function Comment({ comment = mockData, isLoading = false }: CommentProps) {
-	const { author, body, createdAt } = comment;
+	const { user } = useUser();
+	const { author, body, createdAt, id, authorId } = comment;
+
+	const isOwnComment = user?.userId === authorId;
 
 	return (
-		// Todo: Add delete button if comment is the user's
 		// Todo: Add update button if comment is the user's
 		<Card border="1px" borderColor="gray.200" boxShadow="none">
 			<CardBody py={4}>
@@ -39,9 +45,12 @@ export default function Comment({ comment = mockData, isLoading = false }: Comme
 				</Skeleton>
 			</CardBody>
 			<CardFooter bg="gray.100" py={3}>
-				<Skeleton isLoaded={!isLoading}>
-					<AuthorAndDate createdAt={createdAt} username={author.username} variant="dark" asRow />
-				</Skeleton>
+				<Flex w="full" justifyContent="space-between" alignItems="center">
+					<Skeleton isLoaded={!isLoading}>
+						<AuthorAndDate createdAt={createdAt} username={author.username} variant="dark" asRow />
+					</Skeleton>
+					{isOwnComment && <DeleteCommentButton commentId={id} />}
+				</Flex>
 			</CardFooter>
 		</Card>
 	);
