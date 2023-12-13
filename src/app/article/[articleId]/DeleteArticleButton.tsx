@@ -56,10 +56,10 @@ export default function DeleteArticleButton({ articleId }: DeleteArticleButtonPr
 			variant="solid"
 			colorScheme="red"
 			leftIcon={<DeleteIcon />}
-			disabled={deleteArticle.isLoading}
+			isLoading={deleteArticle.isLoading}
 			onClick={() => deleteArticle.mutate(articleId)}
 		>
-			{deleteArticle.isLoading ? "Loading..." : "Delete article"}
+			Delete article
 		</Button>
 	);
 }
