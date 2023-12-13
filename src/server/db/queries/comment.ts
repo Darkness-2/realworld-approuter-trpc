@@ -1,6 +1,7 @@
 import { generateFutureDate } from "$/lib/utils/helpers";
 import { type DB } from "$/server/db";
 import { comment, type CommentInsert } from "$/server/db/schema/comment";
+import { and, eq } from "drizzle-orm";
 import { cache } from "react";
 
 /** Queries */
@@ -32,6 +33,7 @@ export const getArticleCommentsQuery = cache(async (db: DB, articleId: string, l
 /** Mutations */
 
 /**
+ *	Mutation to create a new comment.
  *
  * @param db instance of the db
  * @param newComment
@@ -39,3 +41,17 @@ export const getArticleCommentsQuery = cache(async (db: DB, articleId: string, l
  */
 export const createCommentMutation = async (db: DB, newComment: CommentInsert) =>
 	await db.insert(comment).values(newComment).returning();
+
+/**
+ * Mutation to delete a comment.
+ *
+ * @param db instance of the DB
+ * @param commentId id of the comment to delete
+ * @param authorId userId to confirm ownership of the comment
+ * @returns an array of comments that were deleted
+ */
+export const deleteCommentMutation = async (db: DB, commentId: string, authorId: string) =>
+	await db
+		.delete(comment)
+		.where(and(eq(comment.id, commentId), eq(comment.authorId, authorId)))
+		.returning();

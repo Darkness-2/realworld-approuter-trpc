@@ -1,8 +1,8 @@
 import { articleIdSchema } from "$/lib/schemas/article";
-import { createCommentSchema } from "$/lib/schemas/comment";
+import { commentIdSchema, createCommentSchema } from "$/lib/schemas/comment";
 import { limitDateCursorSchema } from "$/lib/schemas/helpers";
 import { CommentError } from "$/lib/utils/errors";
-import { createCommentMutation, getArticleCommentsQuery } from "$/server/db/queries/comment";
+import { createCommentMutation, deleteCommentMutation, getArticleCommentsQuery } from "$/server/db/queries/comment";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 
@@ -43,6 +43,16 @@ const mutations = {
 		}
 
 		return { success: true, comment: newComment };
+	}),
+
+	delete: privateProcedure.input(commentIdSchema).mutation(async ({ ctx, input }) => {
+		const deletedComments = await deleteCommentMutation(ctx.db, input, ctx.user.userId);
+
+		if (deletedComments.length === 0) {
+			throw new TRPCError({ code: "BAD_REQUEST", cause: new CommentError("COMMENT_FAILED_TO_DELETE") });
+		}
+
+		return true;
 	})
 };
 

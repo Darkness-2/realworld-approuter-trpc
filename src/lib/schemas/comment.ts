@@ -4,6 +4,11 @@ import { z } from "zod";
 /**
  * Field schemas
  */
+export const commentIdSchema = z.string({
+	invalid_type_error: "Comment ID must be a string",
+	required_error: "Comment ID is required"
+});
+
 const bodySchema = z
 	.string({
 		invalid_type_error: "Body must be a string",
