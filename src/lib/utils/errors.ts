@@ -37,7 +37,7 @@ export class ArticleError extends Error {
 	}
 }
 
-export const commentErrorCodes = ["COMMENT_FAILED_TO_RETURN"] as const;
+export const commentErrorCodes = ["COMMENT_FAILED_TO_DELETE", "COMMENT_FAILED_TO_RETURN"] as const;
 
 export type CommentErrorCodes = (typeof commentErrorCodes)[number];
 
