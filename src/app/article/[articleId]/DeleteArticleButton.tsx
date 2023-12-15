@@ -14,7 +14,7 @@ export default function DeleteArticleButton({ articleId }: DeleteArticleButtonPr
 	const toast = useToast();
 	const utils = trpc.useUtils();
 
-	const deleteArticle = trpc.article.deleteArticle.useMutation({
+	const deleteArticle = trpc.article.delete.useMutation({
 		onSuccess: () => {
 			// Show success message, clear router cache, redirect the user
 			toast({

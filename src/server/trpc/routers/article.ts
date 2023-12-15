@@ -105,8 +105,6 @@ const mutations = {
 	}),
 
 	edit: privateProcedure.input(editArticleSchema).mutation(async ({ ctx, input }) => {
-		// Todo: Standardize naming of procedures and queries to CRUD language
-
 		// Grab the article to be edited
 		const a = await ctx.db.query.article.findFirst({
 			where: ({ id }, { eq }) => eq(id, input.id)
@@ -141,7 +139,7 @@ const mutations = {
 		return true;
 	}),
 
-	deleteArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
+	delete: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
 		const deletedArticles = await ctx.db
 			.delete(article)
 			.where(and(eq(article.id, input), eq(article.authorId, ctx.user.userId)))
