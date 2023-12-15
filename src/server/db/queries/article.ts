@@ -1,6 +1,7 @@
 import { ArticleError } from "$/lib/utils/errors";
-import { generateFutureDate } from "$/lib/utils/helpers";
+import { countStar, generateFutureDate } from "$/lib/utils/helpers";
 import { type DB } from "$/server/db";
+import { getAuthorsFollowingQuery } from "$/server/db/queries/follow";
 import {
 	article,
 	articleToTag,
@@ -9,7 +10,7 @@ import {
 	type ArticleInsert,
 	type TagInsert
 } from "$/server/db/schema/article";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { cache } from "react";
 
 /** Queries */
@@ -24,6 +25,7 @@ import { cache } from "react";
  * @param db instance of the DB
  * @param limit how many items to get
  * @param offset how many items to offset
+ * @returns articles with tag, author, and likes info
  */
 export const getGlobalFeedQuery = cache(
 	async (db: DB, limit: number, offset: number) =>
@@ -55,7 +57,58 @@ export const getGlobalFeedQuery = cache(
  * @param db instance of the DB
  */
 export const getTotalArticlesCountQuery = cache(async (db: DB) => {
-	const res = await db.select({ count: sql<number>`cast(count(*) as int)` }).from(article);
+	const res = await db.select({ count: countStar }).from(article);
+
+	// Really should not happen
+	if (!res[0]) throw new Error("Something went wrong getting total article count");
+
+	return res[0].count;
+});
+
+/**
+ * Cached database call to get the data requried for the user's custom feed.
+ * Sorted descending by createdAt date.
+ *
+ * @param db instance of the db
+ * @param userId id of the user to get the feed for
+ * @param limit how many items to get
+ * @param offset how many items to offset
+ * @returns articles with tag, author, and likes info
+ */
+export const getUserFeedQuery = cache(async (db: DB, userId: string, limit: number, offset: number) => {
+	// Find the authors the user is following
+	const authorsFollowing = await getAuthorsFollowingQuery(db, userId);
+	const authorIds = authorsFollowing.map((a) => a.authorId);
+
+	return await db.query.article.findMany({
+		columns: { body: false },
+		where: ({ authorId }, { inArray }) => inArray(authorId, authorIds),
+		orderBy: ({ createdAt }, { desc }) => desc(createdAt),
+		limit,
+		offset,
+		with: {
+			articlesToTags: {
+				columns: {},
+				with: {
+					tag: true
+				}
+			},
+			author: {
+				columns: { username: true }
+			},
+			likes: {
+				columns: { articleId: true }
+			}
+		}
+	});
+});
+
+export const getUserFeedArticlesCountQuery = cache(async (db: DB, userId: string) => {
+	// Find the authors the user is following
+	const authorsFollowing = await getAuthorsFollowingQuery(db, userId);
+	const authorIds = authorsFollowing.map((a) => a.authorId);
+
+	const res = await db.select({ count: countStar }).from(article).where(inArray(article.authorId, authorIds));
 
 	// Really should not happen
 	if (!res[0]) throw new Error("Something went wrong getting total article count");

@@ -14,7 +14,9 @@ import {
 	getArticleByIdQuery,
 	getArticlesByAuthorIdQuery,
 	getGlobalFeedQuery,
-	getTotalArticlesCountQuery
+	getTotalArticlesCountQuery,
+	getUserFeedArticlesCountQuery,
+	getUserFeedQuery
 } from "$/server/db/queries/article";
 import { getUserByUsernameQuery } from "$/server/db/queries/auth";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
@@ -26,6 +28,18 @@ const feeds = {
 		const [rawArticles, totalCount] = await Promise.all([
 			getGlobalFeedQuery(ctx.db, input.limit, input.offset),
 			getTotalArticlesCountQuery(ctx.db)
+		]);
+
+		// Replace raw likes with likes count
+		const articles = rawArticles.map(({ likes, ...rest }) => ({ ...rest, likesCount: likes.length }));
+
+		return { articles, totalCount };
+	}),
+
+	getUserFeed: privateProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
+		const [rawArticles, totalCount] = await Promise.all([
+			getUserFeedQuery(ctx.db, ctx.user.userId, input.limit, input.offset),
+			getUserFeedArticlesCountQuery(ctx.db, ctx.user.userId)
 		]);
 
 		// Replace raw likes with likes count

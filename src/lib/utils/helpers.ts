@@ -1,4 +1,5 @@
 import { type TagInsert } from "$/server/db/schema/article";
+import { sql } from "drizzle-orm";
 
 /**
  * Helper type for Next.js search params
@@ -55,3 +56,8 @@ export const generateFutureDate = () => {
 
 	return date;
 };
+
+/**
+ * Helper sql string that gets the count of a SQL query as a number.
+ */
+export const countStar = sql<number>`cast(count(*) as int)`;
