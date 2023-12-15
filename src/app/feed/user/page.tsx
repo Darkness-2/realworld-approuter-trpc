@@ -5,6 +5,9 @@ type UserFeedPageProps = {
 	searchParams: SearchParams;
 };
 
+// Todo: Instead of using searchParams server-side, could be client-side so it can be statically rendered
+// Or: Convert this page and global feed page to use page param instead of search param
+
 export default function UserFeedPage({ searchParams: { userPage } }: UserFeedPageProps) {
 	const pageNumber = convertSearchParamToInt(userPage);
 
