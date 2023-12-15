@@ -8,10 +8,11 @@ type FeedPageProps = {
 /**
  * This page is a copy of the home page that is dynamically rendered so it can take advantage of searchParams
  */
-export default function FeedPage({ searchParams: { page } }: FeedPageProps) {
+export default function FeedPage({ searchParams: { page, userPage } }: FeedPageProps) {
 	const pageNumber = typeof page === "string" ? parseInt(page) : 1;
+	const userFeedPageNumber = typeof userPage === "string" ? parseInt(userPage) : 1;
 
-	return <HomePage page={pageNumber} />;
+	return <HomePage globalFeedPageNumber={pageNumber} userFeedPageNumber={userFeedPageNumber} />;
 }
 
 /** Using searchParams makes this page dynamically rendered

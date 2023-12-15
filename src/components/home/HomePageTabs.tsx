@@ -14,6 +14,8 @@ type HomePageTabsProps = {
 	tabs: Tab[];
 };
 
+// Todo: Open tab based on which page param is set
+
 export default function HomePageTabs({ tabs }: HomePageTabsProps) {
 	return (
 		<Tabs>

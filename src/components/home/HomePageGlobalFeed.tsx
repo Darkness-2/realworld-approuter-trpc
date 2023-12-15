@@ -3,8 +3,6 @@ import { getServerTRPCClient } from "$/lib/trpc/serverClient";
 import { findLastPageNumber, getLimitOffsetForPage } from "$/lib/utils/helpers";
 import { notFound } from "next/navigation";
 
-// Todo: Explore wrapping this in suspense boundary or loading.js?
-
 const DEFAULT_PAGE_SIZE = 10;
 
 type HomePageGlobalFeedProps = {

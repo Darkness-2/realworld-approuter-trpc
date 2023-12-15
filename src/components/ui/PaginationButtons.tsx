@@ -11,9 +11,17 @@ type PaginationButtonsProps = {
 	firstPage?: number;
 	// To be used if the desired pathname is not the same as the page itself
 	pathname?: string;
+	// To be used if the desired page param is not "page"
+	pageParam?: string;
 };
 
-export default function PaginationButtons({ currentPage, lastPage, firstPage = 1, pathname }: PaginationButtonsProps) {
+export default function PaginationButtons({
+	currentPage,
+	lastPage,
+	firstPage = 1,
+	pathname,
+	pageParam
+}: PaginationButtonsProps) {
 	// Determine what page numbers to render
 	const pagesToRender: number[] = [];
 
@@ -27,15 +35,21 @@ export default function PaginationButtons({ currentPage, lastPage, firstPage = 1
 		// Wrapped in suspense as useSearchParams defers rendering to client-side
 		<Suspense fallback={<Skeleton h="32px" w="150px" />}>
 			<ButtonGroup isAttached>
-				<PaginationButton page={firstPage} pathname={pathname}>
+				<PaginationButton page={firstPage} pathname={pathname} pageParam={pageParam}>
 					{"<<"}
 				</PaginationButton>
 				{pagesToRender.map((page) => (
-					<PaginationButton key={page} page={page} currentPage={currentPage === page} pathname={pathname}>
+					<PaginationButton
+						key={page}
+						page={page}
+						currentPage={currentPage === page}
+						pathname={pathname}
+						pageParam={pageParam}
+					>
 						{page}
 					</PaginationButton>
 				))}
-				<PaginationButton page={lastPage} pathname={pathname}>
+				<PaginationButton page={lastPage} pathname={pathname} pageParam={pageParam}>
 					{">>"}
 				</PaginationButton>
 			</ButtonGroup>
@@ -48,15 +62,16 @@ type PaginationButtonProps = {
 	page: number;
 	currentPage?: boolean;
 	pathname?: string;
+	pageParam?: string;
 };
 
-function PaginationButton({ children, page, currentPage = false, pathname }: PaginationButtonProps) {
+function PaginationButton({ children, page, currentPage = false, pathname, pageParam }: PaginationButtonProps) {
 	const actualPathname = usePathname();
 	const searchParams = useSearchParams();
 
 	// Generate new search params for the page, taking into account others that might already be set
 	const newSearchParams = new URLSearchParams(searchParams);
-	newSearchParams.set("page", page.toString());
+	newSearchParams.set(pageParam ?? "page", page.toString());
 
 	// Generate the href for the link
 	const href = `${pathname ?? actualPathname}?${newSearchParams.toString()}`;

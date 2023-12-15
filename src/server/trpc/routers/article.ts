@@ -37,6 +37,8 @@ const feeds = {
 	}),
 
 	getUserFeed: privateProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
+		// Todo: Deal with user following 0 users
+
 		const [rawArticles, totalCount] = await Promise.all([
 			getUserFeedQuery(ctx.db, ctx.user.userId, input.limit, input.offset),
 			getUserFeedArticlesCountQuery(ctx.db, ctx.user.userId)
