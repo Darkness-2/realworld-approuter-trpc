@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-type EditArticleForm = RouterInputs["article"]["editArticle"];
+type EditArticleForm = RouterInputs["article"]["edit"];
 
 type EditArticleFormProps = {
 	article: Required<EditArticleForm>;
@@ -39,7 +39,7 @@ export default function EditArticleForm({ article }: EditArticleFormProps) {
 		resolver: zodResolver(editArticleSchema)
 	});
 
-	const edit = trpc.article.editArticle.useMutation({
+	const edit = trpc.article.edit.useMutation({
 		onSuccess: () => {
 			// Invalidate any queries that depend on articles
 			utils.article.invalidate();

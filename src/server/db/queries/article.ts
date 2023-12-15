@@ -1,8 +1,15 @@
 import { ArticleError } from "$/lib/utils/errors";
 import { generateFutureDate } from "$/lib/utils/helpers";
 import { type DB } from "$/server/db";
-import { article, articleToTag, tag, type ArticleInsert, type TagInsert } from "$/server/db/schema/article";
-import { sql } from "drizzle-orm";
+import {
+	article,
+	articleToTag,
+	tag,
+	type Article,
+	type ArticleInsert,
+	type TagInsert
+} from "$/server/db/schema/article";
+import { eq, sql } from "drizzle-orm";
 import { cache } from "react";
 
 /** Queries */
@@ -175,7 +182,7 @@ export const connectTagsToArticleMutation = async (db: DB, tagIds: string[], art
  *
  * @param db instance of the db
  * @param newArticle article to insert
- * @param tagsToInsert tags to insert and attach to the article
+ * @param tagsToInsert tags to attach to the article
  * @returns id of the new article
  */
 export const createArticleMutation = async (db: DB, newArticle: ArticleInsert, tagsToInsert: TagInsert[]) =>
@@ -206,4 +213,42 @@ export const createArticleMutation = async (db: DB, newArticle: ArticleInsert, t
 		await connectTagsToArticleMutation(tx, tagIds, articleId);
 
 		return articleId;
+	});
+
+/**
+ * Mutation to edit an article.
+ *
+ * @param db instance of the db
+ * @param editedArticle values of the article to change
+ * @param articleId id of the article being changed
+ * @param tagsToInsert tags to attach to the article
+ * @returns void
+ */
+export const editArticleMutation = async (
+	db: DB,
+	editedArticle: Partial<Article>,
+	articleId: string,
+	tagsToInsert: TagInsert[]
+) =>
+	await db.transaction(async (tx) => {
+		// Edit article and create tags
+		const editArticleQuery = tx.update(article).set(editedArticle).where(eq(article.id, articleId));
+		const newTagsQuery = insertTagsMutation(tx, tagsToInsert);
+
+		// Remove all existing tags from the article; will reset them later
+		const removeTagsQuery = tx.delete(articleToTag).where(eq(articleToTag.articleId, articleId));
+
+		// Run queries
+		await Promise.all([editArticleQuery, newTagsQuery, removeTagsQuery]);
+
+		// Return early if no need to insert tags
+		if (tagsToInsert.length === 0) return;
+
+		const tags = await getTagsByTextQuery(
+			tx,
+			tagsToInsert.map((tag) => tag.text)
+		);
+		const tagIds = tags.map((tag) => tag.id);
+
+		await connectTagsToArticleMutation(tx, tagIds, articleId);
 	});

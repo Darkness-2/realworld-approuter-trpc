@@ -8,17 +8,15 @@ import { limitDateCursorSchema, limitOffsetSchema } from "$/lib/schemas/helpers"
 import { ArticleError } from "$/lib/utils/errors";
 import { convertTagsToDBFormat } from "$/lib/utils/helpers";
 import {
-	connectTagsToArticleMutation,
 	createArticleMutation,
+	editArticleMutation,
 	getArticleByIdQuery,
 	getArticlesByAuthorIdQuery,
 	getGlobalFeedQuery,
-	getTagsByTextQuery,
-	getTotalArticlesCountQuery,
-	insertTagsMutation
+	getTotalArticlesCountQuery
 } from "$/server/db/queries/article";
 import { getUserByUsernameQuery } from "$/server/db/queries/auth";
-import { article, articleToTag } from "$/server/db/schema/article";
+import { article } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
@@ -106,8 +104,7 @@ const mutations = {
 		}
 	}),
 
-	editArticle: privateProcedure.input(editArticleSchema).mutation(async ({ ctx, input }) => {
-		// Todo: Explore doing this in a transaction
+	edit: privateProcedure.input(editArticleSchema).mutation(async ({ ctx, input }) => {
 		// Todo: Standardize naming of procedures and queries to CRUD language
 
 		// Grab the article to be edited
@@ -133,30 +130,15 @@ const mutations = {
 			tags: undefined
 		};
 
-		// Edit the article
-		const editArticleQuery = ctx.db.update(article).set(newValues).where(eq(article.id, a.id));
-
 		// Convert tags to format DB expects and create if needed
 		const tagsToInsert = convertTagsToDBFormat(input.tags);
-		const newTagsQuery = insertTagsMutation(ctx.db, tagsToInsert);
 
-		// Remove all existing tags from the article; will reset them later
-		const removeTagsQuery = ctx.db.delete(articleToTag).where(eq(articleToTag.articleId, a.id));
-
-		// Run queries
-		await Promise.all([newTagsQuery, editArticleQuery, removeTagsQuery]);
-
-		// Connect tags to article if needed
-		if (input.tags && input.tags.length > 0) {
-			const tags = await getTagsByTextQuery(ctx.db, input.tags);
-			const tagIds = tags.map((tag) => tag.id);
-			await connectTagsToArticleMutation(ctx.db, tagIds, a.id);
-		}
+		await editArticleMutation(ctx.db, newValues, a.id, tagsToInsert);
 
 		// For now, revalidate the entire site to reflect changes
 		revalidatePath("/", "layout");
 
-		return { success: true };
+		return true;
 	}),
 
 	deleteArticle: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
