@@ -12,6 +12,9 @@ type HomePageUserFeedProps = {
 	page: number;
 };
 
+// Todo: Look into replacing this with parallel or intercepting route
+// Or just a separate page (rename feed to global-feed and add user-feed)
+
 export default function HomePageUserFeed({ page }: HomePageUserFeedProps) {
 	// If page is not valid, throw not found
 	if (page < 1 || isNaN(page)) notFound();
@@ -31,7 +34,7 @@ export default function HomePageUserFeed({ page }: HomePageUserFeedProps) {
 					paginationOptions={{
 						currentPage: page,
 						lastPage: findLastPageNumber(data.totalCount, DEFAULT_PAGE_SIZE),
-						pathname: "/feed",
+						pathname: "/feed/user",
 						pageParam: "userPage"
 					}}
 				/>

@@ -1,11 +1,23 @@
 import { type TagInsert } from "$/server/db/schema/article";
 import { sql } from "drizzle-orm";
 
+// Todo: Organize helpers
+// Maybe by server and other?
+
 /**
  * Helper type for Next.js search params
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/page#searchparams-optional
  */
 export type SearchParams = { [key: string]: string | string[] | undefined };
+
+/**
+ * Helper to convert a searchParam into an int.
+ * @param param param to convert
+ * @returns converted integer or 1 if param is un-parseable
+ */
+export const convertSearchParamToInt = (param: SearchParams[string]) => {
+	return typeof param === "string" ? parseInt(param) : 1;
+};
 
 /**
  * Helper format to convert a string array into the tag format the DB expects

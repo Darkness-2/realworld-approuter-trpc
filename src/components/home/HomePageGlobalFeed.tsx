@@ -26,7 +26,7 @@ export default async function HomePageGlobalFeed({ page }: HomePageGlobalFeedPro
 			paginationOptions={{
 				currentPage: page,
 				lastPage: findLastPageNumber(totalCount, DEFAULT_PAGE_SIZE),
-				pathname: "/feed"
+				pathname: "/feed/global"
 			}}
 		/>
 	);
