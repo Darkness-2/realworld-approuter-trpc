@@ -9,7 +9,7 @@ import {
 	type ArticleInsert,
 	type TagInsert
 } from "$/server/db/schema/article";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { cache } from "react";
 
 /** Queries */
@@ -252,3 +252,17 @@ export const editArticleMutation = async (
 
 		await connectTagsToArticleMutation(tx, tagIds, articleId);
 	});
+
+/**
+ * Mutation to delete an article.
+ *
+ * @param db instance of the DB
+ * @param articleId id of the article to delete
+ * @param authorId userId to confirm ownership
+ * @returns array of deleted articles
+ */
+export const deleteArticleMutation = async (db: DB, articleId: string, authorId: string) =>
+	await db
+		.delete(article)
+		.where(and(eq(article.id, articleId), eq(article.authorId, authorId)))
+		.returning();

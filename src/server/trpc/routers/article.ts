@@ -9,6 +9,7 @@ import { ArticleError } from "$/lib/utils/errors";
 import { convertTagsToDBFormat } from "$/lib/utils/helpers";
 import {
 	createArticleMutation,
+	deleteArticleMutation,
 	editArticleMutation,
 	getArticleByIdQuery,
 	getArticlesByAuthorIdQuery,
@@ -16,10 +17,8 @@ import {
 	getTotalArticlesCountQuery
 } from "$/server/db/queries/article";
 import { getUserByUsernameQuery } from "$/server/db/queries/auth";
-import { article } from "$/server/db/schema/article";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "$/server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 const feeds = {
@@ -140,10 +139,7 @@ const mutations = {
 	}),
 
 	delete: privateProcedure.input(articleIdSchema).mutation(async ({ ctx, input }) => {
-		const deletedArticles = await ctx.db
-			.delete(article)
-			.where(and(eq(article.id, input), eq(article.authorId, ctx.user.userId)))
-			.returning();
+		const deletedArticles = await deleteArticleMutation(ctx.db, input, ctx.user.userId);
 
 		// Throw error if no article was deleted
 		// Could be because user didn't have the right userId, or articleId wasn't found
