@@ -9,6 +9,7 @@ import { ArticleError } from "$/lib/utils/errors";
 import { convertTagsToDBFormat } from "$/lib/utils/helpers";
 import {
 	connectTagsToArticleMutation,
+	createArticleMutation,
 	getArticleByIdQuery,
 	getArticlesByAuthorIdQuery,
 	getGlobalFeedQuery,
@@ -85,42 +86,24 @@ const queries = {
 
 const mutations = {
 	create: privateProcedure.input(createArticleSchema).mutation(async ({ input, ctx }) => {
-		// Todo: Explore doing this in a transaction
-
-		// Create article
-		const newArticleQuery = ctx.db
-			.insert(article)
-			.values({
-				...input,
-				authorId: ctx.user.userId
-			})
-			.returning({ id: article.id });
-
 		// Convert tags to format DB expects and create if needed
 		const tagsToInsert = convertTagsToDBFormat(input.tags);
-		const newTagsQuery = insertTagsMutation(ctx.db, tagsToInsert);
 
-		// Run queries
-		const [newArticles] = await Promise.all([newArticleQuery, newTagsQuery]);
+		try {
+			const articleId = await createArticleMutation(ctx.db, { ...input, authorId: ctx.user.userId }, tagsToInsert);
 
-		// Throw error if it didn't return the new article for some reason
-		const articleId = newArticles[0]?.id;
+			// For now, revalidate the entire site to reflect changes
+			revalidatePath("/", "layout");
 
-		if (!articleId) {
-			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", cause: new ArticleError("ARTICLE_FAILED_TO_RETURN") });
+			return { success: true, articleId };
+		} catch (e) {
+			// Handle expected errors
+			if (e instanceof ArticleError) {
+				throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", cause: e });
+			}
+
+			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Something went wrong" });
 		}
-
-		// Connect tags to article if needed
-		if (input.tags && input.tags.length > 0) {
-			const tags = await getTagsByTextQuery(ctx.db, input.tags);
-			const tagIds = tags.map((tag) => tag.id);
-			await connectTagsToArticleMutation(ctx.db, tagIds, articleId);
-		}
-
-		// For now, revalidate the entire site to reflect changes
-		revalidatePath("/", "layout");
-
-		return { success: true, articleId };
 	}),
 
 	editArticle: privateProcedure.input(editArticleSchema).mutation(async ({ ctx, input }) => {

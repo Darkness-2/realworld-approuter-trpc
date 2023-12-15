@@ -1,6 +1,7 @@
+import { ArticleError } from "$/lib/utils/errors";
 import { generateFutureDate } from "$/lib/utils/helpers";
 import { type DB } from "$/server/db";
-import { article, articleToTag, tag, type TagInsert } from "$/server/db/schema/article";
+import { article, articleToTag, tag, type ArticleInsert, type TagInsert } from "$/server/db/schema/article";
 import { sql } from "drizzle-orm";
 import { cache } from "react";
 
@@ -168,3 +169,41 @@ export const connectTagsToArticleMutation = async (db: DB, tagIds: string[], art
 
 	return true;
 };
+
+/**
+ * Mutation to add an article along with any required tags.
+ *
+ * @param db instance of the db
+ * @param newArticle article to insert
+ * @param tagsToInsert tags to insert and attach to the article
+ * @returns id of the new article
+ */
+export const createArticleMutation = async (db: DB, newArticle: ArticleInsert, tagsToInsert: TagInsert[]) =>
+	await db.transaction(async (tx) => {
+		// Create article and tags
+		const newArticleQuery = db.insert(article).values(newArticle).returning({ id: article.id });
+		const newTagsQuery = insertTagsMutation(tx, tagsToInsert);
+
+		// Run queries
+		const [newArticles] = await Promise.all([newArticleQuery, newTagsQuery]);
+
+		// Throw error if it didn't return the new article for some reason
+		const articleId = newArticles[0]?.id;
+
+		if (!articleId) {
+			throw new ArticleError("ARTICLE_FAILED_TO_RETURN");
+		}
+
+		// Return early if no need to insert tags
+		if (tagsToInsert.length === 0) return articleId;
+
+		const tags = await getTagsByTextQuery(
+			tx,
+			tagsToInsert.map((tag) => tag.text)
+		);
+		const tagIds = tags.map((tag) => tag.id);
+
+		await connectTagsToArticleMutation(tx, tagIds, articleId);
+
+		return articleId;
+	});
