@@ -3,16 +3,9 @@ import { authRouter } from "$/server/trpc/routers/auth";
 import { commentRouter } from "$/server/trpc/routers/comment";
 import { followRouter } from "$/server/trpc/routers/follow";
 import { likeRouter } from "$/server/trpc/routers/like";
-import { cache } from "react";
-import { createTRPCRouter, publicProcedure } from "./trpc";
-
-const generateString = cache(() => {
-	console.log("Hello ran");
-	return `Hey from the server at time: ${new Date().getTime()}`;
-});
+import { createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({
-	hello: publicProcedure.query(() => generateString()),
 	auth: authRouter,
 	article: articleRouter,
 	comment: commentRouter,
