@@ -1,3 +1,4 @@
+import LikedArticlesInfiniteScroll from "$/app/user/[username]/LikedArticlesInfiniteScroll";
 import UserArticlesInfiniteScroll from "$/app/user/[username]/UserArticlesInfiniteScroll";
 import UserHero from "$/app/user/[username]/UserHero";
 import Section from "$/components/ui/Section";
@@ -42,7 +43,9 @@ export default async function UserPage({ params }: UserPageProps) {
 								<UserArticlesInfiniteScroll username={firstPage.author.username} pageSize={DEFAULT_PAGE_SIZE} />
 							</TRPCHydrate>
 						</TabPanel>
-						<TabPanel px={0}>Todo: Enter user&apos;s liked articles</TabPanel>
+						<TabPanel px={0}>
+							<LikedArticlesInfiniteScroll userId={firstPage.author.id} pageSize={DEFAULT_PAGE_SIZE} />
+						</TabPanel>
 					</TabPanels>
 				</Tabs>
 			</Section>
