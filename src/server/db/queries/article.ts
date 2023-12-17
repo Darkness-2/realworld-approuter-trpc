@@ -175,6 +175,41 @@ export const getArticlesByAuthorIdQuery = cache(async (db: DB, id: string, limit
 });
 
 /**
+ * Cached database call to get the articles a user likes, with tag info.
+ *
+ * @param db instance of the db
+ * @param userId id of the user whose likes to get
+ * @param limit how many items to get
+ * @param cursor createdAt timestamp to get articles older than
+ */
+export const getLikedArticlesQuery = cache(async (db: DB, userId: string, limit?: number, cursor?: Date) => {
+	// If date is undefined, generate a random date far into the future
+	const date = cursor ?? generateFutureDate();
+
+	return await db.query.article.findMany({
+		columns: { body: false },
+		where: ({ createdAt }, { lt }) => lt(createdAt, date),
+		orderBy: ({ createdAt }, { desc }) => desc(createdAt),
+		limit,
+		// Todo: Extract the standard pieces of this (with, columns) into a helper type
+		with: {
+			articlesToTags: {
+				columns: {},
+				with: {
+					tag: true
+				}
+			},
+			likes: {
+				columns: {
+					articleId: true
+				},
+				where: ({ userId: uid }, { eq }) => eq(uid, userId)
+			}
+		}
+	});
+});
+
+/**
  * Cached database call to get tags by their text.
  *
  * @param db instance of the DB

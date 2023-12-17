@@ -4,6 +4,7 @@ import {
 	createArticleSchema,
 	editArticleSchema
 } from "$/lib/schemas/article";
+import { userIdSchema } from "$/lib/schemas/auth";
 import { limitDateCursorSchema, limitOffsetSchema } from "$/lib/schemas/helpers";
 import { ArticleError } from "$/lib/utils/errors";
 import { convertTagsToDBFormat } from "$/lib/utils/helpers";
@@ -14,6 +15,7 @@ import {
 	getArticleByIdQuery,
 	getArticlesByAuthorIdQuery,
 	getGlobalFeedQuery,
+	getLikedArticlesQuery,
 	getTotalArticlesCountQuery,
 	getUserFeedArticlesCountQuery,
 	getUserFeedQuery
@@ -92,6 +94,31 @@ const queries = {
 					id: author.id,
 					username: author.username
 				},
+				hasMore
+			};
+		}),
+
+	getLikedArticles: publicProcedure
+		.input(
+			limitDateCursorSchema.extend({
+				userId: userIdSchema
+			})
+		)
+		.query(async ({ ctx, input }) => {
+			// Grab one more than limit so we can tell if there are more pages
+			const rawArticles = await getLikedArticlesQuery(ctx.db, input.userId, input.limit + 1, input.cursor);
+
+			// Determine if we have a next page
+			const hasMore = rawArticles.length > input.limit;
+
+			// Pop last one if we grabbed more than needed
+			if (hasMore) rawArticles.pop();
+
+			// Todo: Convert this into a utility function
+			const articles = rawArticles.map(({ likes, ...rest }) => ({ ...rest, likesCount: likes.length }));
+
+			return {
+				articles,
 				hasMore
 			};
 		})
