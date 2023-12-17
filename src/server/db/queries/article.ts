@@ -2,6 +2,7 @@ import { ArticleError } from "$/lib/utils/errors";
 import { countStar, generateFutureDate } from "$/lib/utils/helpers";
 import { type DB } from "$/server/db";
 import { getAuthorsFollowingQuery } from "$/server/db/queries/follow";
+import { getLikedArticlesListQuery } from "$/server/db/queries/like";
 import {
 	article,
 	articleToTag,
@@ -183,16 +184,26 @@ export const getArticlesByAuthorIdQuery = cache(async (db: DB, id: string, limit
  * @param cursor createdAt timestamp to get articles older than
  */
 export const getLikedArticlesQuery = cache(async (db: DB, userId: string, limit?: number, cursor?: Date) => {
+	const likedArticles = await getLikedArticlesListQuery(db, userId);
+
+	const articleIds = likedArticles.map((like) => like.articleId);
+
+	// Return early if no liked articles
+	if (articleIds.length === 0) return [];
+
 	// If date is undefined, generate a random date far into the future
 	const date = cursor ?? generateFutureDate();
 
 	return await db.query.article.findMany({
 		columns: { body: false },
-		where: ({ createdAt }, { lt }) => lt(createdAt, date),
+		where: ({ id, createdAt }, { lt, and, inArray }) => and(lt(createdAt, date), inArray(id, articleIds)),
 		orderBy: ({ createdAt }, { desc }) => desc(createdAt),
 		limit,
 		// Todo: Extract the standard pieces of this (with, columns) into a helper type
 		with: {
+			author: {
+				columns: { username: true }
+			},
 			articlesToTags: {
 				columns: {},
 				with: {
@@ -202,8 +213,7 @@ export const getLikedArticlesQuery = cache(async (db: DB, userId: string, limit?
 			likes: {
 				columns: {
 					articleId: true
-				},
-				where: ({ userId: uid }, { eq }) => eq(uid, userId)
+				}
 			}
 		}
 	});
