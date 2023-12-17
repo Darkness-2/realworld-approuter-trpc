@@ -1,3 +1,4 @@
+import Tag from "$/components/article/Tag";
 import { AddIcon } from "@chakra-ui/icons";
 import {
 	Flex,
@@ -7,10 +8,7 @@ import {
 	IconButton,
 	Input,
 	InputGroup,
-	InputRightElement,
-	Tag,
-	TagCloseButton,
-	TagLabel
+	InputRightElement
 } from "@chakra-ui/react";
 import { useState, type KeyboardEvent } from "react";
 import { type FieldErrors } from "react-hook-form";
@@ -66,11 +64,7 @@ export default function TagsInput(props: TagsInputProps) {
 			</InputGroup>
 			<Flex gap={1} mt={2} wrap="wrap">
 				{(props.tags ?? []).map((tag, index) => (
-					// Todo: Extract tag into a component and make prettier
-					<Tag key={index} size="sm" variant="solid" colorScheme="gray">
-						<TagLabel>{tag}</TagLabel>
-						<TagCloseButton onClick={() => handleRemoveTag(tag)} />
-					</Tag>
+					<Tag key={index} text={tag} closeFunction={() => handleRemoveTag(tag)} />
 				))}
 			</Flex>
 			<FormErrorMessage>{props.error?.message}</FormErrorMessage>
