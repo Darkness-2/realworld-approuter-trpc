@@ -25,8 +25,8 @@ const passwordTooLongMessage = "Password must be 255 characters or less";
  * Field schemas
  */
 export const userIdSchema = z.string({
-	invalid_type_error: "Article ID must be a string",
-	required_error: "Article ID is required"
+	invalid_type_error: "User ID must be a string",
+	required_error: "User ID is required"
 });
 
 export const usernameCreateSchema = z
