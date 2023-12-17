@@ -6,7 +6,7 @@ import { trpc } from "$/lib/trpc/client";
  * @returns standard useQuery items + the likedArticles array
  */
 export const useLikedArticles = () => {
-	const likedArticles = trpc.like.getLikedArticles.useQuery(undefined, {
+	const likedArticles = trpc.like.getLikedArticlesList.useQuery(undefined, {
 		// Only refetch the user's liked articles every 5 minutes if needed
 		staleTime: 1000 * 60 * 5
 	});

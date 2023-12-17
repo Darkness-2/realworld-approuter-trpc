@@ -12,7 +12,7 @@ import { cache } from "react";
  * @param userId id of the user
  * @returns array of likes
  */
-export const getLikedArticlesQuery = cache(
+export const getLikedArticlesListQuery = cache(
 	async (db: DB, userId: string) =>
 		await db.query.like.findMany({
 			columns: { articleId: true },

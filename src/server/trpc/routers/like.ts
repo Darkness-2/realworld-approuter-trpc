@@ -1,13 +1,13 @@
 import { toggleLikeSchema } from "$/lib/schemas/like";
-import { getLikedArticlesQuery, likeArticleMutation, unlikeArticleMutation } from "$/server/db/queries/like";
+import { getLikedArticlesListQuery, likeArticleMutation, unlikeArticleMutation } from "$/server/db/queries/like";
 import { createTRPCRouter, privateProcedure } from "$/server/trpc/trpc";
 import { revalidatePath } from "next/cache";
 
 // Todo: Get much more granular with revalidates; consider creating helper functions like "revalidateArticles, revalidateLikes"
 
 const queries = {
-	getLikedArticles: privateProcedure.query(async ({ ctx }) => {
-		const rawLikes = await getLikedArticlesQuery(ctx.db, ctx.user.userId);
+	getLikedArticlesList: privateProcedure.query(async ({ ctx }) => {
+		const rawLikes = await getLikedArticlesListQuery(ctx.db, ctx.user.userId);
 		const likes = rawLikes.map((l) => l.articleId);
 
 		return likes;

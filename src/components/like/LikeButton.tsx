@@ -22,19 +22,19 @@ export default function LikeButton({ likes, articleId }: LikeButtonProps) {
 	const toggleLike = trpc.like.toggleLike.useMutation({
 		onMutate: async ({ action, articleId }) => {
 			// Cancel anything outgoing so it doesn't override
-			await utils.like.getLikedArticles.cancel(undefined);
+			await utils.like.getLikedArticlesList.cancel(undefined);
 
 			// Snapshot the previous value
-			const previousLikes = utils.like.getLikedArticles.getData(undefined);
+			const previousLikes = utils.like.getLikedArticlesList.getData(undefined);
 
 			// Optimistically update the likes query based on the action
 			switch (action) {
 				case "like":
-					utils.like.getLikedArticles.setData(undefined, (old) => (old ? [...old, articleId] : [articleId]));
+					utils.like.getLikedArticlesList.setData(undefined, (old) => (old ? [...old, articleId] : [articleId]));
 					break;
 
 				case "unlike":
-					utils.like.getLikedArticles.setData(undefined, (old) => old?.filter((like) => like !== articleId));
+					utils.like.getLikedArticlesList.setData(undefined, (old) => old?.filter((like) => like !== articleId));
 					break;
 			}
 
@@ -50,7 +50,7 @@ export default function LikeButton({ likes, articleId }: LikeButtonProps) {
 			});
 
 			// Reset the optimisitic update
-			utils.like.getLikedArticles.setData(undefined, context?.previousLikes);
+			utils.like.getLikedArticlesList.setData(undefined, context?.previousLikes);
 
 			console.error(e);
 		},
