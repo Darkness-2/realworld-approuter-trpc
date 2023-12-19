@@ -47,7 +47,13 @@ export default function Comment({ comment = mockData, isLoading = false }: Comme
 			<CardFooter bg="gray.100" py={3}>
 				<Flex w="full" justifyContent="space-between" alignItems="center">
 					<Skeleton isLoaded={!isLoading}>
-						<AuthorAndDate createdAt={createdAt} username={author.username} variant="dark" asRow />
+						<AuthorAndDate
+							createdAt={createdAt}
+							username={author.username}
+							variant="dark"
+							asRow
+							isLoading={isLoading}
+						/>
 					</Skeleton>
 					{isOwnComment && <DeleteCommentButton commentId={id} />}
 				</Flex>
