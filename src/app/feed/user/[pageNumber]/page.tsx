@@ -13,4 +13,8 @@ export default function UserFeedPage({ params }: UserFeedPageProps) {
 	return <HomePage activeTab="userFeed" userFeedPageNumber={pageNumber} />;
 }
 
-export const revalidate = 300;
+/**
+ * Force page to be static.
+ * No need to regnerate as feed is loaded client-side.
+ */
+export const dynamic = "error";

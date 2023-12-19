@@ -16,4 +16,8 @@ export default function GlobalFeedPage({ params }: GlobalFeedPageProps) {
 	return <HomePage activeTab="globalFeed" globalFeedPageNumber={pageNumber} />;
 }
 
+/**
+ * Force page to be static and regenerated every 5 minutes.
+ */
+export const dynamic = "error";
 export const revalidate = 300;
