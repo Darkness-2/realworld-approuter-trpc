@@ -1,4 +1,9 @@
-import { Box, Container, Stack, Text } from "@chakra-ui/react";
+"use client";
+
+import Link from "$/components/ui/Link";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { Box, Button, ButtonGroup, Container, Stack, Text } from "@chakra-ui/react";
+import NextLink from "next/link";
 
 export default function HomePageHero() {
 	return (
@@ -16,9 +21,28 @@ export default function HomePageHero() {
 					>
 						conduit
 					</Text>
-					<Text color="white" fontSize="2xl" align="center">
-						A place to share your knowledge.
+					<Text color="white" fontSize="md" align="center">
+						This project is a rough recreation of{" "}
+						<Link href="https://www.realworld.how/" textDecoration="underline">
+							Realworld.how
+						</Link>{" "}
+						using Next.js app router and tRPC.
 					</Text>
+					<ButtonGroup mt={2}>
+						<Button as={NextLink} href="/approaches" colorScheme="gray" size="sm">
+							View approaches for how to use tRPC in Next.js app router
+						</Button>
+						<Button
+							as={NextLink}
+							href="https://github.com/Darkness-2/realworld-approuter-trpc"
+							target="_blank"
+							colorScheme="gray"
+							size="sm"
+							rightIcon={<ExternalLinkIcon />}
+						>
+							View on Github
+						</Button>
+					</ButtonGroup>
 				</Stack>
 			</Container>
 		</Box>
