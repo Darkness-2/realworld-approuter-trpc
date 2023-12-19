@@ -49,7 +49,7 @@ export default function Article({ article = mockData, isLoading = false }: Artic
 			</Flex>
 
 			{/* Main text content */}
-			<Link href={articleHref} _hover={{ textDecoration: "none" }}>
+			<Link href={articleHref} _hover={{ textDecoration: "none" }} prefetch={!isLoading}>
 				<Stack>
 					{/* Todo: Replace other skeletons with this approach */}
 					<Skeleton isLoaded={!isLoading}>
@@ -71,7 +71,7 @@ export default function Article({ article = mockData, isLoading = false }: Artic
 					justifyContent="space-between"
 					alignItems={{ base: "normal", sm: "center" }}
 				>
-					<Link href={articleHref} fontSize="xs" color="gray.500">
+					<Link href={articleHref} fontSize="xs" color="gray.500" prefetch={!isLoading}>
 						Read more...
 					</Link>
 					<ArticleTags tags={articleTags} />
