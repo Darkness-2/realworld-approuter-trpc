@@ -35,7 +35,7 @@ export default function HomePageUserFeed({ page }: HomePageUserFeedProps) {
 						currentPage: page,
 						lastPage: findLastPageNumber(data.totalCount, DEFAULT_PAGE_SIZE),
 						pathname: "/feed/user",
-						pageParam: "userPage"
+						method: "pageParam"
 					}}
 				/>
 			)}

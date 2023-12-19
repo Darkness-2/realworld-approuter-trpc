@@ -5,14 +5,18 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, type ReactNode } from "react";
 
+type PaginationMethod = "searchParam" | "pageParam";
+
 type PaginationButtonsProps = {
 	currentPage: number;
 	lastPage: number;
 	firstPage?: number;
 	// To be used if the desired pathname is not the same as the page itself
 	pathname?: string;
-	// To be used if the desired page param is not "page"
-	pageParam?: string;
+	// Specifies if the pagination is to use /pathname/[#] or /pathname?page=[#]
+	method: PaginationMethod;
+	// To be used if the desired search param is not "page"
+	searchParam?: string;
 };
 
 export default function PaginationButtons({
@@ -20,7 +24,8 @@ export default function PaginationButtons({
 	lastPage,
 	firstPage = 1,
 	pathname,
-	pageParam
+	method,
+	searchParam
 }: PaginationButtonsProps) {
 	// Determine what page numbers to render
 	const pagesToRender: number[] = [];
@@ -35,7 +40,7 @@ export default function PaginationButtons({
 		// Wrapped in suspense as useSearchParams defers rendering to client-side
 		<Suspense fallback={<Skeleton h="32px" w="150px" />}>
 			<ButtonGroup isAttached>
-				<PaginationButton page={firstPage} pathname={pathname} pageParam={pageParam}>
+				<PaginationButton page={firstPage} pathname={pathname} method={method} searchParam={searchParam}>
 					{"<<"}
 				</PaginationButton>
 				{pagesToRender.map((page) => (
@@ -44,12 +49,13 @@ export default function PaginationButtons({
 						page={page}
 						currentPage={currentPage === page}
 						pathname={pathname}
-						pageParam={pageParam}
+						method={method}
+						searchParam={searchParam}
 					>
 						{page}
 					</PaginationButton>
 				))}
-				<PaginationButton page={lastPage} pathname={pathname} pageParam={pageParam}>
+				<PaginationButton page={lastPage} pathname={pathname} method={method} searchParam={searchParam}>
 					{">>"}
 				</PaginationButton>
 			</ButtonGroup>
@@ -62,19 +68,30 @@ type PaginationButtonProps = {
 	page: number;
 	currentPage?: boolean;
 	pathname?: string;
-	pageParam?: string;
+	method: PaginationMethod;
+	searchParam?: string;
 };
 
-function PaginationButton({ children, page, currentPage = false, pathname, pageParam }: PaginationButtonProps) {
+function PaginationButton({
+	children,
+	page,
+	currentPage = false,
+	pathname,
+	method,
+	searchParam
+}: PaginationButtonProps) {
 	const actualPathname = usePathname();
 	const searchParams = useSearchParams();
 
+	// Use the actual pathname, unless pathname was provided as a prop
+	const pathnameToUse = pathname ?? actualPathname;
+
 	// Generate new search params for the page, taking into account others that might already be set
 	const newSearchParams = new URLSearchParams(searchParams);
-	newSearchParams.set(pageParam ?? "page", page.toString());
+	newSearchParams.set(searchParam ?? "page", page.toString());
 
 	// Generate the href for the link
-	const href = `${pathname ?? actualPathname}?${newSearchParams.toString()}`;
+	const href = method === "pageParam" ? `${pathnameToUse}/${page}` : `${pathnameToUse}?${newSearchParams.toString()}`;
 
 	return (
 		<Button as={Link} href={href} size="sm" colorScheme={currentPage ? "green" : "gray"}>

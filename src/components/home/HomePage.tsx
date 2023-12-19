@@ -26,13 +26,13 @@ export default function HomePage({ globalFeedPageNumber, userFeedPageNumber, act
 			label: "Global feed",
 			panel: globalFeed,
 			requiresAuth: false,
-			link: globalFeed ? undefined : "/feed/global"
+			link: globalFeed ? undefined : "/feed/global/1"
 		},
 		{
 			label: "Your feed",
 			panel: userFeed,
 			requiresAuth: true,
-			link: userFeed ? undefined : "/feed/user"
+			link: userFeed ? undefined : "/feed/user/1"
 		}
 	];
 
