@@ -8,6 +8,7 @@ import { trpc } from "$/lib/trpc/client";
 import { type RouterInputs } from "$/lib/trpc/shared";
 import { Box, Stack } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
@@ -15,7 +16,7 @@ type SignupForm = RouterInputs["auth"]["signup"];
 
 export default function SignupForm() {
 	const router = useRouter();
-	const utils = trpc.useUtils();
+	const queryClient = useQueryClient();
 
 	const {
 		register,
@@ -30,6 +31,8 @@ export default function SignupForm() {
 	const signup = trpc.auth.signup.useMutation({
 		onSuccess: (data) => {
 			router.push(data.redirectTo);
+			// Clear the query client cache and refresh router
+			queryClient.clear();
 			router.refresh();
 		},
 		onError: (e) => {
@@ -41,10 +44,6 @@ export default function SignupForm() {
 			// Something unexpected happened
 			console.error(e);
 			setError("root", { message: "Something went wrong" });
-		},
-		onSettled: () => {
-			// Refetch all queries
-			utils.invalidate();
 		}
 	});
 

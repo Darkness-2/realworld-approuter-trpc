@@ -8,6 +8,7 @@ import { trpc } from "$/lib/trpc/client";
 import { type RouterInputs } from "$/lib/trpc/shared";
 import { Box, Stack } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
@@ -15,7 +16,7 @@ type LoginForm = RouterInputs["auth"]["login"];
 
 export default function LoginForm() {
 	const router = useRouter();
-	const utils = trpc.useUtils();
+	const queryClient = useQueryClient();
 
 	const {
 		register,
@@ -31,6 +32,8 @@ export default function LoginForm() {
 	const login = trpc.auth.login.useMutation({
 		onSuccess: (data) => {
 			router.push(data.redirectTo);
+			// Clear the query client cache and refresh router
+			queryClient.clear();
 			router.refresh();
 		},
 		onError: (e) => {
@@ -43,10 +46,6 @@ export default function LoginForm() {
 			// Something unexpected happened
 			console.error(e);
 			setError("root", { message: e.message });
-		},
-		onSettled: () => {
-			// Invalidate all queries
-			utils.invalidate();
 		}
 	});
 
