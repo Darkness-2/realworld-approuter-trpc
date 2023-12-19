@@ -40,6 +40,8 @@ const feeds = {
 
 	getUserFeed: privateProcedure.input(limitOffsetSchema).query(async ({ ctx, input }) => {
 		// Todo: Deal with user following 0 users
+		// Todo: In route handlers, cache doesn't work and results in two of the same SQL calls
+		// Solution may be to refactor the DB queries (each function in /db/queries should have one call)
 
 		const [rawArticles, totalCount] = await Promise.all([
 			getUserFeedQuery(ctx.db, ctx.user.userId, input.limit, input.offset),
