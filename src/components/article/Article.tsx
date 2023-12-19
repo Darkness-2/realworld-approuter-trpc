@@ -41,7 +41,12 @@ export default function Article({ article = mockData, isLoading = false }: Artic
 
 			<Flex gap={2} justifyContent="space-between" alignItems="center">
 				<Skeleton isLoaded={!isLoading}>
-					<AuthorAndDate variant="dark" createdAt={article.createdAt} username={article.author.username} />
+					<AuthorAndDate
+						variant="dark"
+						createdAt={article.createdAt}
+						username={article.author.username}
+						isLoading={isLoading}
+					/>
 				</Skeleton>
 				<Skeleton isLoaded={!isLoading}>
 					<LikesTag likes={article.likesCount} />

@@ -7,9 +7,16 @@ type AuthorAndDateProps = {
 	username: string;
 	variant: "light" | "dark";
 	asRow?: boolean;
+	isLoading?: boolean;
 };
 
-export default function AuthorAndDate({ createdAt, username, variant, asRow = false }: AuthorAndDateProps) {
+export default function AuthorAndDate({
+	createdAt,
+	username,
+	variant,
+	asRow = false,
+	isLoading = false
+}: AuthorAndDateProps) {
 	const linkTextColor = variant === "light" ? "green.400" : "green.500";
 	const dateTextColor = variant === "light" ? "gray.400" : "gray.500";
 
@@ -19,7 +26,7 @@ export default function AuthorAndDate({ createdAt, username, variant, asRow = fa
 			alignItems={asRow ? "center" : undefined}
 			gap={asRow ? 2 : undefined}
 		>
-			<Link href={`/user/${username}`} textColor={linkTextColor} fontWeight="medium">
+			<Link href={`/user/${username}`} textColor={linkTextColor} fontWeight="medium" prefetch={!isLoading}>
 				@{username}
 			</Link>
 
