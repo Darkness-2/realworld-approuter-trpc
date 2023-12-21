@@ -14,6 +14,7 @@ const getExpensiveData = async () => {
 };
 
 export default async function TRPCRSCPage() {
+	// Data fetching is still server-side, but through tRPC
 	const message = await getBasicData();
 
 	return (
@@ -35,6 +36,7 @@ export default async function TRPCRSCPage() {
 	);
 }
 
+// Separating out slow data fetching so we can surround it with suspense
 async function ExpensiveMessage() {
 	const message = await getExpensiveData();
 

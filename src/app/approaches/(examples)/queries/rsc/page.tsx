@@ -13,6 +13,7 @@ const getExpensiveData = async () => {
 };
 
 export default async function RSCQueryPage() {
+	// Data fetching directly in the server component
 	const message = await getBasicData();
 
 	return (
@@ -32,6 +33,7 @@ export default async function RSCQueryPage() {
 	);
 }
 
+// Separating out slow data fetching so we can surround it with suspense
 async function ExpensiveMessage() {
 	const message = await getExpensiveData();
 
