@@ -73,3 +73,12 @@ export const generateFutureDate = () => {
  * Helper sql string that gets the count of a SQL query as a number.
  */
 export const countStar = sql<number>`cast(count(*) as int)`;
+
+/**
+ * Helper function to delay execution for a period of time.
+ * @param time in ms
+ * @returns void
+ */
+export const delay = (time: number): Promise<void> => {
+	return new Promise((resolve) => setTimeout(resolve, time));
+};
