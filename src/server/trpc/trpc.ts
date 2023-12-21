@@ -131,6 +131,7 @@ const getRequestData = async (type: "query" | "mutation" | "subscription") => {
 	const method = type === "mutation" ? "POST" : "GET";
 
 	// Grab auth info from Lucia
+	// Todo: Move this to /api/trpc so that API requests only validate session once
 	const session = await getPageSession(method);
 
 	return {
