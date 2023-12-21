@@ -2,7 +2,7 @@
 
 import Link from "$/components/ui/Link";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { Box, Button, ButtonGroup, Container, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 
 export default function HomePageHero() {
@@ -28,9 +28,9 @@ export default function HomePageHero() {
 						</Link>{" "}
 						using Next.js app router and tRPC.
 					</Text>
-					<ButtonGroup mt={2}>
+					<Flex mt={2} gap={2} flexWrap="wrap" justifyContent="center">
 						<Button as={NextLink} href="/approaches" colorScheme="gray" size="sm">
-							View approaches for how to use tRPC in Next.js app router
+							Approaches for using tRPC in Next.js app router
 						</Button>
 						<Button
 							as={NextLink}
@@ -42,7 +42,7 @@ export default function HomePageHero() {
 						>
 							View on Github
 						</Button>
-					</ButtonGroup>
+					</Flex>
 				</Stack>
 			</Container>
 		</Box>
