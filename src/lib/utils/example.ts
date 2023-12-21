@@ -7,16 +7,19 @@ const generateMessage = (name?: string) => {
 };
 
 export const generateBasicMessage = cache(async () => {
-	await delay(1);
+	// Simulate quick database call
+	await delay(100);
 	return generateMessage();
 });
 
 export const generateExpensiveMessage = cache(async () => {
+	// Simulate slow database call
 	await delay(3000);
 	return generateMessage();
 });
 
 export const generatePersonalizedMessage = async (name: string) => {
-	await delay(100);
+	// Simulate database mutation
+	await delay(250);
 	return generateMessage(name);
 };
