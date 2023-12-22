@@ -28,13 +28,11 @@ export default function ApproachPageTemplate({
 
 				{children}
 
-				<ExampleButtons />
+				{displayButtons && <ExampleButtons />}
 
-				{displayButtons && (
-					<Button as={Link} href="/approaches" colorScheme="gray" w="fit-content" size="sm">
-						Back to approaches
-					</Button>
-				)}
+				<Button as={Link} href="/approaches" colorScheme="gray" w="fit-content" size="sm">
+					Back to approaches
+				</Button>
 			</Stack>
 		</Section>
 	);
