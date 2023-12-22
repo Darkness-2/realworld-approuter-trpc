@@ -1,4 +1,3 @@
-import ExpensiveMessageClient from "$/app/approaches/(examples)/queries/trpc-rsc/ExpensiveMessageClient";
 import ApproachPageTemplate from "$/app/approaches/ApproachPageTemplate";
 import { getServerTRPCClient } from "$/lib/trpc/serverClient";
 import { Text } from "@chakra-ui/react";
@@ -24,8 +23,6 @@ export default async function TRPCRSCPage() {
 			<Suspense fallback={<Text>Loading expensive message via suspense...</Text>}>
 				<ExpensiveMessage />
 			</Suspense>
-
-			<ExpensiveMessageClient />
 		</ApproachPageTemplate>
 	);
 }

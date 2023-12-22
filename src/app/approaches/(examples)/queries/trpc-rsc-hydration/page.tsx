@@ -34,8 +34,6 @@ export default async function TRPCRSCHydrationPage() {
 			<Suspense fallback={<Text>Loading expensive message...</Text>}>
 				<ExpensiveMessageServer />
 			</Suspense>
-
-			<ExpensiveMessageClient />
 		</ApproachPageTemplate>
 	);
 }
