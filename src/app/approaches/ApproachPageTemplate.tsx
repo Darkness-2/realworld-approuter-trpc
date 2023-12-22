@@ -7,11 +7,18 @@ import { type ReactNode } from "react";
 type ApproachPageTemplateProps = {
 	heading: string;
 	children: ReactNode;
+	displayButtons?: boolean;
 	pros: string[];
 	cons: string[];
 };
 
-export default function ApproachPageTemplate({ heading, pros, cons, children }: ApproachPageTemplateProps) {
+export default function ApproachPageTemplate({
+	heading,
+	displayButtons = false,
+	pros,
+	cons,
+	children
+}: ApproachPageTemplateProps) {
 	return (
 		<Section>
 			<Stack gap={4} divider={<StackDivider />}>
@@ -23,9 +30,11 @@ export default function ApproachPageTemplate({ heading, pros, cons, children }: 
 
 				<ExampleButtons />
 
-				<Button as={Link} href="/approaches" colorScheme="gray" w="fit-content" size="sm">
-					Back to approaches
-				</Button>
+				{displayButtons && (
+					<Button as={Link} href="/approaches" colorScheme="gray" w="fit-content" size="sm">
+						Back to approaches
+					</Button>
+				)}
 			</Stack>
 		</Section>
 	);

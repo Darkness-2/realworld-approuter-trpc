@@ -20,6 +20,7 @@ export default async function TRPCRSCInitialDataPage() {
 	return (
 		<ApproachPageTemplate
 			heading="Loading data via tRPC in a React server component (RSC), hydrating via initial data"
+			displayButtons
 			pros={[""]}
 			cons={[""]}
 		>

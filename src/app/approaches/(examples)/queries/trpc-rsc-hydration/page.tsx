@@ -24,6 +24,7 @@ export default async function TRPCRSCHydrationPage() {
 	return (
 		<ApproachPageTemplate
 			heading="Loading data via tRPC in a React server component (RSC), hydrating via React Query's <Hydrate /> component"
+			displayButtons
 			pros={[""]}
 			cons={[""]}
 		>

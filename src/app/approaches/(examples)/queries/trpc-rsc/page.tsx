@@ -16,7 +16,12 @@ export default async function TRPCRSCPage() {
 	const message = await getBasicData();
 
 	return (
-		<ApproachPageTemplate heading="Loading data via tRPC in a React server component (RSC)" pros={[""]} cons={[""]}>
+		<ApproachPageTemplate
+			heading="Loading data via tRPC in a React server component (RSC)"
+			displayButtons
+			pros={[""]}
+			cons={[""]}
+		>
 			<Text>Basic message: {message}</Text>
 
 			{/* Wrapped in suspense as it takes longer to load */}

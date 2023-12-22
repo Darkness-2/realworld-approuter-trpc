@@ -17,7 +17,7 @@ export default function TRPCClientPage() {
 	});
 
 	return (
-		<ApproachPageTemplate heading="Loading data via tRPC, client-side" pros={[""]} cons={[""]}>
+		<ApproachPageTemplate heading="Loading data via tRPC, client-side" displayButtons pros={[""]} cons={[""]}>
 			{/* Wrapped in a check for the status as it could be loading */}
 			{basicMessage.status === "loading" && <Text>Loading basic message...</Text>}
 			{basicMessage.status === "success" && <Text>Basic message: {basicMessage.data}</Text>}
