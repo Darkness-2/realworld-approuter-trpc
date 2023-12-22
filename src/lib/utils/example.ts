@@ -20,6 +20,6 @@ export const generateExpensiveMessage = cache(async () => {
 
 export const generatePersonalizedMessage = async (name: string) => {
 	// Simulate database mutation
-	await delay(250);
+	await delay(1000);
 	return generateMessage(name);
 };
