@@ -18,13 +18,17 @@ export default function ServerActionPage() {
 				</Stack>
 			</form>
 
+			{/* If message returned, show it */}
 			{state.data && <Text>From the server: {state.data}</Text>}
+			{/* If errors, display them */}
 			{state.errors && <Text textColor="red">{state.errors.formErrors.join(", ")}</Text>}
+			{/* If no data or errors, encourage user to submit */}
 			{!state.data && !state.errors && <Text>Submit your name to receive a message from the server...</Text>}
 		</ApproachPageTemplate>
 	);
 }
 
+// Separate component in order to make use of useFormStatus hook
 function SubmitButton() {
 	const { pending } = useFormStatus();
 
