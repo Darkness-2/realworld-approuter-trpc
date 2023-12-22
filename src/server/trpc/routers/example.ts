@@ -1,6 +1,6 @@
+import { messageNameSchema } from "$/lib/schemas/example";
 import { generateBasicMessage, generateExpensiveMessage, generatePersonalizedMessage } from "$/lib/utils/example";
 import { createTRPCRouter, publicProcedure } from "$/server/trpc/trpc";
-import { z } from "zod";
 
 export const exampleRouter = createTRPCRouter({
 	getBasicMessage: publicProcedure.query(async () => {
@@ -9,7 +9,7 @@ export const exampleRouter = createTRPCRouter({
 	getExpensiveMessage: publicProcedure.query(async () => {
 		return await generateExpensiveMessage();
 	}),
-	generatePersonalizedMessage: publicProcedure.input(z.string().min(1)).mutation(async ({ input }) => {
+	generatePersonalizedMessage: publicProcedure.input(messageNameSchema).mutation(async ({ input }) => {
 		return await generatePersonalizedMessage(input);
 	})
 });
