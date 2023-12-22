@@ -21,3 +21,15 @@ export const getServerTRPCClient = cache(() =>
 		transformer: superjson
 	})
 );
+
+/**
+ * Cached factory to get a tRPC server-side caller.
+ * Needed as this ensures every request get a new, unique helper.
+ *
+ * Useful to access mutations, but queries are preferred to use the server
+ * helpers as they provide more functionality for client-side hydration.
+ *
+ * @returns a tRPC server-side caller
+ * @see https://trpc.io/docs/server/server-side-calls
+ */
+export const getServerTRPCCaller = cache(() => appRouter.createCaller(createTRPCContext({ source: "server-caller" })));
