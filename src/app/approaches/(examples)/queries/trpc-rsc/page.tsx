@@ -1,5 +1,4 @@
 import ExpensiveMessageClient from "$/app/approaches/(examples)/queries/trpc-rsc/ExpensiveMessageClient";
-import TRPCRSCButtons from "$/app/approaches/(examples)/queries/trpc-rsc/TRPCRSCButtons";
 import ApproachPageTemplate from "$/app/approaches/ApproachPageTemplate";
 import { getServerTRPCClient } from "$/lib/trpc/serverClient";
 import { Text } from "@chakra-ui/react";
@@ -18,12 +17,7 @@ export default async function TRPCRSCPage() {
 	const message = await getBasicData();
 
 	return (
-		<ApproachPageTemplate
-			heading="Loading data via tRPC in a React server component (RSC)"
-			buttons={<TRPCRSCButtons />}
-			pros={[""]}
-			cons={[""]}
-		>
+		<ApproachPageTemplate heading="Loading data via tRPC in a React server component (RSC)" pros={[""]} cons={[""]}>
 			<Text>Basic message: {message}</Text>
 
 			{/* Wrapped in suspense as it takes longer to load */}

@@ -1,6 +1,5 @@
 "use client";
 
-import TRPCClientButtons from "$/app/approaches/(examples)/queries/trpc-client/TRPCClientButtons";
 import ApproachPageTemplate from "$/app/approaches/ApproachPageTemplate";
 import { trpc } from "$/lib/trpc/client";
 import { Text } from "@chakra-ui/react";
@@ -18,12 +17,7 @@ export default function TRPCClientPage() {
 	});
 
 	return (
-		<ApproachPageTemplate
-			heading="Loading data via tRPC, client-side"
-			buttons={<TRPCClientButtons />}
-			pros={[""]}
-			cons={[""]}
-		>
+		<ApproachPageTemplate heading="Loading data via tRPC, client-side" pros={[""]} cons={[""]}>
 			{/* Wrapped in a check for the status as it could be loading */}
 			{basicMessage.status === "loading" && <Text>Loading basic message...</Text>}
 			{basicMessage.status === "success" && <Text>Basic message: {basicMessage.data}</Text>}

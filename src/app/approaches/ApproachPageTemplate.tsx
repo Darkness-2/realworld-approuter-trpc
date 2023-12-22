@@ -1,17 +1,17 @@
+import ExampleButtons from "$/components/example/ExampleButtons";
 import Section from "$/components/ui/Section";
-import { Button, Flex, Stack, StackDivider, Text } from "@chakra-ui/react";
+import { Button, Stack, StackDivider, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import { type ReactNode } from "react";
 
 type ApproachPageTemplateProps = {
 	heading: string;
 	children: ReactNode;
-	buttons: ReactNode;
 	pros: string[];
 	cons: string[];
 };
 
-export default function ApproachPageTemplate({ heading, pros, cons, children, buttons }: ApproachPageTemplateProps) {
+export default function ApproachPageTemplate({ heading, pros, cons, children }: ApproachPageTemplateProps) {
 	return (
 		<Section>
 			<Stack gap={4} divider={<StackDivider />}>
@@ -21,9 +21,7 @@ export default function ApproachPageTemplate({ heading, pros, cons, children, bu
 
 				{children}
 
-				<Flex gap={2} wrap="wrap">
-					{buttons}
-				</Flex>
+				<ExampleButtons />
 
 				<Button as={Link} href="/approaches" colorScheme="gray" w="fit-content" size="sm">
 					Back to approaches

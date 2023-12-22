@@ -1,6 +1,5 @@
 import BasicMessageClient from "$/app/approaches/(examples)/queries/trpc-rsc-initial-data/BasicMessageClient";
 import ExpensiveMessageClient from "$/app/approaches/(examples)/queries/trpc-rsc-initial-data/ExpensiveMessageClient";
-import TRPCRSCInitialDataButtons from "$/app/approaches/(examples)/queries/trpc-rsc-initial-data/TRPCRSCInitialDataButtons";
 import ApproachPageTemplate from "$/app/approaches/ApproachPageTemplate";
 import { getServerTRPCClient } from "$/lib/trpc/serverClient";
 import { Text } from "@chakra-ui/react";
@@ -21,7 +20,6 @@ export default async function TRPCRSCInitialDataPage() {
 	return (
 		<ApproachPageTemplate
 			heading="Loading data via tRPC in a React server component (RSC), hydrating via initial data"
-			buttons={<TRPCRSCInitialDataButtons />}
 			pros={[""]}
 			cons={[""]}
 		>

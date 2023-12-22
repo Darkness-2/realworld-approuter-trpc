@@ -1,4 +1,3 @@
-import RSCButtons from "$/app/approaches/(examples)/queries/rsc/RSCButtons";
 import ApproachPageTemplate from "$/app/approaches/ApproachPageTemplate";
 import { generateBasicMessage, generateExpensiveMessage } from "$/lib/utils/example";
 import { Text } from "@chakra-ui/react";
@@ -17,12 +16,7 @@ export default async function RSCQueryPage() {
 	const message = await getBasicData();
 
 	return (
-		<ApproachPageTemplate
-			heading="Loading data via a React server component (RSC)"
-			buttons={<RSCButtons />}
-			pros={[""]}
-			cons={[""]}
-		>
+		<ApproachPageTemplate heading="Loading data via a React server component (RSC)" pros={[""]} cons={[""]}>
 			<Text>Basic message: {message}</Text>
 
 			{/* Wrapped in suspense as it takes longer to load */}
