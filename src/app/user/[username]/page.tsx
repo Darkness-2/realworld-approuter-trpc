@@ -18,9 +18,7 @@ type UserPageProps = {
 // Todo: Add not-found boundary
 
 export default async function UserPage({ params }: UserPageProps) {
-	const serverClient = getServerTRPCClient();
-
-	const data = await serverClient.article.getArticlesByAuthorUsername.fetchInfinite({
+	const data = await getServerTRPCClient().article.getArticlesByAuthorUsername.fetchInfinite({
 		username: params.username,
 		limit: DEFAULT_PAGE_SIZE
 	});
@@ -39,7 +37,7 @@ export default async function UserPage({ params }: UserPageProps) {
 					</TabList>
 					<TabPanels>
 						<TabPanel px={0}>
-							<TRPCHydrate serverTRPCClient={serverClient}>
+							<TRPCHydrate>
 								<UserArticlesInfiniteScroll username={firstPage.author.username} pageSize={DEFAULT_PAGE_SIZE} />
 							</TRPCHydrate>
 						</TabPanel>

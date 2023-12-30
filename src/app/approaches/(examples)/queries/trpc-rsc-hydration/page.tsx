@@ -15,8 +15,6 @@ const getExpensiveData = async () => {
 };
 
 export default async function TRPCRSCHydrationPage() {
-	const serverClient = getServerTRPCClient();
-
 	// Data fetching is still server-side but through tRPC
 	// No need to pass result as it is automatically done via hydration
 	await getBasicData();
@@ -28,7 +26,7 @@ export default async function TRPCRSCHydrationPage() {
 			pros={[""]}
 			cons={[""]}
 		>
-			<TRPCHydrate serverTRPCClient={serverClient}>
+			<TRPCHydrate>
 				<BasicMessageClient />
 			</TRPCHydrate>
 
@@ -41,12 +39,10 @@ export default async function TRPCRSCHydrationPage() {
 
 // Separating out slow data fetching so we can surround it with suspense
 async function ExpensiveMessageServer() {
-	const serverClient = getServerTRPCClient();
-
 	await getExpensiveData();
 
 	return (
-		<TRPCHydrate serverTRPCClient={serverClient}>
+		<TRPCHydrate>
 			<ExpensiveMessageClient />
 		</TRPCHydrate>
 	);
