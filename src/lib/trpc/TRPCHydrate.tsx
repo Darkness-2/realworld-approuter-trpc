@@ -7,7 +7,7 @@ import { type ReactNode } from "react";
  *
  * @see https://tanstack.com/query/v4/docs/react/guides/ssr#using-hydrate
  */
-export default function TRPCHydrate({ children }: { children: ReactNode }) {
+export default function TRPCHydrate({ children }: { children?: ReactNode }) {
 	const serverClient = getServerTRPCClient();
 
 	// Note: Using React Query's dehydrate here instead of tRPC's built-in one as it seems to work better
