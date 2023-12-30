@@ -1,16 +1,15 @@
 "use server";
 
 import { type messageNameSchema } from "$/lib/schemas/example";
+import { formatTRPCError, type FormattedTRPCErrors } from "$/lib/trpc/errors";
 import { getServerTRPCCaller } from "$/lib/trpc/serverClient";
-import { TRPCError } from "@trpc/server";
-import { ZodError, type typeToFlattenedError } from "zod";
 
-type ReturnData = {
+type ActionState = {
 	data?: string;
-	errors?: typeToFlattenedError<typeof messageNameSchema>;
+	errors?: FormattedTRPCErrors<typeof messageNameSchema>;
 };
 
-export const getPersonalizedMessage = async (_: unknown, formData: FormData): Promise<ReturnData> => {
+export const getPersonalizedMessage = async (_: ActionState, formData: FormData): Promise<ActionState> => {
 	const caller = getServerTRPCCaller();
 
 	try {
@@ -18,11 +17,6 @@ export const getPersonalizedMessage = async (_: unknown, formData: FormData): Pr
 
 		return { data: message };
 	} catch (e) {
-		if (e instanceof TRPCError) {
-			if (e.cause instanceof ZodError) {
-				return { errors: e.cause.flatten() };
-			}
-		}
-		return { errors: { formErrors: ["Something went wrong"], fieldErrors: {} } };
+		return { errors: formatTRPCError<typeof messageNameSchema>(e) };
 	}
 };
