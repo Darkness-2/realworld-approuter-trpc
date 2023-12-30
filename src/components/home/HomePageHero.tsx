@@ -23,7 +23,7 @@ export default function HomePageHero() {
 					</Text>
 					<Text color="white" fontSize="md" align="center">
 						This project is a rough recreation of{" "}
-						<Link href="https://www.realworld.how/" textDecoration="underline">
+						<Link href="https://www.realworld.how/" target="_blank" textDecoration="underline">
 							Realworld.how
 						</Link>{" "}
 						using Next.js app router and tRPC.
