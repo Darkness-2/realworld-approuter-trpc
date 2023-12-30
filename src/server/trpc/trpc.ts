@@ -1,11 +1,11 @@
 import { env } from "$/env.mjs";
-import { ArticleError, AuthError, CommentError } from "$/lib/utils/errors";
+import { formatTRPCError } from "$/lib/trpc/errors";
+import { AuthError } from "$/lib/utils/errors";
 import { getPageSession } from "$/server/auth/lucia";
 import { db } from "$/server/db";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { cookies, headers } from "next/headers";
 import superjson from "superjson";
-import { ZodError } from "zod";
 
 /**
  * 1. CONTEXT
@@ -54,17 +54,18 @@ export const createTRPCContext = (opts: { source: CreateContextOptions["source"]
  */
 const t = initTRPC.context<typeof createTRPCContext>().create({
 	transformer: superjson,
-	errorFormatter: ({ shape, error }) => ({
+	errorFormatter: ({ shape, error }) => {
 		// Todo: Check if this exposes anything sensitive to client
-		...shape,
-		data: {
-			...shape.data,
-			zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
-			authError: error.cause instanceof AuthError ? error.cause.code : null,
-			articleError: error.cause instanceof ArticleError ? error.cause.code : null,
-			commentError: error.cause instanceof CommentError ? error.cause.code : null
-		}
-	})
+		const formattedErrors = formatTRPCError(error);
+
+		return {
+			...shape,
+			data: {
+				...shape.data,
+				...formattedErrors
+			}
+		};
+	}
 });
 
 /**
