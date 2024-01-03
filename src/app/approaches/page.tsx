@@ -27,7 +27,11 @@ const QUERY_APPROACHES: Approach[] = [
 const MUTATION_APPROACHES: Approach[] = [
 	{ label: "Next.js server action", href: "/approaches/mutations/server-action" },
 	{ label: "tRPC client-side", href: "/approaches/mutations/trpc-client" },
-	{ label: "tRPC in server action", href: "/approaches/mutations/trpc-server-action" }
+	{ label: "tRPC in server action", href: "/approaches/mutations/trpc-server-action" },
+	{
+		label: "tRPC in server action, with react-hook-form",
+		href: "/approaches/mutations/trpc-server-action-react-hook-form"
+	}
 ];
 
 export default function ApproachesPage() {
