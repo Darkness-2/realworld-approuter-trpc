@@ -89,9 +89,9 @@ export const createTRPCRouter = t.router;
  * server-component = coming from the tRPC client, but from the server through HTTP request
  * server = coming from the tRPC serverClient, without a HTTP request
  */
-const logTRPCSource = t.middleware(async ({ ctx, path, next }) => {
+const logTRPCSource = t.middleware(async ({ ctx, path, next, type }) => {
 	if (env.NODE_ENV === "development") {
-		console.log(`\n${new Date().toLocaleTimeString()}  ▶️  Processing tRPC request for ${path} from ${ctx.source}`);
+		console.log(`\n${new Date().toLocaleTimeString()}  ▶️  Processing tRPC ${type} for ${path} from ${ctx.source}`);
 	}
 
 	const res = await next();
