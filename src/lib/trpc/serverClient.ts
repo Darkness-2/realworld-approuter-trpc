@@ -1,5 +1,5 @@
 import { appRouter } from "$/server/trpc/root";
-import { createTRPCContext } from "$/server/trpc/trpc";
+import { createCallerFactory, createTRPCContext } from "$/server/trpc/trpc";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { cache } from "react";
 import superjson from "superjson";
@@ -24,6 +24,8 @@ export const getServerTRPCClient = cache(() =>
 	})
 );
 
+const createCaller = createCallerFactory(appRouter);
+
 /**
  * Cached factory to get a tRPC server-side caller.
  * Needed as this ensures every request get a new, unique helper.
@@ -34,4 +36,4 @@ export const getServerTRPCClient = cache(() =>
  * @returns a tRPC server-side caller
  * @see https://trpc.io/docs/server/server-side-calls
  */
-export const getServerTRPCCaller = cache(() => appRouter.createCaller(createTRPCContext({ source: "server-caller" })));
+export const getServerTRPCCaller = cache(() => createCaller(createTRPCContext({ source: "server-caller" })));
