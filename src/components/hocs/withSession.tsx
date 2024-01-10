@@ -9,6 +9,8 @@ import { type ComponentType } from "react";
 // Note that this does not prefetch that call for anything higher in the tree (layouts)
 // Might want to extract this into layouts instead
 
+// Todo: Convert this into a guard instead?
+
 export interface SessionProps {
 	session: Session | null;
 }

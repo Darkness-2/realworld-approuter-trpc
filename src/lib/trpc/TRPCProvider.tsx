@@ -14,6 +14,7 @@ export default function TRPCProvider({ children }: { children: ReactNode }) {
 
 	return (
 		<trpc.Provider client={trpcClient} queryClient={queryClient}>
+			{/* Todo: Add React Query dev tools */}
 			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 		</trpc.Provider>
 	);
