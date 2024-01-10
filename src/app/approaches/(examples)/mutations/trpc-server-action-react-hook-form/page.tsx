@@ -1,6 +1,6 @@
 "use client";
 
-import { getPersonalizedMessage } from "$/app/approaches/(examples)/mutations/trpc-server-action-react-hook-form/actions";
+import { generatePersonalizedMessage } from "$/app/approaches/(examples)/mutations/trpc-server-action-react-hook-form/actions";
 import ApproachPageTemplate from "$/app/approaches/ApproachPageTemplate";
 import { messageNameSchema } from "$/lib/schemas/example";
 import { type RouterInputs } from "$/lib/trpc/shared";
@@ -25,10 +25,10 @@ export default function TRPCServerActionReactHookFormPage() {
 
 	const { status, data, isLoading, mutate } = useMutation({
 		mutationFn: async () => {
-			const result = await getPersonalizedMessage(getValues("name"));
+			const result = await generatePersonalizedMessage(getValues("name"));
 
 			// If successful, return data
-			if (result.state === "success") return result.message;
+			if (result.state === "success") return result.data;
 
 			// Handle validation errors
 			// Technically optional as validation also occurs client-side
