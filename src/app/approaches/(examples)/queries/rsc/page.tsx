@@ -3,17 +3,9 @@ import { generateBasicMessage, generateExpensiveMessage } from "$/lib/utils/exam
 import { Text } from "@chakra-ui/react";
 import { Suspense } from "react";
 
-const getBasicData = async () => {
-	return await generateBasicMessage();
-};
-
-const getExpensiveData = async () => {
-	return await generateExpensiveMessage();
-};
-
 export default async function RSCQueryPage() {
 	// Data fetching directly in the server component
-	const message = await getBasicData();
+	const message = await generateBasicMessage();
 
 	return (
 		<ApproachPageTemplate
@@ -34,7 +26,7 @@ export default async function RSCQueryPage() {
 
 // Separating out slow data fetching so we can surround it with suspense
 async function ExpensiveMessage() {
-	const message = await getExpensiveData();
+	const message = await generateExpensiveMessage();
 
 	return <Text>Expensive message: {message}</Text>;
 }

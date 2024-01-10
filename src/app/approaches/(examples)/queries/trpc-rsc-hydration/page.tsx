@@ -6,18 +6,10 @@ import { getServerTRPCClient } from "$/lib/trpc/serverClient";
 import { Text } from "@chakra-ui/react";
 import { Suspense } from "react";
 
-const getBasicData = async () => {
-	return await getServerTRPCClient().example.getBasicMessage.prefetch();
-};
-
-const getExpensiveData = async () => {
-	return await getServerTRPCClient().example.getExpensiveMessage.prefetch();
-};
-
 export default async function TRPCRSCHydrationPage() {
 	// Data fetching is still server-side but through tRPC
 	// No need to pass result as it is automatically done via hydration
-	await getBasicData();
+	await getServerTRPCClient().example.getBasicMessage.prefetch();
 
 	return (
 		<ApproachPageTemplate
@@ -39,7 +31,7 @@ export default async function TRPCRSCHydrationPage() {
 
 // Separating out slow data fetching so we can surround it with suspense
 async function ExpensiveMessageServer() {
-	await getExpensiveData();
+	await getServerTRPCClient().example.getExpensiveMessage.prefetch();
 
 	return (
 		<TRPCHydrate>
