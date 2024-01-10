@@ -19,11 +19,11 @@ type ProcedureOutput<Procedure extends GenericFunction> = Awaited<ReturnType<Pro
 // Type definition for standard action output
 type ActionState<Output, Schema extends ZodType> =
 	| {
-			state: "success";
+			status: "success";
 			data: Output;
 	  }
 	| {
-			state: "error";
+			status: "error";
 			errors: FormattedTRPCErrors<Schema>;
 	  };
 
@@ -47,10 +47,10 @@ export const createServerAction = <Procedure extends GenericFunction, Schema ext
 
 			// Run it with the input and return data
 			const data = await procedure(...input);
-			return { state: "success", data };
+			return { status: "success", data };
 		} catch (e) {
 			// Or catch the error and return errors
-			return { state: "error", errors: formatTRPCError<Schema>(e) };
+			return { status: "error", errors: formatTRPCError<Schema>(e) };
 		}
 	};
 };

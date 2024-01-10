@@ -4,4 +4,4 @@
 
 import { createServerAction } from "$/lib/trpc/actions";
 
-export const generatePersonalizedMessage = createServerAction((c) => c.example.generatePersonalizedMessage);
+export const generatePersonalizedMessageAction = createServerAction((t) => t.example.generatePersonalizedMessage);
