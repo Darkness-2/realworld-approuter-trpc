@@ -10,7 +10,7 @@ import superjson from "superjson";
  * Cached factory to get the tRPC server-side helpers.
  * Needed as this ensures every request gets a new, unique helper.
  *
- * NOTE: Intentionally avoiding the use of dynamic functions like headers and cookies,
+ * NOTE: Intentionally avoiding the use of dynamic functions like headers and cookies
  * in context creation in order to ensure that most pages are still cachable.
  *
  * @returns the tRPC server-side helpers
