@@ -45,11 +45,11 @@ export const createServerAction = <Procedure extends GenericFunction, Schema ext
 			// Get the selected procedure from the callback
 			const procedure = callback(caller);
 
-			// Run it with the input and return
+			// Run it with the input and return data
 			const data = await procedure(...input);
 			return { state: "success", data };
 		} catch (e) {
-			// Or catch the error and return the standard format
+			// Or catch the error and return errors
 			return { state: "error", errors: formatTRPCError<Schema>(e) };
 		}
 	};
